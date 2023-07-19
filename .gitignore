@@ -1,0 +1,12 @@
+# Config files
+user-config.env
+
+# NodeJS
+node_modules
+
+# Hardhat
+cache
+artifacts
+
+# Typescript
+build

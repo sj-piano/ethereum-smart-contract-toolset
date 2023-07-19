@@ -1,0 +1,62 @@
+{
+  "name": "ethereum-smart-contract-project-template-typescript",
+  "version": "1.0.0",
+  "description": "A ready-for-production Ethereum smart contract project template, written in Solidity and Typescript.",
+  "license": "AGPL-3.0-only",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "clean-build": "rm -rf build && npm run build",
+    "test": "npx hardhat test --typecheck",
+    "ts-node": "IS_TS_NODE=true ts-node",
+    "tsc": "tsc",
+    "clean": "rm -rf node_modules && rm -f package-lock.json",
+    "reset": "rm -rf artifacts build cache && npm run clean && npm install && npx hardhat compile"
+  },
+  "author": {
+    "name": "StJohn Piano",
+    "linkedin": "https://www.linkedin.com/in/stjohnpiano",
+    "tela": "https://www.tela.app/magic/stjohn_piano/a852c8"
+  },
+  "imports": {
+    "#root/*.js": "./*.js"
+  },
+  "_moduleAliases": {
+    "#root": "./build",
+    "#lib": "./build/lib",
+    "#src": "./build/src"
+  },
+  "dependencies": {
+    "avj": "0.0.0",
+    "axios": "1.4.0",
+    "big.js": "6.2.1",
+    "commander": "11.0.0",
+    "dotenv": "16.2.0",
+    "ethers": "6.6.0",
+    "joi": "17.9.2",
+    "lodash": "4.17.21",
+    "module-alias": "2.2.3",
+    "prettier": "3.0.0",
+    "winston": "3.9.0"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "3.0.0",
+    "@types/big.js": "6.1.6",
+    "@types/chai": "4.3.5",
+    "@types/lodash": "4.14.195",
+    "@types/mocha": "10.0.1",
+    "@types/module-alias": "2.0.1",
+    "@types/node": "20.3.3",
+    "@typescript-eslint/eslint-plugin": "6.1.0",
+    "@typescript-eslint/parser": "6.1.0",
+    "chai": "4.3.7",
+    "eslint": "8.45.0",
+    "eslint-config-prettier": "8.8.0",
+    "eslint-plugin-prettier": "5.0.0",
+    "hardhat": "2.15.0",
+    "ts-node": "10.9.1",
+    "tsconfig-paths": "4.2.0",
+    "typescript": "5.1.6"
+  },
+  "type": "commonjs"
+}
