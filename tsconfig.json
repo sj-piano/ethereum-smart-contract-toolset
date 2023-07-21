@@ -10,7 +10,8 @@
     "paths": {
       "#root/*": ["*"],
       "#lib/*": ["lib/*"],
-      "#src/*": ["src/*"]
+      "#src/*": ["src/*"],
+      "#typechain-types/*": ["typechain-types/*"],
     },
     "resolveJsonModule": true,
     "rootDir": "./",
@@ -25,7 +26,7 @@
     "./scripts/**/*",
     "./src/**/*",
     "./test/**/*",
-    "./typechain-types"
+    "./typechain-types/**/*",
   ],
   "ts-node": {
     "require": ["tsconfig-paths/register"]

@@ -23,7 +23,7 @@ tasks:
   test:
     desc: "Run the development tests using a temporary Hardhat node"
     cmds:
-      - npx hardhat test
+      - npx hardhat test --typecheck
     silent: true
 
   show-example-script-commands:
