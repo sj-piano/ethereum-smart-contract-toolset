@@ -9,7 +9,7 @@ import { createLogger } from "#root/lib/logging";
 import utils from "#lib/utils";
 
 // Contract types
-import { UpgradeableCounter } from "#typechain-types/contracts/UpgradeableCounter.sol";
+//import { UpgradeableCounter } from "#typechain-types/contracts/UpgradeableCounter.sol";
 
 // Logging
 const { logger, log, deb } = createLogger();
@@ -40,7 +40,7 @@ describe("UpgradeableContract", () => {
     await instance.waitForDeployment();
     let address = await instance.getAddress();
     const CounterV2Factory = await ethers.getContractFactory(
-      "UpgradeableCounter2",
+      "UpgradeableCounterV2",
     );
     const upgraded = await upgrades.upgradeProxy(address, CounterV2Factory);
     expect(await upgraded.value()).to.equal(0);

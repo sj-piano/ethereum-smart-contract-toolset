@@ -34,7 +34,7 @@ contract UpgradeableCounter is Initializable, OwnableUpgradeable, UUPSUpgradeabl
 }
 
 
-contract UpgradeableCounter2 is UpgradeableCounter {
+contract UpgradeableCounterV2 is UpgradeableCounter {
 
    function increment() external {
        value += 1;
