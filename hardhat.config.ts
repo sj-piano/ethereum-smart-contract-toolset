@@ -3,6 +3,9 @@ import dotenv from "dotenv";
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 
+// OpenZeppelin
+import "@openzeppelin/hardhat-upgrades";
+
 // This adds support for typescript paths mappings
 import "tsconfig-paths/register";
 
