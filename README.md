@@ -24,7 +24,7 @@
   <a href="https://github.com/sj-piano/ethereum-smart-contract-project-template-typescript">
     <img src="images/glider_600x480.png" alt="Logo" width="300" height="240">
   </a>
-  <h3 align="center">A ready-for-production Ethereum smart contract project template</h3>
+  <h3 align="center">Ethereum smart contract toolset</h3>
 </div>
 
 
@@ -46,6 +46,7 @@
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
+        <li><a href="#initial-setup">Initial Setup</a></li>
       </ul>
     </li>
     <li>
@@ -53,7 +54,6 @@
       <ul>
         <li><a href="#notes">Notes</a></li>
         <li><a href="#fee-limit-protections">Fee Limit Protections</a></li>
-        <li><a href="#initial-setup">Initial Setup</a></li>
         <li><a href="#walkthrough-local">Walkthrough - Local Network</a></li>
         <li><a href="#walkthrough-testnet">Walkthrough - Sepolia Testnet</a></li>
         <li><a href="#walkthrough-mainnet">Walkthrough - Ethereum Mainnet</a></li>
@@ -76,11 +76,11 @@
 
 **Description:**
 
-A ready-for-production Ethereum smart contract project template, written in Solidity and Typescript.
+A collection of useful smart contracts, components, and management tools, written in Solidity and Typescript.
 
 **Features:**
-* Can estimate all fees before any actual transactions are sent
-* Includes a complete Hardhat test suite
+* Can estimate all fees in ETH and USD before any actual transactions are sent
+* Includes Hardhat test suites
 * Can deploy to a local Hardhat blockchain instance, Sepolia testnet, and Ethereum mainnet
 
 **Licensing:**
@@ -115,14 +115,7 @@ If you would like to add me as a professional contact, you can [send me a connec
 ### Project Status
 
 
-The contract has been deployed to the Ethereum Mainnet at this address:  
-`0xc2963E4f4C8456b21734c7c4811327A94324851E`
-
-The contract is published here:  
-[etherscan.io/address/0xc2963E4f4C8456b21734c7c4811327A94324851E#code](https://etherscan.io/address/0xc2963E4f4C8456b21734c7c4811327A94324851E#code)
-
-You can read the contract's stored data at:  
-[etherscan.io/address/0xc2963E4f4C8456b21734c7c4811327A94324851E#readContract](https://etherscan.io/address/0xc2963E4f4C8456b21734c7c4811327A94324851E#readContract)
+[Not written]
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -193,7 +186,7 @@ Tested with these versions:
 
 Notes:
 * Use `nvm` to install `npm` and NodeJS.
-* The Etherscan API key is used if you want to upload your contract to Etherscan when using [Hardhat verify](https://hardhat.org/hardhat-runner/plugins/nomicfoundation-hardhat-verify). Hardhat verify is included in Hardhat toolbox (a dependency of this project).
+* The Etherscan API key is used if you want to upload a contract to Etherscan when using [Hardhat verify](https://hardhat.org/hardhat-runner/plugins/nomicfoundation-hardhat-verify). Hardhat verify is included in Hardhat toolbox (a dependency of this project).
 
 
 ### Installation
@@ -201,15 +194,15 @@ Notes:
 Clone the repo:
 
 ```sh
-git clone https://github.com/sj-piano/ethereum-smart-contract-project-template-typescript
+git clone https://github.com/sj-piano/ethereum-smart-contract-toolset
 
-mv ethereum-smart-contract-project-template-typescript contract-template
+mv ethereum-smart-contract-toolset contract-toolset
 ```
 
 Install NPM packages:
 
 ```sh
-cd contract-template && npm install
+cd contract-toolset && npm install
 ```
 
 Copy the file `user-config.env.example` to `user-config.env` and fill it in with the relevant values.
@@ -225,11 +218,62 @@ Notes:
 * When you run a local hardhat node, it will have some built-in private keys and addresses that hold some test Ethereum. In `user-config.env.example`, the `LOCAL_HARDHAT_PRIVATE_KEY` and `LOCAL_HARDHAT_ADDRESS` values hold the first of these keypairs.
 
 
+### Initial Setup
+
+
+See available commands:  
+
+```sh
+task --list
+
+# You can also use: task -l
+```
+
+Run some initial tasks to check that everything is set up correctly.
+
+```sh
+task hello
+
+task check-network-connections
+```
+
+Note: You should see this error `Could not connect to local network`, because we haven't started a Hardhat local network yet.
+
+If `task check-network-connections` produces errors for connecting to testnet or mainnet, you can run the underlying script with the `--debug` flag:  
+`npm run --silent ts-node scripts/check-network-connections.ts -- --debug`
+
+Compile the contracts and run the tests.
+
+```sh
+task compile-contracts
+
+task test
+```
+
+Hardhat runs the tests on a temporary local blockchain.
+
+We will start a more persistent local blockchain instance.
+
+Open another terminal and run:  
+`task start-local-node`
+
+Leave the node running in this additional terminal. Log output will be displayed (the initial set of pre-loaded keypairs will be shown). Press Ctrl-C to stop the local node. Switch back to the original terminal and continue.
+
+Check the fees on the various networks.
+
+```sh
+npm run --silent ts-node scripts/get-network-fees.ts -- --network=local
+
+# Note: The network is always "local" by default, so you can also run this command:
+npm run --silent ts-node scripts/get-network-fees.ts
+
+npm run --silent ts-node scripts/get-network-fees.ts -- --network=testnet
+
+npm run --silent ts-node scripts/get-network-fees.ts -- --network=mainnet
+```
+
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-
 
 
 
@@ -243,7 +287,7 @@ Notes:
 
 `config.ts` stores the configuration used within the entire package. You probably won't need to look at it. Settings in the `user-config.env` file override it.
 
-Most scripts accept a `network` argument, which specifies whether the script should connect to the local development blockchain (`local`), the Sepolia testnet (`testnet`), or the Ethereum mainnet (`mainnet`).
+Most scripts accept a `network` argument, which specifies whether the script should connect to the local development blockchain (`local`), the Sepolia testnet (`testnet`), or the Ethereum mainnet (`mainnet`). It is `local` by default.
 
 Most scripts have `--help` functionality. E.g. you can run:  
 `npm run --silent ts-node scripts/get-network-fees.ts -- --help`
@@ -288,63 +332,6 @@ info:   Estimated fee: 0.000005242106697840 ETH (0.01 USD)
 
 stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-update-message.ts -- --input-file-json input-data/update-message-local-network.json
 - baseFeeUsd: Base fee (0.06 USD) exceeds limit specified in config (0.01 USD). Current base fee is 32009.25 gwei (32009250000000 wei, 0.00003200925 ETH). Current ETH-USD exchange rate is 1907.72 USD.
-```
-
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-
-### Initial Setup
-
-
-See available commands:  
-
-```sh
-task --list
-
-# You can also use: task -l
-```
-
-Run some initial tasks to check that everything is set up correctly.
-
-```sh
-task hello
-
-task check-network-connections
-```
-
-Note: You should see this error `Could not connect to local network`, because we haven't started a Hardhat local network yet.
-
-If `task check-network-connections` produces errors for connecting to testnet or mainnet, you can run the underlying script with the `--debug` flag:  
-`npm run --silent ts-node scripts/check-network-connections.ts -- --debug`
-
-Compile the contract and run the tests.
-
-```sh
-task compile-contracts
-
-task test
-```
-
-Hardhat runs the tests on a temporary local blockchain.
-
-We will start a more persistent local blockchain instance.
-
-Open another terminal and run:  
-`task start-local-node`
-
-Leave the node running in this additional terminal. Log output will be displayed (the initial set of pre-loaded keypairs will be shown). Press Ctrl-C to stop the local node. Switch back to the original terminal and continue.
-
-Check the fees on the various networks.
-
-```sh
-npm run --silent ts-node scripts/get-network-fees.ts
-
-npm run --silent ts-node scripts/get-network-fees.ts -- --network=testnet
-
-npm run --silent ts-node scripts/get-network-fees.ts -- --network=mainnet
 ```
 
 
