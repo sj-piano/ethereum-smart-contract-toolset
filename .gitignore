@@ -1,3 +1,6 @@
+# Mostly ignore while developing:
+typechain-types
+
 # Config files
 user-config.env
 
