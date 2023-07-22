@@ -42,6 +42,7 @@ let provider = hardhat.ethers.provider;
 
 describe("UpgradeableContract", () => {
   before(async function () {
+    this.timeout(8000);
     await hardhat.network.provider.send("hardhat_reset");
   });
 
@@ -136,5 +137,33 @@ describe("UpgradeableContract", () => {
     await expect(
       Counter.connect(acc1).upgradeTo(newImplementationAddress),
     ).to.be.revertedWith("Ownable: caller is not the owner");
+  });
+
+  it("should confirm that data added in V2 is available in V3", async () => {
+    const { Counter, counterAddress } = await loadFixture(
+      deployUpgradeableCounterFixture,
+    );
+    const CounterV2Factory = await ethers.getContractFactory(
+      "UpgradeableCounterV2",
+    );
+    const CounterV2 = await upgrades.upgradeProxy(
+      counterAddress,
+      CounterV2Factory,
+    );
+    const CounterV3Factory = await ethers.getContractFactory(
+      "UpgradeableCounterV3",
+    );
+    const CounterV3 = await upgrades.upgradeProxy(
+      counterAddress,
+      CounterV3Factory,
+    );
+    const newVersion = 3;
+    await CounterV3.setVersion(newVersion);
+    expect(await CounterV3.version()).to.equal(3);
+    expect(await CounterV3.value()).to.equal(0);
+    await CounterV3.increment();
+    expect(await CounterV3.value()).to.equal(1);
+    await CounterV3.decrement();
+    expect(await CounterV3.value()).to.equal(0);
   });
 });

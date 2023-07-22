@@ -2,6 +2,8 @@
 
 pragma solidity 0.8.20;
 
+import "hardhat/console.sol";
+
 // Open Zeppelin libraries for controlling upgradability and access.
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
@@ -53,5 +55,14 @@ contract UpgradeableCounterV2 is UpgradeableCounter {
    function increment() external {
        value += 1;
    }
+
+}
+
+
+contract UpgradeableCounterV3 is UpgradeableCounterV2 {
+
+    function decrement() external {
+        value -= 1;
+    }
 
 }

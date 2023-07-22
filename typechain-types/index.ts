@@ -30,3 +30,5 @@ export type { UpgradeableCounter } from "./contracts/UpgradeableCounter.sol/Upgr
 export { UpgradeableCounter__factory } from "./factories/contracts/UpgradeableCounter.sol/UpgradeableCounter__factory";
 export type { UpgradeableCounterV2 } from "./contracts/UpgradeableCounter.sol/UpgradeableCounterV2";
 export { UpgradeableCounterV2__factory } from "./factories/contracts/UpgradeableCounter.sol/UpgradeableCounterV2__factory";
+export type { UpgradeableCounterV3 } from "./contracts/UpgradeableCounter.sol/UpgradeableCounterV3";
+export { UpgradeableCounterV3__factory } from "./factories/contracts/UpgradeableCounter.sol/UpgradeableCounterV3__factory";
