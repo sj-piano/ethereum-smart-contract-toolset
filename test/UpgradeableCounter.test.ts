@@ -36,12 +36,17 @@ if (debug) {
   logLevel = "debug";
 }
 logger.setLevel({ logLevel });
+let provider = hardhat.ethers.provider;
 
 // Tests
 
 describe("UpgradeableContract", () => {
   before(async function () {
     await hardhat.network.provider.send("hardhat_reset");
+  });
+
+  it.skip("foo", async () => {
+    log("foo");
   });
 
   async function deployUpgradeableCounterFixture() {
@@ -107,5 +112,29 @@ describe("UpgradeableContract", () => {
       acc1,
     ).getImplementationAddress();
     expect(implementationAddress2).to.not.equal(implementationAddress);
+  });
+
+  it("should prevent a non-admin from upgrading", async () => {
+    const { Counter, counterAddress, admin, acc1 } = await loadFixture(
+      deployUpgradeableCounterFixture,
+    );
+    const CounterV2Factory = await ethers.getContractFactory(
+      "UpgradeableCounterV2",
+      acc1,
+    );
+    await expect(
+      upgrades.upgradeProxy(counterAddress, CounterV2Factory),
+    ).to.be.revertedWith("Ownable: caller is not the owner");
+    // We can also do this more manually:
+    const constructorArgs: any[] = [];
+    const CounterV2 = (await ethers.deployContract(
+      "UpgradeableCounterV2",
+      constructorArgs,
+      acc1,
+    )) as unknown as UpgradeableCounterV2;
+    const newImplementationAddress = await CounterV2.getAddress();
+    await expect(
+      Counter.connect(acc1).upgradeTo(newImplementationAddress),
+    ).to.be.revertedWith("Ownable: caller is not the owner");
   });
 });
