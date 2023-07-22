@@ -58,6 +58,7 @@
     "eslint-plugin-prettier": "5.0.0",
     "hardhat": "2.15.0",
     "mocha": "10.2.0",
+    "solhint": "3.4.1",
     "ts-mocha": "10.0.0",
     "ts-node": "10.9.1",
     "tsconfig-paths": "4.2.0",
