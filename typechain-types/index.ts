@@ -28,7 +28,5 @@ export type { HelloWorld } from "./contracts/HelloWorld";
 export { HelloWorld__factory } from "./factories/contracts/HelloWorld__factory";
 export type { UpgradeableCounter } from "./contracts/UpgradeableCounter.sol/UpgradeableCounter";
 export { UpgradeableCounter__factory } from "./factories/contracts/UpgradeableCounter.sol/UpgradeableCounter__factory";
-export type { UpgradeableCounter2 } from "./contracts/UpgradeableCounter.sol/UpgradeableCounter2";
-export { UpgradeableCounter2__factory } from "./factories/contracts/UpgradeableCounter.sol/UpgradeableCounter2__factory";
 export type { UpgradeableCounterV2 } from "./contracts/UpgradeableCounter.sol/UpgradeableCounterV2";
 export { UpgradeableCounterV2__factory } from "./factories/contracts/UpgradeableCounter.sol/UpgradeableCounterV2__factory";

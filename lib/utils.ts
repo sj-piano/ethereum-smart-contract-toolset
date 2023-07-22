@@ -51,10 +51,24 @@ function validateNumericString(options: {
 const sleep = ({ seconds }: { seconds: number }) =>
   new Promise((r) => setTimeout(r, seconds * 1000));
 
+function jd(obj: any): string {
+  return JSON.stringify(obj, null, 2);
+}
+
+export {
+  getEnvVar,
+  getMethods,
+  isNumericString,
+  validateNumericString,
+  sleep,
+  jd,
+};
+
 export default {
   getEnvVar,
   getMethods,
   isNumericString,
   validateNumericString,
   sleep,
+  jd,
 };

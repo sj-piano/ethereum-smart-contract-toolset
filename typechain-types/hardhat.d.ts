@@ -58,10 +58,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.UpgradeableCounter__factory>;
     getContractFactory(
-      name: "UpgradeableCounter2",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.UpgradeableCounter2__factory>;
-    getContractFactory(
       name: "UpgradeableCounterV2",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.UpgradeableCounterV2__factory>;
@@ -122,11 +118,6 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.UpgradeableCounter>;
     getContractAt(
-      name: "UpgradeableCounter2",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.UpgradeableCounter2>;
-    getContractAt(
       name: "UpgradeableCounterV2",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -176,10 +167,6 @@ declare module "hardhat/types/runtime" {
       name: "UpgradeableCounter",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.UpgradeableCounter>;
-    deployContract(
-      name: "UpgradeableCounter2",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.UpgradeableCounter2>;
     deployContract(
       name: "UpgradeableCounterV2",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -240,11 +227,6 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.UpgradeableCounter>;
-    deployContract(
-      name: "UpgradeableCounter2",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.UpgradeableCounter2>;
     deployContract(
       name: "UpgradeableCounterV2",
       args: any[],
