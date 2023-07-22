@@ -167,7 +167,7 @@ describe("UpgradeableContract", () => {
     expect(await CounterV3.value()).to.equal(0);
   });
 
-  it("confirm that after an upgrade, non-admins cannot upgrade", async () => {
+  it("should confirm that after an upgrade, non-admins cannot upgrade", async () => {
     const { Counter, counterAddress, admin, acc1 } = await loadFixture(
       deployUpgradeableCounterFixture,
     );
