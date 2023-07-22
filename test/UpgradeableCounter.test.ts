@@ -10,6 +10,7 @@ import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 import { config } from "#root/config";
 import { createLogger } from "#root/lib/logging";
 import utils, { jd } from "#lib/utils";
+import validate from "#lib/validate";
 
 // Types from typechain
 import { UpgradeableCounter, UpgradeableCounterV2 } from "../typechain-types";
@@ -27,16 +28,10 @@ const options = program.opts();
 if (options.debug) console.log(options);
 let { debug, logLevel } = options;
 
-// Process and validate arguments
-const logLevelSchema = Joi.string().valid(...config.logLevelList);
-let logLevelResult = logLevelSchema.validate(logLevel);
-if (logLevelResult.error) {
-  var msg = `Invalid log level "${logLevel}". Valid options are: [${config.logLevelList.join(
-    ", ",
-  )}]`;
-  console.error(msg);
-  process.exit(1);
-}
+// Validate arguments
+validate.logLevel({ logLevel });
+
+// Setup
 if (debug) {
   logLevel = "debug";
 }
@@ -48,6 +43,7 @@ describe("UpgradeableContract", () => {
   before(async function () {
     await hardhat.network.provider.send("hardhat_reset");
   });
+
   async function deployUpgradeableCounterFixture() {
     const [admin, acc1, acc2] = await ethers.getSigners();
     const CounterFactory = await ethers.getContractFactory(
