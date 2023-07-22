@@ -6,6 +6,9 @@ import Joi from "joi";
 import _ from "lodash";
 import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 
+// Derived imports
+import { EventLog } from "ethers";
+
 // Local imports
 import { config } from "#root/config";
 import { createLogger } from "#root/lib/logging";
@@ -186,5 +189,44 @@ describe("UpgradeableContract", () => {
     await expect(
       upgrades.upgradeProxy(counterAddress, CounterV3Factory),
     ).to.be.revertedWith("Ownable: caller is not the owner");
+  });
+
+  it("should detect Upgraded events", async () => {
+    const { Counter, counterAddress, admin, acc1 } = await loadFixture(
+      deployUpgradeableCounterFixture,
+    );
+    const CounterV2Factory = await ethers.getContractFactory(
+      "UpgradeableCounterV2",
+    );
+    //log(`blockNumber: ${await provider.getBlockNumber()}`);
+    const CounterV2 = await upgrades.upgradeProxy(
+      counterAddress,
+      CounterV2Factory,
+    );
+    const blockNumber2 = await provider.getBlockNumber();
+    const UpgradedEventFilter = CounterV2.filters.Upgraded();
+    const fromBlock = blockNumber2 + 1;
+    const events = await CounterV2.queryFilter(UpgradedEventFilter, fromBlock);
+    // Parse and log the event information in a readable format
+    const abi = CounterV2.interface; // Get the ABI of the contract
+    let newImplementationAddress;
+    events.forEach((event) => {
+      //log(event);
+      const logData: { topics: string[]; data: string } = {
+        topics: [...event.topics],
+        data: event.data,
+      };
+      const parsedEvent = abi.parseLog(logData)!;
+      log("----------------------");
+      log("Event Name:", parsedEvent.name);
+      log("Event Arguments:", parsedEvent.args);
+      log("Block Number:", event.blockNumber);
+      log("----------------------");
+      newImplementationAddress = parsedEvent.args.implementation;
+      //Could also have used: parsedEvent.args[0]
+    });
+    const newImplementationAddress2 =
+      await CounterV2.getImplementationAddress();
+    expect(newImplementationAddress2).to.equal(newImplementationAddress);
   });
 });

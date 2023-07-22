@@ -6,6 +6,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "noEmitOnError": true,
+    "noUnusedLocals": false,
     "outDir": "./build",
     "paths": {
       "#root/*": ["*"],
