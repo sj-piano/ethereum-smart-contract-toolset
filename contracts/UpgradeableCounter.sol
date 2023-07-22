@@ -18,7 +18,7 @@ contract UpgradeableCounter is Initializable, OwnableUpgradeable, UUPSUpgradeabl
     function initialize() public virtual initializer {
         //@dev as there is no constructor, we need to initialise the OwnableUpgradeable explicitly
         __Ownable_init();
-        name = "CounterLogic";
+        name = "UpgradeableCounter";
         version = 1;
     }
 

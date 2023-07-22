@@ -86,9 +86,10 @@ describe("UpgradeableContract", () => {
       counterAddress,
       CounterV2Factory,
     );
+    expect(await CounterV2.version()).to.equal(1);
     const newVersion = 2;
     await CounterV2.setVersion(newVersion);
-    expect(await CounterV2.version()).to.equal(2);
+    expect(await CounterV2.version()).to.equal(newVersion);
   });
 
   it("should confirm that upgrading only changes the implementationAddress", async () => {
