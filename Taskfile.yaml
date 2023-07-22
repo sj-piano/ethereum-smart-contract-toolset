@@ -8,6 +8,12 @@ tasks:
       - echo 'Hello World from Task!'
     silent: true
 
+  lint-contracts:
+    desc: "Lint the Solidity contracts"
+    cmds:
+      - npx solhint 'contracts/**/*.sol'
+    silent: true
+
   compile-contracts:
     desc: "Compile the Solidity contracts"
     cmds:
