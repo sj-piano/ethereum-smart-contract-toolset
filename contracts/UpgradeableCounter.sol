@@ -9,13 +9,17 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 
 contract UpgradeableCounter is Initializable, OwnableUpgradeable, UUPSUpgradeable {
-    uint256 public value;
+    string public name;
+    uint256 public version;
+
+    event VersionChanged(uint256 newVersion);
 
     //@dev no constructor in upgradable contracts. Instead we have initializers.
-    function initialize() public initializer {
+    function initialize() public virtual initializer {
         //@dev as there is no constructor, we need to initialise the OwnableUpgradeable explicitly
         __Ownable_init();
-        value = 0;
+        name = "CounterLogic";
+        version = 0;
     }
 
     //@dev required by the OZ UUPS module
@@ -25,18 +29,33 @@ contract UpgradeableCounter is Initializable, OwnableUpgradeable, UUPSUpgradeabl
         onlyOwner
     {}
 
-    function setValue(uint256 _newValue) public onlyOwner {
-        value = _newValue;
-        emit ValueChanged(_newValue);
+    function getAdminAddress() public view returns (address) {
+        return owner();
     }
 
-    event ValueChanged(uint256 newValue);
+    function getImplementationAddress() public view returns (address) {
+        return _getImplementation();
+    }
+
+    function setVersion(uint256 _newVersion) public onlyOwner {
+        version = _newVersion;
+        emit VersionChanged(_newVersion);
+    }
+
 }
 
 
 contract UpgradeableCounterV2 is UpgradeableCounter {
 
+    uint256 public value;
+
+    function initialize() public override initializer {
+        super.initialize();
+        value = 0;
+    }
+
    function increment() external {
        value += 1;
    }
+
 }
