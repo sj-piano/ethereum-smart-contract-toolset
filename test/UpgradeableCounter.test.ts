@@ -166,4 +166,24 @@ describe("UpgradeableContract", () => {
     await CounterV3.decrement();
     expect(await CounterV3.value()).to.equal(0);
   });
+
+  it("confirm that after an upgrade, non-admins cannot upgrade", async () => {
+    const { Counter, counterAddress, admin, acc1 } = await loadFixture(
+      deployUpgradeableCounterFixture,
+    );
+    const CounterV2Factory = await ethers.getContractFactory(
+      "UpgradeableCounterV2",
+    );
+    const CounterV2 = await upgrades.upgradeProxy(
+      counterAddress,
+      CounterV2Factory,
+    );
+    const CounterV3Factory = await ethers.getContractFactory(
+      "UpgradeableCounterV3",
+      acc1,
+    );
+    await expect(
+      upgrades.upgradeProxy(counterAddress, CounterV3Factory),
+    ).to.be.revertedWith("Ownable: caller is not the owner");
+  });
 });
