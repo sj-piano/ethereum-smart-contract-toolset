@@ -1,14 +1,18 @@
 // Imports
-import { ethers } from "hardhat";
+import hardhat, { ethers } from "hardhat";
 import { expect } from "chai";
 import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 
 // Contract types
-import { HelloWorld } from "#src/typechain-types/HelloWorld";
+import { HelloWorld } from "#typechain-types/HelloWorld";
 
 // Tests
 
 describe("HelloWorld contract", function () {
+  before(async function () {
+    await hardhat.network.provider.send("hardhat_reset");
+  });
+
   // We use `loadFixture` to share common setups (or fixtures) between tests.
   // Using this simplifies your tests and makes them run faster, by taking
   // advantage of Hardhat Network's snapshot functionality.
@@ -17,10 +21,10 @@ describe("HelloWorld contract", function () {
     const [owner, addr1, addr2] = await ethers.getSigners();
     const initialMessage = "Hello World!";
     const constructorArgs = [initialMessage];
-    contractHelloWorld = await ethers.deployContract(
+    contractHelloWorld = (await ethers.deployContract(
       "HelloWorld",
       constructorArgs,
-    );
+    )) as unknown as HelloWorld;
     return { contractHelloWorld, initialMessage, owner, addr1, addr2 };
   }
 
