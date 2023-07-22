@@ -67,7 +67,7 @@ describe("UpgradeableContract", () => {
     const { Counter, counterAddress } = await loadFixture(
       deployUpgradeableCounterFixture,
     );
-    expect(await Counter.version()).to.equal(0);
+    expect(await Counter.version()).to.equal(1);
     log(`counterAddress: ${counterAddress}`);
   });
 
@@ -75,6 +75,9 @@ describe("UpgradeableContract", () => {
     const { Counter, counterAddress } = await loadFixture(
       deployUpgradeableCounterFixture,
     );
+    let version = await Counter.version();
+    expect(version).to.equal(1);
+    //log(`Version: ${version}`);
     const CounterV2Factory = await ethers.getContractFactory(
       "UpgradeableCounterV2",
     );
@@ -82,12 +85,9 @@ describe("UpgradeableContract", () => {
       counterAddress,
       CounterV2Factory,
     );
-    expect(await CounterV2.version()).to.equal(0);
-    const newVersion = 1;
-    await expect(CounterV2.setVersion(newVersion))
-      .to.emit(CounterV2, "VersionChanged")
-      .withArgs(newVersion);
-    expect(await CounterV2.version()).to.equal(1);
+    const newVersion = 2;
+    await CounterV2.setVersion(newVersion);
+    expect(await CounterV2.version()).to.equal(2);
   });
 
   it("should confirm that upgrading only changes the implementationAddress", async () => {

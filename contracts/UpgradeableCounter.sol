@@ -12,14 +12,12 @@ contract UpgradeableCounter is Initializable, OwnableUpgradeable, UUPSUpgradeabl
     string public name;
     uint256 public version;
 
-    event VersionChanged(uint256 newVersion);
-
     //@dev no constructor in upgradable contracts. Instead we have initializers.
     function initialize() public virtual initializer {
         //@dev as there is no constructor, we need to initialise the OwnableUpgradeable explicitly
         __Ownable_init();
         name = "CounterLogic";
-        version = 0;
+        version = 1;
     }
 
     //@dev required by the OZ UUPS module
@@ -39,7 +37,6 @@ contract UpgradeableCounter is Initializable, OwnableUpgradeable, UUPSUpgradeabl
 
     function setVersion(uint256 _newVersion) public onlyOwner {
         version = _newVersion;
-        emit VersionChanged(_newVersion);
     }
 
 }
@@ -50,7 +47,6 @@ contract UpgradeableCounterV2 is UpgradeableCounter {
     uint256 public value;
 
     function initialize() public override initializer {
-        super.initialize();
         value = 0;
     }
 
