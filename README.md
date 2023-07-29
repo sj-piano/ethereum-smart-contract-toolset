@@ -120,7 +120,7 @@ If you would like to add me as a professional contact, you can [send me a connec
 List of tools:
 
 
-* Hello World - [Open README](docs/hello-world-README.md)
+* Hello World - [Open README](docs/hello-world/README.md)
 
 A basic storage contract, which stores a message. The message can be updated.
 
@@ -259,7 +259,7 @@ task check-network-connections
 Note: You should see this error `Could not connect to local network`, because we haven't started a Hardhat local network yet.
 
 If `task check-network-connections` produces errors for connecting to testnet or mainnet, you can run the underlying script with the `--debug` flag:  
-`npm run --silent ts-node scripts/check-network-connections.ts -- --debug`
+`npm exec -- ts-node scripts/check-network-connections.ts --debug`
 
 Compile the contracts and run the tests.
 
@@ -281,14 +281,14 @@ Leave the node running in this additional terminal. Log output will be displayed
 Check the fees on the various networks.
 
 ```sh
-npm run --silent ts-node scripts/get-network-fees.ts -- --network=local
+npm exec -- ts-node scripts/get-network-fees.ts --network=local
 
 # Note: The network is always "local" by default, so you can also run this command:
-npm run --silent ts-node scripts/get-network-fees.ts
+npm exec -- ts-node scripts/get-network-fees.ts
 
-npm run --silent ts-node scripts/get-network-fees.ts -- --network=testnet
+npm exec -- ts-node scripts/get-network-fees.ts --network=testnet
 
-npm run --silent ts-node scripts/get-network-fees.ts -- --network=mainnet
+npm exec -- ts-node scripts/get-network-fees.ts --network=mainnet
 ```
 
 
@@ -319,7 +319,9 @@ Store it in the `user-config.env` file as `ETHEREUM_MAINNET_PRIVATE_KEY`.
 Store it in the `input-data` directory in a new file called `ethereum-mainnet-private-key.txt`.
 
 See the balance of the address that will deploy the contract:  
-`npm run --silent ts-node scripts/get-balance.ts -- --network=mainnet --log-level info --address-file input-data/ethereum-mainnet-address.txt`
+`npm exec -- ts-node scripts/get-balance.ts --network=mainnet --log-level info --address-file input-data/ethereum-mainnet-address.txt`
+
+The result should match the balance shown in Metamask for your "Test" account.
 
 Recommended: Read the [Fee Limit Protections](#fee-limit-protections)</a> section before proceeding further.
 
@@ -348,7 +350,7 @@ Now, please browse to the [Toolset section](#toolset), choose a tool, and open i
 Most scripts accept a `network` argument, which specifies whether the script should connect to the local development blockchain (`local`), the Sepolia testnet (`testnet`), or the Ethereum mainnet (`mainnet`). It is `local` by default.
 
 Most scripts have `--help` functionality. E.g. you can run:  
-`npm run --silent ts-node scripts/get-network-fees.ts -- --help`
+`npx --silent ts-node scripts/get-network-fees.ts --help`
 
 Most scripts can log at different levels of output. You can use `--log-level info` or `--debug` arguments.
 
@@ -365,31 +367,31 @@ See a list of examples that demonstrate how to use the various scripts:
 
 The settings in the `user-config.env` file under the top section `FINANCIAL CONTROLS` impose strict limits on the maximum cost of a transaction.
 
-The two "action" scripts, `hello-world-deploy.ts` and `hello-world-update-message.ts`, will both refuse to broadcast a transaction if these limits are exceeded. Additionally, the `hello-world-estimate-fees.ts` script will report that these limits will be exceeded.
+Scripts that change data on the blockchain, e.g. `hello-world/deploy.ts` and `hello-world/update-message.ts`, will refuse to broadcast a transaction if these limits are exceeded. Additionally, fee estimation scripts e.g. `hello-world/estimate-fees.ts` script will report that these limits will be exceeded.
 
 You can of course change the limits in the `user-config.env` file if you wish, allowing a script to spend more money in order to broadcast the transaction.
 
 Example output, after setting `MAX_FEE_PER_TRANSACTION_USD = "0.01"`:
 
 ```bash
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-estimate-fees.ts
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/estimate-fees.ts
 
 Contract deployment - estimated fee:
-- baseFeeUsd limit exceeded: Base fee (0.95 USD) exceeds limit specified in config (0.01 USD). Current base fee is 498906.625 gwei (498906625000000 wei, 0.000498906625 ETH). Current ETH-USD exchange rate is 1908.57 USD.
+- baseFeeUsd limit exceeded: Base fee (1.07 USD) exceeds limit specified in config (0.01 USD). Current base fee is 570179.0 gwei (570179000000000 wei, 0.000570179 ETH). Current ETH-USD exchange rate is 1873.22 USD.
 
 Contract method call: 'update' - estimated fee:
-- baseFeeUsd limit exceeded: Base fee (0.06 USD) exceeds limit specified in config (0.01 USD). Current base fee is 32019.75 gwei (32019750000000 wei, 0.00003201975 ETH). Current ETH-USD exchange rate is 1908.57 USD.
+- baseFeeUsd limit exceeded: Base fee (0.04 USD) exceeds limit specified in config (0.01 USD). Current base fee is 21725.0 gwei (21725000000000 wei, 0.000021725 ETH). Current ETH-USD exchange rate is 1873.22 USD.
 
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/get-balance.ts -- --address-file input-data/local-hardhat-address.txt
-9999.9987527334375 ETH (19077697.62 USD)
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/get-balance.ts --address-file input-data/local-hardhat-address.txt
+10000.0 ETH (18732700.00 USD)
 
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-deploy.ts -- --log-level info
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/deploy.ts --log-level info
 info:   Connecting to local network at http://localhost:8545...
-info:   Estimated fee: 0.000005242106697840 ETH (0.01 USD)
-- baseFeeUsd: Base fee (0.95 USD) exceeds limit specified in config (0.01 USD). Current base fee is 498906.625 gwei (498906625000000 wei, 0.000498906625 ETH). Current ETH-USD exchange rate is 1907.63 USD.
+info:   Estimated fee: 0.000005338173277105 ETH (0.01 USD)
+- baseFeeUsd: Base fee (1.07 USD) exceeds limit specified in config (0.01 USD). Current base fee is 570179.0 gwei (570179000000000 wei, 0.000570179 ETH). Current ETH-USD exchange rate is 1873.3 USD.
 
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-update-message.ts -- --input-file-json input-data/update-message-local-network.json
-- baseFeeUsd: Base fee (0.06 USD) exceeds limit specified in config (0.01 USD). Current base fee is 32009.25 gwei (32009250000000 wei, 0.00003200925 ETH). Current ETH-USD exchange rate is 1907.72 USD.
+stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/hello-world/update-message.ts --input-file-json input-data/update-message-local-network.json
+- baseFeeUsd: Base fee (0.06 USD) exceeds limit specified in config (0.01 USD). Current base fee is 31925.25 gwei (31925250000000 wei, 0.00003192525 ETH). Current ETH-USD exchange rate is 1873.39 USD.
 ```
 
 
@@ -431,7 +433,7 @@ To upload to the mainnet explorer at [etherscan.io](https://etherscan.io), use `
 ## Contributing
 
 
-If you have enjoyed this project or found it helpful, please give it a star!
+If you like this project or found it helpful, please give it a star!
 
 
 Feel free to fork the project and use it for development. Please add an acknowledgement to this project in your README file.
