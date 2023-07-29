@@ -1,3 +1,9 @@
+# User files
+my-data/sepolia-testnet-address.txt
+my-data/sepolia-testnet-private-key.txt
+my-data/ethereum-mainnet-address.txt
+my-data/ethereum-mainnet-private-key.txt
+
 # Mostly ignore while developing:
 typechain-types
 
