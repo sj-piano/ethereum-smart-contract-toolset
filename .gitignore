@@ -4,6 +4,9 @@ my-data/sepolia-testnet-private-key.txt
 my-data/ethereum-mainnet-address.txt
 my-data/ethereum-mainnet-private-key.txt
 
+# Logs
+logs
+
 # Mostly ignore while developing:
 typechain-types
 

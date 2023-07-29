@@ -9,6 +9,7 @@ import { config } from "#root/config";
 import ethereum from "#root/src/ethereum";
 import { createLogger } from "#root/lib/logging";
 import validate from "#root/lib/validate";
+import utils from "#root/lib/utils";
 
 // Load environment variables
 import dotenv from "dotenv";
@@ -81,6 +82,7 @@ if (fs.existsSync(addressFile)) {
 // Setup
 
 import contract from "#root/artifacts/contracts/HelloWorld.sol/HelloWorld.json";
+import { sleep } from "#root/lib/utils";
 
 let provider: ethers.Provider;
 
@@ -117,12 +119,10 @@ const contractHelloWorld = new ethers.Contract(
 
 // Run main function
 
-main()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
 
 // Functions
 
@@ -139,6 +139,7 @@ async function main() {
   log(`Contract found at address: ${address}`);
 
   const message = await contractHelloWorld.message();
+
   log("Message stored in HelloWorld contract: ");
-  console.log(message);
+  logger.print(message);
 }

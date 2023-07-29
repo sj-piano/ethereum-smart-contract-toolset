@@ -114,12 +114,10 @@ let contractFactoryHelloWorld = new ethers.ContractFactory(
 
 // Run main function
 
-main()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
 
 // Functions
 
@@ -210,5 +208,5 @@ async function main() {
   // Report the final result.
   let contractAddress = contractHelloWorld.target;
   log(`Contract deployed to address:`);
-  console.log(contractAddress);
+  logger.print(contractAddress);
 }

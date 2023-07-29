@@ -120,12 +120,10 @@ log(msg);
 
 // Run main function
 
-main({ contractAddress })
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+main({ contractAddress }).catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
 
 // Functions
 

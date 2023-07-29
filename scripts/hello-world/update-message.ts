@@ -155,12 +155,10 @@ const contractHelloWorld = new ethers.Contract(
 
 // Run main function
 
-main({ newMessage })
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+main({ newMessage }).catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
 
 // Functions
 
@@ -310,6 +308,8 @@ async function updateMessage({ newMessage }: { newMessage: string }) {
 
   // Report the final result.
   const message2 = await contractHelloWorld.message();
-  console.log("The new message is: ");
-  console.log(message2);
+  logger.print(message);
+  ("The new message is: ");
+  logger.print(message);
+  message2;
 }

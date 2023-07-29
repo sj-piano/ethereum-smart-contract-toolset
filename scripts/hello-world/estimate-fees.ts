@@ -24,7 +24,7 @@ const {
 } = process.env;
 
 // Logging
-const { logger, log, deb } = createLogger();
+const { logger, log, lj, deb } = createLogger();
 
 // Parse arguments
 program
@@ -91,12 +91,10 @@ const contractHelloWorld = new ethers.Contract(
 
 // Run main function
 
-main()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
 
 // Functions
 
@@ -113,15 +111,15 @@ async function main() {
     provider,
     txRequest,
   });
-  console.log(`\nContract deployment - estimated fee:`);
-  log(estimatedFees);
+  logger.print(`\nContract deployment - estimated fee:`);
+  lj(estimatedFees);
   if (!estimatedFees.feeLimitChecks.anyLimitExceeded) {
-    console.log(`- feeEth: ${estimatedFees.feeEth}`);
-    console.log(`- feeUsd: ${estimatedFees.feeUsd}`);
+    logger.print(`- feeEth: ${estimatedFees.feeEth}`);
+    logger.print(`- feeUsd: ${estimatedFees.feeUsd}`);
   } else {
     for (let key of estimatedFees.feeLimitChecks.limitExceededKeys) {
       let check = estimatedFees.feeLimitChecks[key];
-      console.log(`- ${key} limit exceeded: ${check.msg}`);
+      logger.print(`- ${key} limit exceeded: ${check.msg}`);
     }
   }
 
@@ -134,15 +132,15 @@ async function main() {
     provider,
     txRequest: txRequest2,
   });
-  console.log(`\nContract method call: 'update' - estimated fee:`);
-  log(estimatedFees2);
+  logger.print(`\nContract method call: 'update' - estimated fee:`);
+  lj(estimatedFees2);
   if (!estimatedFees2.feeLimitChecks.anyLimitExceeded) {
-    console.log(`- feeEth: ${estimatedFees2.feeEth}`);
-    console.log(`- feeUsd: ${estimatedFees2.feeUsd}`);
+    logger.print(`- feeEth: ${estimatedFees2.feeEth}`);
+    logger.print(`- feeUsd: ${estimatedFees2.feeUsd}`);
   } else {
     for (let key of estimatedFees2.feeLimitChecks.limitExceededKeys) {
       let check = estimatedFees2.feeLimitChecks[key];
-      console.log(`- ${key} limit exceeded: ${check.msg}`);
+      logger.print(`- ${key} limit exceeded: ${check.msg}`);
     }
   }
 
