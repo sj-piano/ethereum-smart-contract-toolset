@@ -37,7 +37,7 @@
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
-        <li><a href="#project-status">Project Status</a></li>
+        <li><a href="#toolset">Toolset</a></li>
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
@@ -47,6 +47,8 @@
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
         <li><a href="#initial-setup">Initial Setup</a></li>
+        <li><a href="#managing-money">Managing Money</a></li>
+        <li><a href="#choose-tool">Choose Tool</a></li>
       </ul>
     </li>
     <li>
@@ -54,9 +56,6 @@
       <ul>
         <li><a href="#notes">Notes</a></li>
         <li><a href="#fee-limit-protections">Fee Limit Protections</a></li>
-        <li><a href="#walkthrough-local">Walkthrough - Local Network</a></li>
-        <li><a href="#walkthrough-testnet">Walkthrough - Sepolia Testnet</a></li>
-        <li><a href="#walkthrough-mainnet">Walkthrough - Ethereum Mainnet</a></li>
         <li><a href="#contract-publication">Contract Publication</a></li>
       </ul>
     </li>
@@ -112,10 +111,25 @@ If you would like to add me as a professional contact, you can [send me a connec
 
 
 
-### Project Status
+### <a href="#Toolset"> Toolset
 
 
-[Not written]
+*Important*: Please work through the <a href="#getting-started">Getting Started</a> section before trying to use a tool. When you are ready, return here to choose a tool and switch to its README.
+
+
+List of tools:
+
+
+* Hello World
+
+This is a simple storage contract. It stores a message, which can be updated. [Click here](docs/hello-world-README.md) to go to its README. 
+
+
+* Upgradeable Smart Contract (UUPS Pattern)
+
+This is a smart contract whose code can be upgraded. It uses the Universal Upgradeable Proxy Standard (UUPS) pattern, published in [ERC-1822](https://eips.ethereum.org/EIPS/eip-1822). [Click here](docs/upgradeable-uups-README.md) to go to its README. 
+
+
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -159,7 +173,8 @@ Private keys are managed in a `user-config.env` file.
 <!-- GETTING STARTED -->
 ## Getting Started
 
-Follow these steps to get a local instance up and running.
+
+Follow these steps to set up a local instance of the toolset. Afterwards, you can browse to the README for a specific tool.
 
 
 ### Prerequisites
@@ -252,7 +267,7 @@ task test
 
 Hardhat runs the tests on a temporary local blockchain.
 
-We will start a more persistent local blockchain instance.
+We will use Hardhat to start a more persistent local blockchain instance. We can then deploy a smart contract on this local blockchain and interact with it.
 
 Open another terminal and run:  
 `task start-local-node`
@@ -271,6 +286,45 @@ npm run --silent ts-node scripts/get-network-fees.ts -- --network=testnet
 
 npm run --silent ts-node scripts/get-network-fees.ts -- --network=mainnet
 ```
+
+
+### Managing Money
+
+You'll need some SepoliaETH to use on the Sepolia Testnet. In your Metamask wallet, create a dedicated "Test" account. Switch to "Sepolia test network". Copy the address. Go to a Sepolia testnet faucet (e.g. this [PoW faucet](https://sepolia-faucet.pk910.de)) and get some SepoliaETH. Set the destination address to be your Metamask test address.
+
+If you wish to retrieve your SepoliaETH from the address created in a Sepolia testnet walkthrough (e.g. you want to transfer it back to your Metamask test account), you'll need to use a tool that can make the transfer (create, sign, broadcast, and track the transaction). Such a tool is not provided in this project.
+
+Note that SepoliaETH is not worth anything, and it is reasonably straightforward to obtain more from a faucet.
+
+However, actual Ethereum (ETH), used on the Ethereum mainnet, does have monetary value. Therefore, we recommend creating a new Metamask account (explicitly for test operations) and exporting its private key for use in the tool walkthroughs. This means that afterwards there will be no need to make a retrieval transaction.
+
+Note: If you know what you're doing, and you already have a capable transaction tool, you can create a new keypair, transfer some ETH to it, perform a tool walkthrough on the mainnet, and transfer any remaining ETH back to your original address.
+
+In your Metamask wallet, create a dedicated "Test" account. Switch to "Ethereum Mainnet". We assume that you already have some Ethereum in Metamask or in another wallet tool. Transfer some ETH to this address. Copy the address.
+
+Store it in the `user-config.env` file as `ETHEREUM_MAINNET_ADDRESS`.
+
+Store it in the `input-data` directory in a new file called `ethereum-mainnet-address.txt`.
+
+Now, export the corresponding private key from Metamask, using the following guide:
+
+Metamask: [How to export an account's private key](https://support.metamask.io/hc/en-us/articles/360015289632-How-to-export-an-account-s-private-key)
+
+Store it in the `user-config.env` file as `ETHEREUM_MAINNET_PRIVATE_KEY`.
+
+Store it in the `input-data` directory in a new file called `ethereum-mainnet-private-key.txt`.
+
+See the balance of the address that will deploy the contract:  
+`npm run --silent ts-node scripts/get-balance.ts -- --network=mainnet --log-level info --address-file input-data/ethereum-mainnet-address.txt`
+
+Recommended: Read the [Fee Limit Protections](#fee-limit-protections)></a> section before proceeding further.
+
+
+
+
+### Choose Tool
+
+Now, please browse to the [Toolset section](#toolset), choose a tool, and open its README file in another tab. Its README will walk you through the processing of deploying it and interacting with it on the various networks.
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -340,278 +394,6 @@ stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hell
 
 
 
-### <a id="walkthrough-local" />Walkthrough - Local Network
-
-
-For demonstration purposes, we'll use reasonably high levels of logging during this local walkthrough.
-
-We deploy the HelloWorld contract to the local blockchain (started with `task start-local-node`).
-
-See the balance of the address that will deploy the contract:  
-`npm run --silent ts-node scripts/get-balance.ts -- --address-file input-data/local-hardhat-address.txt`
-
-See fee estimations for the different contract operations, including deployment:  
-`npm run --silent ts-node scripts/hello-world-estimate-fees.ts`
-
-Deploy the HelloWorld contract:  
-`npm run --silent ts-node scripts/hello-world-deploy.ts -- --log-level info`
-
-This will output an address. Copy this address into the `user-config.env` file as `LOCAL_HARDHAT_DEPLOYED_CONTRACT_ADDRESS`.
-
-Confirm deployment:  
-`npm run --silent ts-node scripts/check-contract-exists -- --debug`
-
-Print the message stored in the contract:  
-`npm run --silent ts-node scripts/hello-world-get-message.ts -- --debug`
-
-Create a new input file:  
-`cp input-data/example-update-message.json input-data/update-message-local-network.json`
-
-Open it and specify a new message e.g. `Hello Mars ! (local)`.
-
-Update the message stored in the contract:  
-`npm run --silent ts-node scripts/hello-world-update-message.ts -- --input-file-json input-data/update-message-local-network.json --log-level info`
-
-Print the new message stored in the contract:  
-`npm run --silent ts-node scripts/hello-world-get-message.ts`
-
-Example output:
-
-![](images/walkthrough_local_network.png)
-
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-
-### <a id="walkthrough-testnet" />Walkthrough - Sepolia Testnet
-
-
-You'll need some SepoliaETH for using the Sepolia Testnet. In your Metamask wallet, create a dedicated "Test" account. Switch to "Sepolia test network". Copy the address. Go to a Sepolia testnet faucet (e.g. this [PoW faucet](https://sepolia-faucet.pk910.de)) and get some SepoliaETH. Set the destination address to be your Metamask test address.
-
-Create a new private key and store it in the `input-data` directory:  
-`npm run --silent ts-node scripts/create-private-key.ts > input-data/sepolia-testnet-private-key.txt`
-
-Display the private key:  
-`cat input-data/sepolia-testnet-private-key.txt`
-
-Store it in the `user-config.env` file as `SEPOLIA_TESTNET_PRIVATE_KEY`.
-
-Derive an Ethereum address from the private key and store it in the `input-data` directory:  
-`cat input-data/sepolia-testnet-private-key.txt | npm run --silent ts-node scripts/derive-address.ts > input-data/sepolia-testnet-address.txt`
-
-Display the address:  
-`cat input-data/sepolia-testnet-address.txt`
-
-Store it in the `user-config.env` file as `SEPOLIA_TESTNET_ADDRESS`.
-
-In Metamask, transfer a reasonable amount of SepoliaETH to this new address.
-
-See the balance of the address that will deploy the contract:  
-`npm run --silent ts-node scripts/get-balance.ts -- --network=testnet --address-file input-data/sepolia-testnet-address.txt`
-
-See fee estimations for the different contract operations, including deployment:  
-`npm run --silent ts-node scripts/hello-world-estimate-fees.ts -- --network=testnet`
-
-Deploy the contract to the Sepolia testnet:  
-`npm run --silent ts-node scripts/hello-world-deploy.ts -- --network=testnet`
-
-This will output an address. Copy this address into the `user-config.env` file as `SEPOLIA_TESTNET_DEPLOYED_CONTRACT_ADDRESS`.
-
-Confirm deployment:  
-`npm run --silent ts-node scripts/check-contract-exists -- --network=testnet`
-
-Print the message stored in the contract:  
-`npm run --silent ts-node scripts/hello-world-get-message.ts -- --network=testnet`
-
-Create a new input file:
-`cp input-data/example-update-message.json input-data/update-message-sepolia-testnet.json`
-
-Open it and specify a new message e.g. `Hello Mars ! (testnet)`.
-
-Update the message stored in the contract:  
-`npm run --silent ts-node scripts/hello-world-update-message.ts -- --network=testnet --input-file-json input-data/update-message-sepolia-testnet.json`
-
-Print the new message stored in the contract:  
-`npm run --silent ts-node scripts/hello-world-get-message.ts -- --network=testnet`
-
-Example output:
-
-```bash
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/get-balance.ts -- --network=testnet --address-file input-data/sepolia-testnet-address.txt
-0.409023392670777583 ETH (780.81 USD)
-
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-estimate-fees.ts -- --network=testnet
-
-Contract deployment - estimated fee:
-- feeEth: 0.000000001001234324
-- feeUsd: 0.00
-
-No contract found at address 0x0000000000000000000000000000000000000000.
-
-Contract method call: 'update' - estimated fee:
-- feeEth: 0.000000000038147344
-- feeUsd: 0.00
-
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-deploy.ts -- --network=testnet
-0x02bCCb6Fa3e24b14566e571656EE53A7723884f7
-
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/check-contract-exists -- --network=testnet
-Contract found at address: 0x02bCCb6Fa3e24b14566e571656EE53A7723884f7
-
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-get-message.ts -- --network=testnet
-Hello World!
-
-stjohn@judgement:~/work/contract-template$ cp input-data/example-update-message.json input-data/update-message-sepolia-testnet.json
-
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-update-message.ts -- --network=testnet --input-file-json input-data/update-message-sepolia-testnet.json
-The new message is:
-Hello Mars ! (testnet)
-
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-get-message.ts -- --network=testnet
-Hello Mars ! (testnet)
-```
-
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-
-### <a id="walkthrough-mainnet" />Walkthrough - Ethereum Mainnet
-
-
-If you wish to retrieve your SepoliaETH from the address created in the Sepolia testnet walkthrough (e.g. you want to transfer it back to your Metamask test account), you'll need to use a tool that can make the transfer (create, sign, broadcast, and track the transaction). Such a tool is not provided in this project.
-
-Note that SepoliaETH is not worth anything, and it is reasonably straightforward to obtain more from a faucet.
-
-However, actual Ethereum (ETH), used on the Ethereum mainnet, does have monetary value. Therefore, in this section, we recommend creating a new Metamask account (explicitly for test operations) and exporting its private key for use in this walkthrough. This means that afterwards there will be no need to make a retrieval transaction.
-
-Note: If you know what you're doing, and you already have a capable transaction tool, you can create a new keypair, transfer some ETH to it, perform this walkthrough on the mainnet, and transfer any remaining ETH back to your original address.
-
-So, let's begin.
-
-We generally use the log level `info` here. This provides extra information that will help us understand what went wrong if a problem occurs.
-
-In your Metamask wallet, create a dedicated "Test" account. Switch to "Ethereum Mainnet". We assume that you already have some Ethereum in Metamask or in another wallet tool. Transfer some ETH to this address. Copy the address.
-
-Store it in the `user-config.env` file as `ETHEREUM_MAINNET_ADDRESS`.
-
-Store it in the `input-data` directory in a new file called `ethereum-mainnet-address.txt`.
-
-Now, export the corresponding private key from Metamask, using the following guide:
-
-Metamask: [How to export an account's private key](https://support.metamask.io/hc/en-us/articles/360015289632-How-to-export-an-account-s-private-key)
-
-Store it in the `user-config.env` file as `ETHEREUM_MAINNET_PRIVATE_KEY`.
-
-Store it in the `input-data` directory in a new file called `ethereum-mainnet-private-key.txt`.
-
-See the balance of the address that will deploy the contract:  
-`npm run --silent ts-node scripts/get-balance.ts -- --network=mainnet --log-level info --address-file input-data/ethereum-mainnet-address.txt`
-
-See fee estimations for the different contract operations, including deployment:  
-`npm run --silent ts-node scripts/hello-world-estimate-fees.ts -- --network=mainnet`
-
-If a fee limit is exceeded, and you are willing to spend the money, increase the `MAX_FEE_PER_TRANSACTION_USD` value in `user-config.env`. Re-run the `hello-world-estimate-fees.ts` command above to confirm that no fee limit will be exceeded.
-
-Deploy the contract to the Ethereum mainnet:  
-`npm run --silent ts-node scripts/hello-world-deploy.ts -- --network=mainnet --log-level info`
-
-This will output an address. Copy this address into the `user-config.env` file as `ETHEREUM_MAINNET_DEPLOYED_CONTRACT_ADDRESS`.
-
-Confirm deployment:  
-`npm run --silent ts-node scripts/check-contract-exists -- --network=mainnet --log-level info`
-
-Print the message stored in the contract:  
-`npm run --silent ts-node scripts/hello-world-get-message.ts -- --network=mainnet --log-level info`
-
-Create a new input file:  
-`cp input-data/example-update-message.json input-data/update-message-ethereum-mainnet.json`
-
-Open it and specify a new message e.g. `Hello Mars ! (mainnet)`.
-
-Update the message stored in the contract:  
-`npm run --silent ts-node scripts/hello-world-update-message.ts -- --network=mainnet --log-level info --input-file-json input-data/update-message-ethereum-mainnet.json`
-
-Print the new message stored in the contract:  
-`npm run --silent ts-node scripts/hello-world-get-message.ts -- --network=mainnet --log-level info`
-
-Example output:
-
-```bash
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/get-balance.ts -- --network=mainnet --log-level info --address-file input-data/ethereum-mainnet-address.txt
-info:   Connecting to Ethereum mainnet...
-info:   Getting balance for address 0x4A846013314b892Be429F8626487109DD7b494a0...
-0.042281201108669793 ETH (80.73 USD)
-
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-estimate-fees.ts -- --network=mainnet
-
-Contract deployment - estimated fee:
-- baseFeeUsd limit exceeded: Base fee (17.47 USD) exceeds limit specified in config (5.00 USD). Current base fee is 9149184.714182905 gwei (9149184714182905 wei, 0.009149184714182905 ETH). Current ETH-USD exchange rate is 1909.52 USD.
-
-No contract found at address 0x0000000000000000000000000000000000000000.
-
-Contract method call: 'update' - estimated fee:
-- feeEth: 0.00035021612752418
-- feeUsd: 0.67
-
-# Here, after seeing the estimated fees, I set the MAX_FEE_PER_TRANSACTION_USD value in user-config.env to "20.00".
-
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-estimate-fees.ts -- --network=mainnet
-
-Contract deployment - estimated fee:
-- feeEth: 0.009101423868100018
-- feeUsd: 17.39
-
-No contract found at address 0x0000000000000000000000000000000000000000.
-
-Contract method call: 'update' - estimated fee:
-- feeEth: 0.000346767124202408
-- feeUsd: 0.66
-
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-deploy.ts -- --network=mainnet --log-level info
-info:   Connecting to Ethereum mainnet...
-info:   Estimated fee: 0.009271102473677687 ETH (17.71 USD)
-info:   Signer balance: 0.042281201108669793 ETH (80.77 USD)
-info:   Final fee: 0.009006010206038837 ETH (17.21 USD)
-info:   Contract deployed to address:
-0xc2963E4f4C8456b21734c7c4811327A94324851E
-
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/check-contract-exists -- --network=mainnet --log-level info
-info:   Connecting to Ethereum mainnet...
-Contract found at address: 0xc2963E4f4C8456b21734c7c4811327A94324851E
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-get-message.ts -- --network=mainnet --log-level info
-info:   Connecting to Ethereum mainnet...
-info:   Contract found at address: 0xc2963E4f4C8456b21734c7c4811327A94324851E
-info:   Message stored in HelloWorld contract:
-Hello World!
-
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-update-message.ts -- --network=mainnet --log-level info --input-file-json input-data/update-message-ethereum-mainnet.json
-info:   Connecting to Ethereum mainnet...
-info:   Contract found at address: 0xc2963E4f4C8456b21734c7c4811327A94324851E
-info:   Message stored in HelloWorld contract: Hello World!
-info:   Estimated fee: 0.000573907171238688 ETH (1.10 USD)
-info:   Signer balance: 0.033275190902630956 ETH (63.53 USD)
-info:   Updating the message...
-info:   Final fee: 0.000581844011532384 ETH (1.11 USD)
-The new message is:
-Hello Mars ! (mainnet)
-
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-get-message.ts -- --network=mainnet --log-level info
-info:   Connecting to Ethereum mainnet...
-info:   Contract found at address: 0xc2963E4f4C8456b21734c7c4811327A94324851E
-info:   Message stored in HelloWorld contract:
-Hello Mars ! (mainnet)
-```
-
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-
 ### Contract Publication
 
 
@@ -620,84 +402,20 @@ We use [Hardhat verify](https://hardhat.org/hardhat-runner/plugins/nomicfoundati
 The basic command is:  
 `npx hardhat verify --network sepolia DEPLOYED_CONTRACT_ADDRESS "Constructor argument 1"`
 
-This will upload the contract to the testnet explorer at [sepolia.etherscan.io](https://sepolia.etherscan.io). To upload to the mainnet explorer at [etherscan.io](https://etherscan.io), use `--network mainnet`.
+This will upload the contract to the testnet explorer at [sepolia.etherscan.io](https://sepolia.etherscan.io).
 
-
-#### We publish the Sepolia Testnet instance of the contract
-
-```bash
-SEPOLIA_TESTNET_DEPLOYED_CONTRACT_ADDRESS="0x0FdEe0538a2092937c68A4954e3f5adDb7532fC1"
-npx hardhat verify --network sepolia $SEPOLIA_TESTNET_DEPLOYED_CONTRACT_ADDRESS "Hello World!"
-```
-
-Example output:
-
-```bash
-stjohn@judgement:~/work/contract-template$ SEPOLIA_TESTNET_DEPLOYED_CONTRACT_ADDRESS="0x02bCCb6Fa3e24b14566e571656EE53A7723884f7"
-
-stjohn@judgement:~/work/contract-template$ npx hardhat verify --network sepolia $SEPOLIA_TESTNET_DEPLOYED_CONTRACT_ADDRESS "Hello World!"
-Successfully submitted source code for contract
-contracts/HelloWorld.sol:HelloWorld at 0x02bCCb6Fa3e24b14566e571656EE53A7723884f7
-for verification on the block explorer. Waiting for verification result...
-
-Successfully verified contract HelloWorld on the block explorer.
-https://sepolia.etherscan.io/address/0x02bCCb6Fa3e24b14566e571656EE53A7723884f7#code
-```
-
-Summary:
-
-The contract has been deployed to the Sepolia Testnet at this address:  
-`0x02bCCb6Fa3e24b14566e571656EE53A7723884f7`
-
-The contract is published here:  
-[sepolia.etherscan.io/address/0x02bCCb6Fa3e24b14566e571656EE53A7723884f7#code](https://sepolia.etherscan.io/address/0x02bCCb6Fa3e24b14566e571656EE53A7723884f7#code)
-
-You can read the contract's stored data at:  
-[sepolia.etherscan.io/address/0x02bCCb6Fa3e24b14566e571656EE53A7723884f7#readContract](https://sepolia.etherscan.io/address/0x02bCCb6Fa3e24b14566e571656EE53A7723884f7#readContract)
-
-
-#### We publish the Ethereum Mainnet instance of the contract
-
-```bash
-ETHEREUM_MAIN_DEPLOYED_CONTRACT_ADDRESS="0xc2963E4f4C8456b21734c7c4811327A94324851E"
-npx hardhat verify --network mainnet $ETHEREUM_MAIN_DEPLOYED_CONTRACT_ADDRESS "Hello World!"
-```
-
-Example output:
-
-```bash
-stjohn@judgement:~/work/contract-template$ ETHEREUM_MAIN_DEPLOYED_CONTRACT_ADDRESS="0xc2963E4f4C8456b21734c7c4811327A94324851E"
-
-stjohn@judgement:~/work/contract-template$ npx hardhat verify --network mainnet $ETHEREUM_MAIN_DEPLOYED_CONTRACT_ADDRESS "Hello World!"
-Successfully submitted source code for contract
-contracts/HelloWorld.sol:HelloWorld at 0xc2963E4f4C8456b21734c7c4811327A94324851E
-for verification on the block explorer. Waiting for verification result...
-
-Successfully verified contract HelloWorld on the block explorer.
-https://etherscan.io/address/0xc2963E4f4C8456b21734c7c4811327A94324851E#code
-```
-
-Summary:
-
-The contract has been deployed to the Ethereum Mainnet at this address:  
-`0xc2963E4f4C8456b21734c7c4811327A94324851E`
-
-The contract is published here:  
-[etherscan.io/address/0xc2963E4f4C8456b21734c7c4811327A94324851E#code](https://etherscan.io/address/0xc2963E4f4C8456b21734c7c4811327A94324851E#code)
-
-You can read the contract's stored data at:  
-[etherscan.io/address/0xc2963E4f4C8456b21734c7c4811327A94324851E#readContract](https://etherscan.io/address/0xc2963E4f4C8456b21734c7c4811327A94324851E#readContract)
+To upload to the mainnet explorer at [etherscan.io](https://etherscan.io), use `--network mainnet`.
 
 
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
 
 ## Roadmap
 
-This project is complete. No future features or fixes are planned.
+
+(Blank)
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -728,7 +446,7 @@ Please note: Github issues & pull requests will not be read unless you contact m
 <!-- LICENSE -->
 ## License
 
-Distributed under the GNU Affero General Public License (AGPL). See `LICENSE.txt` for more information.
+Distributed under the GNU Affero General Public License (AGPL). See [LICENSE.txt](LICENSE.txt) for more information.
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
