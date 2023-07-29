@@ -3,6 +3,33 @@
 
 
 
+<!-- PROJECT SHIELDS -->
+<!--
+*** We use markdown "reference style" links for readability.
+*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
+*** See the bottom of this document for the declaration of the reference variables
+*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
+*** https://www.markdownguide.org/basic-syntax/#reference-style-links
+-->
+[![Tela][tela-shield]][tela-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
+[![AGPL V3 License][license-shield]][license-url]
+
+
+
+
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/sj-piano/ethereum-smart-contract-project-template-typescript">
+    <img src="images/glider_600x480.png" alt="Logo" width="300" height="240">
+  </a>
+  <h3 align="center">Toolset: Hello World</h3>
+</div>
+
+
+
+
 <!-- TABLE OF CONTENTS -->
 <details open>
   <summary>Table of Contents</summary>
@@ -52,7 +79,11 @@ Print the new message stored in the contract:
 
 Example output:
 
-![](images/walkthrough_local_network.png)
+```bash
+
+```
+
+
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

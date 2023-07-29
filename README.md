@@ -111,7 +111,7 @@ If you would like to add me as a professional contact, you can [send me a connec
 
 
 
-### <a href="#Toolset"> Toolset
+### Toolset
 
 
 *Important*: Please work through the <a href="#getting-started">Getting Started</a> section before trying to use a tool. When you are ready, return here to choose a tool and switch to its README.
@@ -120,14 +120,14 @@ If you would like to add me as a professional contact, you can [send me a connec
 List of tools:
 
 
-* Hello World
+* Hello World - [Open README](docs/hello-world-README.md)
 
-This is a simple storage contract. It stores a message, which can be updated. [Click here](docs/hello-world-README.md) to go to its README. 
+This is a simple storage contract. It stores a message, which can be updated.
 
 
-* Upgradeable Smart Contract (UUPS Pattern)
+* Upgradeable Smart Contract (UUPS Pattern) - [Open README](docs/upgradeable-uups-README.md)
 
-This is a smart contract whose code can be upgraded. It uses the Universal Upgradeable Proxy Standard (UUPS) pattern, published in [ERC-1822](https://eips.ethereum.org/EIPS/eip-1822). [Click here](docs/upgradeable-uups-README.md) to go to its README. 
+This is a smart contract whose code can be upgraded. It uses the Universal Upgradeable Proxy Standard (UUPS) pattern, published in [ERC-1822](https://eips.ethereum.org/EIPS/eip-1822).
 
 
 
@@ -221,6 +221,10 @@ cd contract-toolset && npm install
 ```
 
 Copy the file `user-config.env.example` to `user-config.env` and fill it in with the relevant values.
+
+```sh
+cp user-config.env.example user-config.env
+```
 
 **IMPORTANT: Pay particular attention to the settings in the top section: `FINANCIAL CONTROLS`**
 
@@ -317,7 +321,7 @@ Store it in the `input-data` directory in a new file called `ethereum-mainnet-pr
 See the balance of the address that will deploy the contract:  
 `npm run --silent ts-node scripts/get-balance.ts -- --network=mainnet --log-level info --address-file input-data/ethereum-mainnet-address.txt`
 
-Recommended: Read the [Fee Limit Protections](#fee-limit-protections)></a> section before proceeding further.
+Recommended: Read the [Fee Limit Protections](#fee-limit-protections)</a> section before proceeding further.
 
 
 
