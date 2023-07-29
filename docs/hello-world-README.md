@@ -27,7 +27,8 @@
   <h3 align="center">Ethereum smart contract toolset</h3>
   <h3>Hello World</h3>
   <p align="center">
-    A basic storage contract.
+    A basic storage contract
+    <br/>
   </p>
 </div>
 
