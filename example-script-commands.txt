@@ -2,61 +2,61 @@
 # Example commands for the scripts.
 
 
-npm run --silent ts-node scripts/check-network-connections.ts -- --debug
+npm exec -- ts-node scripts/check-network-connections.ts --debug
 
 
 [by default, the network is 'local']
-npm run --silent ts-node scripts/get-network-fees.ts
+npm exec -- ts-node scripts/get-network-fees.ts
 
-npm run --silent ts-node scripts/get-network-fees.ts -- --network local
+npm exec -- ts-node scripts/get-network-fees.ts --network local
 
-npm run --silent ts-node scripts/get-network-fees.ts -- --network testnet
+npm exec -- ts-node scripts/get-network-fees.ts --network testnet
 
-npm run --silent ts-node scripts/get-network-fees.ts -- --network mainnet
-
-
-npm run --silent ts-node scripts/hello-world-estimate-fees.ts
-
-npm run --silent ts-node scripts/hello-world-estimate-fees.ts -- --network testnet
-
-npm run --silent ts-node scripts/hello-world-estimate-fees.ts -- --network mainnet
+npm exec -- ts-node scripts/get-network-fees.ts --network mainnet
 
 
-npm run --silent ts-node scripts/hello-world-deploy.ts
+npm exec -- ts-node scripts/hello-world/estimate-fees.ts
 
-npm run --silent ts-node scripts/hello-world-deploy.ts -- --network testnet
+npm exec -- ts-node scripts/hello-world/estimate-fees.ts --network testnet
 
-npm run --silent ts-node scripts/hello-world-deploy.ts -- --network mainnet
-
-
-npm run --silent ts-node scripts/check-contract-exists.ts
-
-npm run --silent ts-node scripts/check-contract-exists.ts -- --network testnet
-
-npm run --silent ts-node scripts/check-contract-exists.ts -- --network mainnet
+npm exec -- ts-node scripts/hello-world/estimate-fees.ts --network mainnet
 
 
-npm run --silent ts-node scripts/hello-world-get-message.ts
+npm exec -- ts-node scripts/hello-world/deploy.ts
 
-npm run --silent ts-node scripts/hello-world-get-message.ts -- --network testnet
+npm exec -- ts-node scripts/hello-world/deploy.ts --network testnet
 
-npm run --silent ts-node scripts/hello-world-get-message.ts -- --network mainnet
+npm exec -- ts-node scripts/hello-world/deploy.ts --network mainnet
 
 
-npm run --silent ts-node scripts/hello-world-update-message.ts -- --input-file-json input-data/example-update-message.json --debug
+npm exec -- ts-node scripts/check-contract-exists.ts
 
-npm run --silent ts-node scripts/hello-world-update-message.ts -- --input-file-json input-data/example-update-message.json --debug --network testnet
+npm exec -- ts-node scripts/check-contract-exists.ts --network testnet
 
-npm run --silent ts-node scripts/hello-world-update-message.ts -- --input-file-json input-data/example-update-message.json --debug --network mainnet
+npm exec -- ts-node scripts/check-contract-exists.ts --network mainnet
+
+
+npm exec -- ts-node scripts/hello-world/get-message.ts
+
+npm exec -- ts-node scripts/hello-world/get-message.ts --network testnet
+
+npm exec -- ts-node scripts/hello-world/get-message.ts --network mainnet
+
+
+npm exec -- ts-node scripts/hello-world/update-message.ts --input-file-json input-data/example-update-message.json --debug
+
+npm exec -- ts-node scripts/hello-world/update-message.ts --input-file-json input-data/example-update-message.json --debug --network testnet
+
+npm exec -- ts-node scripts/hello-world/update-message.ts --input-file-json input-data/example-update-message.json --debug --network mainnet
 
 
 
 
 # Additional variants
 
-npm run --silent ts-node scripts/check-contract-exists.ts -- --network testnet --address-file input-data/example-contract-address.txt
+npm exec -- ts-node scripts/check-contract-exists.ts --network testnet --address-file input-data/example-contract-address.txt
 
-npm run --silent ts-node scripts/check-contract-exists.ts -- --network mainnet --address 0x50590A974646d333A93F89a37aBd2d2708671eAA
+npm exec -- ts-node scripts/check-contract-exists.ts --network mainnet --address 0x50590A974646d333A93F89a37aBd2d2708671eAA
 
 
 
@@ -64,21 +64,21 @@ npm run --silent ts-node scripts/check-contract-exists.ts -- --network mainnet -
 # Create a new Ethereum keypair and get its balance.
 
 
-npm run --silent ts-node scripts/create-private-key.ts > input-data/example-private-key.txt
+npm exec -- ts-node scripts/create-private-key.ts > input-data/example-private-key.txt
 
 cat input-data/example-private-key.txt
 
 
-cat input-data/example-private-key.txt | npm run --silent ts-node scripts/derive-address.ts > input-data/example-address.txt
+cat input-data/example-private-key.txt | npm exec -- ts-node scripts/derive-address.ts > input-data/example-address.txt
 
 cat input-data/example-address.txt
 
 
-npm run --silent ts-node scripts/get-balance.ts -- --address-file input-data/example-address.txt
+npm exec -- ts-node scripts/get-balance.ts --address-file input-data/example-address.txt
 
-npm run --silent ts-node scripts/get-balance.ts -- --address 0x3bEC26B3cC2a1B0b123e9044E4D0085EfE9bF526
+npm exec -- ts-node scripts/get-balance.ts --address 0x3bEC26B3cC2a1B0b123e9044E4D0085EfE9bF526
 
-npm run --silent ts-node scripts/get-balance.ts -- --address 0x3bEC26B3cC2a1B0b123e9044E4D0085EfE9bF526 --network testnet
+npm exec -- ts-node scripts/get-balance.ts --address 0x3bEC26B3cC2a1B0b123e9044E4D0085EfE9bF526 --network testnet
 
-npm run --silent ts-node scripts/get-balance.ts -- --address 0x3bEC26B3cC2a1B0b123e9044E4D0085EfE9bF526 --network mainnet
+npm exec -- ts-node scripts/get-balance.ts --address 0x3bEC26B3cC2a1B0b123e9044E4D0085EfE9bF526 --network mainnet
 
