@@ -24,7 +24,10 @@
   <a href="https://github.com/sj-piano/ethereum-smart-contract-project-template-typescript">
     <img src="../images/glider_600x480.png" alt="Logo" width="300" height="240">
   </a>
-  <h3 align="center">Toolset: Hello World</h3>
+  <h3 align="center">Ethereum smart contract toolset: Hello World</h3>
+  <p align="center">
+    A basic storage contract.
+  </p>
 </div>
 
 
@@ -34,6 +37,8 @@
 <details open>
   <summary>Table of Contents</summary>
   <ol>
+    <li><a href="#project-summary">Project Summary</a></li>
+    <li><a href="#getting-started">Getting Started</a></li>
     <li><a href="#walkthrough-local">Walkthrough - Local Network</a></li>
     <li><a href="#walkthrough-testnet">Walkthrough - Sepolia Testnet</a></li>
     <li><a href="#walkthrough-mainnet">Walkthrough - Ethereum Mainnet</a></li>
@@ -44,7 +49,46 @@
 
 
 
-## <a id="walkthrough-local" />Walkthrough - Local Network
+<!-- PROJECT SUMMARY -->
+## Project Summary
+
+**Description:**
+
+This a basic storage smart contract. It stores a message, which can be updated.
+
+**If you would like to:**
+* ask a question
+* report a bug
+* ask for an addition to the README
+* request a feature
+* get a private commercial software license
+* make a complaint
+* hire me
+
+Then [please contact me on Tela](https://www.tela.app/magic/stjohn_piano/a852c8). Thank you.
+
+[![Tela][tela-shield]][tela-url]
+
+If you would like to add me as a professional contact, you can [send me a connection request on LinkedIn](https://www.linkedin.com/in/stjohnpiano):
+
+[![LinkedIn][linkedin-shield]][linkedin-url]
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+
+### Getting Started
+
+Please proceed through the [main README's Getting Started section](../README.md#getting-started). When you are ready, return here.
+
+This document contains walkthroughs with example output for several blockchain networks: A local Hardhat blockchain instance, the Sepolia testnet, and the Ethereum mainnet.
+
+
+
+
+### Walkthrough - Local Network
 
 
 We deploy the HelloWorld contract to the local Hardhat blockchain.
@@ -91,7 +135,7 @@ Example output:
 
 
 
-### <a id="walkthrough-testnet" />Walkthrough - Sepolia Testnet
+### Walkthrough - Sepolia Testnet
 
 
 Create a new private key and store it in the `input-data` directory:  
@@ -183,7 +227,7 @@ Hello Mars ! (testnet)
 
 
 
-### <a id="walkthrough-mainnet" />Walkthrough - Ethereum Mainnet
+### Walkthrough - Ethereum Mainnet
 
 
 See fee estimations for the different contract operations, including deployment:  

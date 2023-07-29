@@ -35,7 +35,7 @@
   <summary>Table of Contents</summary>
   <ol>
     <li>
-      <a href="#about-the-project">About The Project</a>
+      <a href="#project-summary">Project Summary</a>
       <ul>
         <li><a href="#toolset">Toolset</a></li>
         <li><a href="#built-with">Built With</a></li>
@@ -70,8 +70,8 @@
 
 
 
-<!-- ABOUT THE PROJECT -->
-## About The Project
+<!-- PROJECT SUMMARY -->
+## Project Summary
 
 **Description:**
 
@@ -114,7 +114,7 @@ If you would like to add me as a professional contact, you can [send me a connec
 ### Toolset
 
 
-*Important*: Please work through the <a href="#getting-started">Getting Started</a> section before trying to use a tool. When you are ready, return here to choose a tool and switch to its README.
+*Important*: Please proceed through the <a href="#getting-started">Getting Started</a> section before trying to use a tool. When you are ready, return here to choose a tool and switch to its README.
 
 
 List of tools:
@@ -122,7 +122,7 @@ List of tools:
 
 * Hello World - [Open README](docs/hello-world-README.md)
 
-This is a simple storage contract. It stores a message, which can be updated.
+A basic storage contract, which stores a message. The message can be updated.
 
 
 * Upgradeable Smart Contract (UUPS Pattern) - [Open README](docs/upgradeable-uups-README.md)
@@ -459,10 +459,6 @@ Distributed under the GNU Affero General Public License (AGPL). See [LICENSE.txt
 
 
 ## Contact
-
-
-Project Link:
-[https://github.com/sj-piano/ethereum-smart-contract-project-template-typescript](https://github.com/sj-piano/ethereum-smart-contract-project-template-typescript)
 
 
 **If you would like to:**
