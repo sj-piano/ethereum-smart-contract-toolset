@@ -358,3 +358,14 @@ You can read the contract's stored data at:
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[license-shield]: https://img.shields.io/github/license/sj-piano/ethereum-smart-contract-project-template-typescript?style=for-the-badge&color=32cb56
+[license-url]: https://github.com/sj-piano/ethereum-smart-contract-project-template-typescript/blob/main/LICENSE.txt
+[linkedin-shield]: https://img.shields.io/badge/LinkedIn-StJohn_Piano-blue.svg?style=for-the-badge&logo=linkedin
+[linkedin-url]: https://linkedin.com/in/stjohnpiano
+[tela-shield]: https://img.shields.io/badge/Tela-StJohn_Piano-blue?style=for-the-badge
+[tela-url]: https://www.tela.app/magic/stjohn_piano/a852c8
