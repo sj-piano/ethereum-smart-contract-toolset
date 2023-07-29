@@ -20,6 +20,13 @@ tasks:
       - npx hardhat compile
     silent: true
 
+  clean-and-compile-contracts:
+    desc: "Clean the compilation directories, then compile the Solidity contracts"
+    cmds:
+      - npx hardhat clean
+      - npx hardhat compile
+    silent: true
+
   reset:
     desc: "Completely reset the NodeJS Hardhat environment"
     cmds:
