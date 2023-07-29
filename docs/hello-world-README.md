@@ -22,7 +22,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/sj-piano/ethereum-smart-contract-project-template-typescript">
-    <img src="images/glider_600x480.png" alt="Logo" width="300" height="240">
+    <img src="../images/glider_600x480.png" alt="Logo" width="300" height="240">
   </a>
   <h3 align="center">Toolset: Hello World</h3>
 </div>
