@@ -24,7 +24,8 @@
   <a href="https://github.com/sj-piano/ethereum-smart-contract-project-template-typescript">
     <img src="../images/glider_600x480.png" alt="Logo" width="300" height="240">
   </a>
-  <h3 align="center">Ethereum smart contract toolset: Hello World</h3>
+  <h3 align="center">Ethereum smart contract toolset</h3>
+  <h3>Hello World</h3>
   <p align="center">
     A basic storage contract.
   </p>
@@ -94,37 +95,91 @@ This document contains walkthroughs with example output for several blockchain n
 We deploy the HelloWorld contract to the local Hardhat blockchain.
 
 See the balance of the address that will deploy the contract:  
-`npm run --silent ts-node scripts/get-balance.ts -- --address-file input-data/local-hardhat-address.txt`
+`npm exec -- ts-node scripts/get-balance.ts --address-file my-data/local-hardhat-address.txt`
 
 See fee estimations for the different contract operations, including deployment:  
-`npm run --silent ts-node scripts/hello-world-estimate-fees.ts`
+`npm exec -- ts-node scripts/hello-world/estimate-fees.ts`
 
 Deploy the HelloWorld contract:  
-`npm run --silent ts-node scripts/hello-world-deploy.ts -- --log-level info`
+`npm exec -- ts-node scripts/hello-world/deploy.ts --log-level info`
 
-This will output an address. Copy this address into the `user-config.env` file as `LOCAL_HARDHAT_DEPLOYED_CONTRACT_ADDRESS`.
+This will output an address. Copy this address into the `user-config.env` file as `HELLO_WORLD_LOCAL_ADDRESS`.
 
 Confirm deployment:  
-`npm run --silent ts-node scripts/check-contract-exists -- --debug`
+`npm exec -- ts-node scripts/check-contract-exists --debug --addressName='HELLO_WORLD_LOCAL_ADDRESS'`
 
 Print the message stored in the contract:  
-`npm run --silent ts-node scripts/hello-world-get-message.ts -- --debug`
+`npm exec -- ts-node scripts/hello-world/get-message.ts --debug`
 
 Create a new input file:  
-`cp input-data/example-update-message.json input-data/update-message-local-network.json`
+`cp my-data/hello-world/example-update-message.json my-data/hello-world/update-message-local.json`
 
 Open it and specify a new message e.g. `Hello Mars ! (local)`.
 
 Update the message stored in the contract:  
-`npm run --silent ts-node scripts/hello-world-update-message.ts -- --input-file-json input-data/update-message-local-network.json --log-level info`
+`npm exec -- ts-node scripts/hello-world/update-message.ts --input-file-json my-data/hello-world/update-message-local.json --log-level info`
 
 Print the new message stored in the contract:  
-`npm run --silent ts-node scripts/hello-world-get-message.ts`
+`npm exec -- ts-node scripts/hello-world/get-message.ts`
 
 Example output:
 
 ```bash
+stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/get-balance.ts --address-file my-data/local-hardhat-address.txt
+10000.0 ETH (18741900.00 USD)
+stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/hello-world/estimate-fees.ts
 
+Contract deployment - estimated fee:
+- feeEth: 0.0013185389375
+- feeUsd: 2.47
+
+Contract method call: 'update' - estimated fee:
+- feeEth: 0.0000502390625
+- feeUsd: 0.09
+
+stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/hello-world/deploy.ts --log-level info
+info:   Connecting to local network at http://localhost:8545...
+info:   Estimated fee: 0.0013185389375 ETH (2.47 USD)
+info:   Signer balance: 10000.0 ETH (18742000.00 USD)
+info:   Final fee: 0.0012472665625 ETH (2.34 USD)
+info:   Contract deployed to address:
+0x5FbDB2315678afecb367f032d93F642f64180aa3
+
+stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/check-contract-exists --debug --addressName='HELLO_WORLD_LOCAL_ADDRESS'
+{
+  logLevel: 'error',
+  network: 'local',
+  debug: true,
+  addressName: 'HELLO_WORLD_LOCAL_ADDRESS'
+}
+debug:  Address found in .env file: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+info:   Connecting to local network at http://localhost:8545...
+debug:  Current block number: 1
+Contract found at address: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+
+stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/hello-world/get-message.ts --debug
+{ logLevel: 'error', network: 'local', debug: true }
+info:   Connecting to local network at http://localhost:8545...
+debug:  Current block number: 1
+info:   Contract found at address: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+info:   Message stored in HelloWorld contract:
+Hello World!
+
+stjohn@judgement:~/work/contract-toolset$ cp my-data/hello-world/example-update-message.json my-data/hello-world/update-message-local.json
+
+stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/hello-world/update-message.ts --input-file-json my-data/hello-world/update-message-local.json --log-level info
+info:   Connecting to local network at http://localhost:8545...
+info:   Contract found at address: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+info:   Message stored in HelloWorld contract: Hello World!
+info:   Estimated fee: 0.000081108653195388 ETH (0.15 USD)
+info:   Signer balance: 9999.9987527334375 ETH (18732097.66 USD)
+info:   Updating the message...
+info:   Final fee: 0.00007725958865898 ETH (0.14 USD)
+The new message is:
+Hello Mars ! (local)
+
+stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/hello-world/get-message.ts
+Hello Mars ! (local)
 ```
 
 
@@ -138,86 +193,66 @@ Example output:
 ### Walkthrough - Sepolia Testnet
 
 
-Create a new private key and store it in the `input-data` directory:  
-`npm run --silent ts-node scripts/create-private-key.ts > input-data/sepolia-testnet-private-key.txt`
-
-Display the private key:  
-`cat input-data/sepolia-testnet-private-key.txt`
-
-Store it in the `user-config.env` file as `SEPOLIA_TESTNET_PRIVATE_KEY`.
-
-Derive an Ethereum address from the private key and store it in the `input-data` directory:  
-`cat input-data/sepolia-testnet-private-key.txt | npm run --silent ts-node scripts/derive-address.ts > input-data/sepolia-testnet-address.txt`
-
-Display the address:  
-`cat input-data/sepolia-testnet-address.txt`
-
-Store it in the `user-config.env` file as `SEPOLIA_TESTNET_ADDRESS`.
-
-In Metamask, transfer a reasonable amount of SepoliaETH to this new address.
-
 See the balance of the address that will deploy the contract:  
-`npm run --silent ts-node scripts/get-balance.ts -- --network=testnet --address-file input-data/sepolia-testnet-address.txt`
+`npm exec -- ts-node scripts/get-balance.ts --address-file my-data/sepolia-testnet-address.txt`
 
 See fee estimations for the different contract operations, including deployment:  
-`npm run --silent ts-node scripts/hello-world-estimate-fees.ts -- --network=testnet`
+`npm exec -- ts-node scripts/hello-world/estimate-fees.ts --network=testnet`
 
 Deploy the contract to the Sepolia testnet:  
-`npm run --silent ts-node scripts/hello-world-deploy.ts -- --network=testnet`
+`npm exec -- ts-node scripts/hello-world/deploy.ts --network=testnet`
 
-This will output an address. Copy this address into the `user-config.env` file as `SEPOLIA_TESTNET_DEPLOYED_CONTRACT_ADDRESS`.
+This will output an address. Copy this address into the `user-config.env` file as `HELLO_WORLD_TESTNET_ADDRESS`.
 
 Confirm deployment:  
-`npm run --silent ts-node scripts/check-contract-exists -- --network=testnet`
+`npm exec -- ts-node scripts/check-contract-exists --network=testnet --addressName='HELLO_WORLD_TESTNET_ADDRESS'`
 
 Print the message stored in the contract:  
-`npm run --silent ts-node scripts/hello-world-get-message.ts -- --network=testnet`
+`npm exec -- ts-node scripts/hello-world/get-message.ts --network=testnet`
 
 Create a new input file:
-`cp input-data/example-update-message.json input-data/update-message-sepolia-testnet.json`
+`cp my-data/hello-world/example-update-message.json my-data/hello-world/update-message-testnet.json`
 
 Open it and specify a new message e.g. `Hello Mars ! (testnet)`.
 
 Update the message stored in the contract:  
-`npm run --silent ts-node scripts/hello-world-update-message.ts -- --network=testnet --input-file-json input-data/update-message-sepolia-testnet.json`
+`npm exec -- ts-node scripts/hello-world/update-message.ts --network=testnet --input-file-json my-data/hello-world/update-message-testnet.json`
 
 Print the new message stored in the contract:  
-`npm run --silent ts-node scripts/hello-world-get-message.ts -- --network=testnet`
+`npm exec -- ts-node scripts/hello-world/get-message.ts --network=testnet`
 
 Example output:
 
 ```bash
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/get-balance.ts -- --network=testnet --address-file input-data/sepolia-testnet-address.txt
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/get-balance.ts --network=testnet --address-file my-data/sepolia-testnet-address.txt
 0.409023392670777583 ETH (780.81 USD)
 
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-estimate-fees.ts -- --network=testnet
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/estimate-fees.ts --network=testnet
 
 Contract deployment - estimated fee:
 - feeEth: 0.000000001001234324
 - feeUsd: 0.00
 
-No contract found at address 0x0000000000000000000000000000000000000000.
-
 Contract method call: 'update' - estimated fee:
 - feeEth: 0.000000000038147344
 - feeUsd: 0.00
 
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-deploy.ts -- --network=testnet
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/deploy.ts --network=testnet
 0x02bCCb6Fa3e24b14566e571656EE53A7723884f7
 
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/check-contract-exists -- --network=testnet
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/check-contract-exists --network=testnet --addressName='HELLO_WORLD_TESTNET_ADDRESS'
 Contract found at address: 0x02bCCb6Fa3e24b14566e571656EE53A7723884f7
 
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-get-message.ts -- --network=testnet
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/get-message.ts --network=testnet
 Hello World!
 
-stjohn@judgement:~/work/contract-template$ cp input-data/example-update-message.json input-data/update-message-sepolia-testnet.json
+stjohn@judgement:~/work/contract-template$ cp my-data/hello-world/example-update-message.json my-data/hello-world/update-message-testnet.json
 
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-update-message.ts -- --network=testnet --input-file-json input-data/update-message-sepolia-testnet.json
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/update-message.ts --network=testnet --input-file-json my-data/hello-world/update-message-testnet.json
 The new message is:
 Hello Mars ! (testnet)
 
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-get-message.ts -- --network=testnet
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/get-message.ts --network=testnet
 Hello Mars ! (testnet)
 ```
 
@@ -230,47 +265,48 @@ Hello Mars ! (testnet)
 ### Walkthrough - Ethereum Mainnet
 
 
-See fee estimations for the different contract operations, including deployment:  
-`npm run --silent ts-node scripts/hello-world-estimate-fees.ts -- --network=mainnet`
+See the balance of the address that will deploy the contract:  
+`npm exec -- ts-node scripts/get-balance.ts --address-file my-data/ethereum-mainnet-address.txt`
 
-If a fee limit is exceeded, and you are willing to spend the money, increase the `MAX_FEE_PER_TRANSACTION_USD` value in `user-config.env`. Re-run the `hello-world-estimate-fees.ts` command above to confirm that no fee limit will be exceeded.
+See fee estimations for the different contract operations, including deployment:  
+`npm exec -- ts-node scripts/hello-world/estimate-fees.ts --network=mainnet`
+
+If a fee limit is exceeded, and you are willing to spend the money, increase the `MAX_FEE_PER_TRANSACTION_USD` value in `user-config.env`. Re-run the `hello-world/estimate-fees.ts` command above to confirm that no fee limit will be exceeded.
 
 Deploy the contract to the Ethereum mainnet:  
-`npm run --silent ts-node scripts/hello-world-deploy.ts -- --network=mainnet --log-level info`
+`npm exec -- ts-node scripts/hello-world/deploy.ts --network=mainnet --log-level info`
 
-This will output an address. Copy this address into the `user-config.env` file as `ETHEREUM_MAINNET_DEPLOYED_CONTRACT_ADDRESS`.
+This will output an address. Copy this address into the `user-config.env` file as `HELLO_WORLD_MAINNET_ADDRESS`.
 
 Confirm deployment:  
-`npm run --silent ts-node scripts/check-contract-exists -- --network=mainnet --log-level info`
+`npm exec -- ts-node scripts/check-contract-exists --network=mainnet --addressName='HELLO_WORLD_MAINNET_ADDRESS' --log-level info`
 
 Print the message stored in the contract:  
-`npm run --silent ts-node scripts/hello-world-get-message.ts -- --network=mainnet --log-level info`
+`npm exec -- ts-node scripts/hello-world/get-message.ts --network=mainnet --log-level info`
 
 Create a new input file:  
-`cp input-data/example-update-message.json input-data/update-message-ethereum-mainnet.json`
+`cp my-data/hello-world/example-update-message.json my-data/hello-world/update-message-mainnet.json`
 
 Open it and specify a new message e.g. `Hello Mars ! (mainnet)`.
 
 Update the message stored in the contract:  
-`npm run --silent ts-node scripts/hello-world-update-message.ts -- --network=mainnet --log-level info --input-file-json input-data/update-message-ethereum-mainnet.json`
+`npm exec -- ts-node scripts/hello-world/update-message.ts --network=mainnet --log-level info --input-file-json my-data/hello-world/update-message-mainnet.json`
 
 Print the new message stored in the contract:  
-`npm run --silent ts-node scripts/hello-world-get-message.ts -- --network=mainnet --log-level info`
+`npm exec -- ts-node scripts/hello-world/get-message.ts --network=mainnet --log-level info`
 
 Example output:
 
 ```bash
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/get-balance.ts -- --network=mainnet --log-level info --address-file input-data/ethereum-mainnet-address.txt
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/get-balance.ts --network=mainnet --log-level info --address-file my-data/ethereum-mainnet-address.txt
 info:   Connecting to Ethereum mainnet...
 info:   Getting balance for address 0x4A846013314b892Be429F8626487109DD7b494a0...
 0.042281201108669793 ETH (80.73 USD)
 
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-estimate-fees.ts -- --network=mainnet
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/estimate-fees.ts --network=mainnet
 
 Contract deployment - estimated fee:
 - baseFeeUsd limit exceeded: Base fee (17.47 USD) exceeds limit specified in config (5.00 USD). Current base fee is 9149184.714182905 gwei (9149184714182905 wei, 0.009149184714182905 ETH). Current ETH-USD exchange rate is 1909.52 USD.
-
-No contract found at address 0x0000000000000000000000000000000000000000.
 
 Contract method call: 'update' - estimated fee:
 - feeEth: 0.00035021612752418
@@ -278,19 +314,17 @@ Contract method call: 'update' - estimated fee:
 
 # Here, after seeing the estimated fees, I set the MAX_FEE_PER_TRANSACTION_USD value in user-config.env to "20.00".
 
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-estimate-fees.ts -- --network=mainnet
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/estimate-fees.ts --network=mainnet
 
 Contract deployment - estimated fee:
 - feeEth: 0.009101423868100018
 - feeUsd: 17.39
 
-No contract found at address 0x0000000000000000000000000000000000000000.
-
 Contract method call: 'update' - estimated fee:
 - feeEth: 0.000346767124202408
 - feeUsd: 0.66
 
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-deploy.ts -- --network=mainnet --log-level info
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/deploy.ts --network=mainnet --log-level info
 info:   Connecting to Ethereum mainnet...
 info:   Estimated fee: 0.009271102473677687 ETH (17.71 USD)
 info:   Signer balance: 0.042281201108669793 ETH (80.77 USD)
@@ -298,16 +332,17 @@ info:   Final fee: 0.009006010206038837 ETH (17.21 USD)
 info:   Contract deployed to address:
 0xc2963E4f4C8456b21734c7c4811327A94324851E
 
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/check-contract-exists -- --network=mainnet --log-level info
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/check-contract-exists --network=mainnet --addressName='HELLO_WORLD_MAINNET_ADDRESS' --log-level info
 info:   Connecting to Ethereum mainnet...
 Contract found at address: 0xc2963E4f4C8456b21734c7c4811327A94324851E
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-get-message.ts -- --network=mainnet --log-level info
+
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/get-message.ts --network=mainnet --log-level info
 info:   Connecting to Ethereum mainnet...
 info:   Contract found at address: 0xc2963E4f4C8456b21734c7c4811327A94324851E
 info:   Message stored in HelloWorld contract:
 Hello World!
 
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-update-message.ts -- --network=mainnet --log-level info --input-file-json input-data/update-message-ethereum-mainnet.json
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/update-message.ts --network=mainnet --log-level info --input-file-json my-data/hello-world/update-message-mainnet.json
 info:   Connecting to Ethereum mainnet...
 info:   Contract found at address: 0xc2963E4f4C8456b21734c7c4811327A94324851E
 info:   Message stored in HelloWorld contract: Hello World!
@@ -318,7 +353,7 @@ info:   Final fee: 0.000581844011532384 ETH (1.11 USD)
 The new message is:
 Hello Mars ! (mainnet)
 
-stjohn@judgement:~/work/contract-template$ npm run --silent ts-node scripts/hello-world-get-message.ts -- --network=mainnet --log-level info
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/get-message.ts --network=mainnet --log-level info
 info:   Connecting to Ethereum mainnet...
 info:   Contract found at address: 0xc2963E4f4C8456b21734c7c4811327A94324851E
 info:   Message stored in HelloWorld contract:
@@ -336,16 +371,16 @@ Hello Mars ! (mainnet)
 #### We publish the contract that we deployed on Sepolia Testnet
 
 ```bash
-SEPOLIA_TESTNET_DEPLOYED_CONTRACT_ADDRESS="0x0FdEe0538a2092937c68A4954e3f5adDb7532fC1"
-npx hardhat verify --network sepolia $SEPOLIA_TESTNET_DEPLOYED_CONTRACT_ADDRESS "Hello World!"
+HELLO_WORLD_TESTNET_ADDRESS="0x0FdEe0538a2092937c68A4954e3f5adDb7532fC1"
+npx hardhat verify --network sepolia $HELLO_WORLD_TESTNET_ADDRESS "Hello World!"
 ```
 
 Example output:
 
 ```bash
-stjohn@judgement:~/work/contract-template$ SEPOLIA_TESTNET_DEPLOYED_CONTRACT_ADDRESS="0x02bCCb6Fa3e24b14566e571656EE53A7723884f7"
+stjohn@judgement:~/work/contract-template$ HELLO_WORLD_TESTNET_ADDRESS="0x02bCCb6Fa3e24b14566e571656EE53A7723884f7"
 
-stjohn@judgement:~/work/contract-template$ npx hardhat verify --network sepolia $SEPOLIA_TESTNET_DEPLOYED_CONTRACT_ADDRESS "Hello World!"
+stjohn@judgement:~/work/contract-template$ npx hardhat verify --network sepolia $HELLO_WORLD_TESTNET_ADDRESS "Hello World!"
 Successfully submitted source code for contract
 contracts/HelloWorld.sol:HelloWorld at 0x02bCCb6Fa3e24b14566e571656EE53A7723884f7
 for verification on the block explorer. Waiting for verification result...
@@ -369,16 +404,16 @@ You can read the contract's stored data at:
 #### We publish the contract that we deployed on Ethereum Mainnet
 
 ```bash
-ETHEREUM_MAIN_DEPLOYED_CONTRACT_ADDRESS="0xc2963E4f4C8456b21734c7c4811327A94324851E"
-npx hardhat verify --network mainnet $ETHEREUM_MAIN_DEPLOYED_CONTRACT_ADDRESS "Hello World!"
+HELLO_WORLD_MAINNET_ADDRESS="0xc2963E4f4C8456b21734c7c4811327A94324851E"
+npx hardhat verify --network mainnet $HELLO_WORLD_MAINNET_ADDRESS "Hello World!"
 ```
 
 Example output:
 
 ```bash
-stjohn@judgement:~/work/contract-template$ ETHEREUM_MAIN_DEPLOYED_CONTRACT_ADDRESS="0xc2963E4f4C8456b21734c7c4811327A94324851E"
+stjohn@judgement:~/work/contract-template$ HELLO_WORLD_MAINNET_ADDRESS="0xc2963E4f4C8456b21734c7c4811327A94324851E"
 
-stjohn@judgement:~/work/contract-template$ npx hardhat verify --network mainnet $ETHEREUM_MAIN_DEPLOYED_CONTRACT_ADDRESS "Hello World!"
+stjohn@judgement:~/work/contract-template$ npx hardhat verify --network mainnet $HELLO_WORLD_MAINNET_ADDRESS "Hello World!"
 Successfully submitted source code for contract
 contracts/HelloWorld.sol:HelloWorld at 0xc2963E4f4C8456b21734c7c4811327A94324851E
 for verification on the block explorer. Waiting for verification result...
