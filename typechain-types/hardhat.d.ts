@@ -46,10 +46,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ContextUpgradeable__factory>;
     getContractFactory(
-      name: "Proxy",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Proxy__factory>;
-    getContractFactory(
       name: "HelloWorld",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.HelloWorld__factory>;
@@ -107,11 +103,6 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.ContextUpgradeable>;
     getContractAt(
-      name: "Proxy",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.Proxy>;
-    getContractAt(
       name: "HelloWorld",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -164,10 +155,6 @@ declare module "hardhat/types/runtime" {
       name: "ContextUpgradeable",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ContextUpgradeable>;
-    deployContract(
-      name: "Proxy",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.Proxy>;
     deployContract(
       name: "HelloWorld",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -225,11 +212,6 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ContextUpgradeable>;
-    deployContract(
-      name: "Proxy",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.Proxy>;
     deployContract(
       name: "HelloWorld",
       args: any[],

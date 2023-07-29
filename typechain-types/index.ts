@@ -22,8 +22,6 @@ export type { UUPSUpgradeable } from "./@openzeppelin/contracts-upgradeable/prox
 export { UUPSUpgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable__factory";
 export type { ContextUpgradeable } from "./@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable";
 export { ContextUpgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable__factory";
-export type { Proxy } from "./@openzeppelin/contracts/proxy/Proxy";
-export { Proxy__factory } from "./factories/@openzeppelin/contracts/proxy/Proxy__factory";
 export type { HelloWorld } from "./contracts/HelloWorld";
 export { HelloWorld__factory } from "./factories/contracts/HelloWorld__factory";
 export type { UpgradeableCounter } from "./contracts/UpgradeableCounter.sol/UpgradeableCounter";
