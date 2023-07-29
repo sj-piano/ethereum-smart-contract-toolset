@@ -18,4 +18,16 @@ function logLevel({ logLevel }: { logLevel: string }) {
   }
 }
 
-export default { logLevel };
+function networkLabel({ networkLabel }: { networkLabel: string }) {
+  const networkLabelSchema = Joi.string().valid(...config.networkLabelList);
+  let networkLabelResult = networkLabelSchema.validate(networkLabel);
+  if (networkLabelResult.error) {
+    let msg = `Invalid network "${networkLabel}". Valid options are: [${config.networkLabelList.join(
+      ", ",
+    )}]`;
+    console.error(msg);
+    process.exit(1);
+  }
+}
+
+export default { logLevel, networkLabel };

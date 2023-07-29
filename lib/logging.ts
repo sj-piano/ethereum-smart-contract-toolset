@@ -1,27 +1,26 @@
 // Imports
-import Joi from "joi";
 import winston from "winston";
-const { combine, printf, colorize, align, json } = winston.format;
 
 // Local imports
-import { config } from "#root/config";
+import validate from "#root/lib/validate";
+
+// Setup
+const { combine, printf, colorize, align, json } = winston.format;
 
 // Classes
 
 class Logger {
   logger: winston.Logger;
 
-  constructor(
-    {
-      fileName,
-      logLevel,
-      logTimestamp,
-    }: { fileName?: string; logLevel?: string; logTimestamp?: boolean } = {
-      fileName: "",
-      logLevel: "error",
-      logTimestamp: false,
-    },
-  ) {
+  constructor({
+    fileName,
+    logLevel,
+    logTimestamp,
+  }: {
+    fileName: string;
+    logLevel: string;
+    logTimestamp: boolean;
+  }) {
     if (fileName) {
       fileName = fileName.replace(process.cwd() + "/", "");
     }
@@ -54,14 +53,7 @@ class Logger {
   }
 
   setLevel({ logLevel }: { logLevel: string }) {
-    const logLevelSchema = Joi.string().valid(...config.logLevelList);
-    let logLevelResult = logLevelSchema.validate(logLevel);
-    if (logLevelResult.error) {
-      let msg = `Invalid log level "${logLevel}". Valid options are: [${config.logLevelList.join(
-        ", ",
-      )}]`;
-      throw new Error(msg);
-    }
+    validate.logLevel({ logLevel });
     this.logger.transports.forEach((t) => (t.level = logLevel));
     this.logger.level = logLevel;
   }
@@ -100,11 +92,16 @@ class Logger {
 // Functions
 
 function createLogger({
-  fileName,
-  logLevel,
-  logTimestamp,
-}: { fileName?: string; logLevel?: string; logTimestamp?: boolean } = {}) {
-  const logger = new Logger({ fileName, logLevel, logTimestamp });
+  fileName = "",
+  logLevel = "error",
+  logTimestamp = false,
+} = {}) {
+  validate.logLevel({ logLevel });
+  const logger = new Logger({
+    fileName,
+    logLevel: logLevel,
+    logTimestamp,
+  });
   const log = logger.log.bind(logger);
   const deb = logger.deb.bind(logger);
   return { logger, log, deb };
