@@ -4,13 +4,13 @@ import Big from "big.js";
 import { program } from "commander";
 import { ethers } from "ethers";
 import fs from "fs";
-import Joi from "joi";
 import _ from "lodash";
 
 // Local imports
 import { config } from "#root/config";
 import ethereum from "#root/src/ethereum";
 import { createLogger } from "#root/lib/logging";
+import validate from "#root/lib/validate";
 
 // Load environment variables
 import dotenv from "dotenv";
@@ -29,9 +29,9 @@ const {
   SEPOLIA_TESTNET_ADDRESS,
   ETHEREUM_MAINNET_PRIVATE_KEY,
   ETHEREUM_MAINNET_ADDRESS,
-  LOCAL_HARDHAT_DEPLOYED_CONTRACT_ADDRESS,
-  SEPOLIA_TESTNET_DEPLOYED_CONTRACT_ADDRESS,
-  ETHEREUM_MAINNET_DEPLOYED_CONTRACT_ADDRESS,
+  HELLO_WORLD_LOCAL_ADDRESS,
+  HELLO_WORLD_TESTNET_ADDRESS,
+  HELLO_WORLD_MAINNET_ADDRESS,
 } = process.env;
 
 // Logging
@@ -70,9 +70,9 @@ ethereum.validateAddressesSync({
     LOCAL_HARDHAT_ADDRESS,
     SEPOLIA_TESTNET_ADDRESS,
     ETHEREUM_MAINNET_ADDRESS,
-    LOCAL_HARDHAT_DEPLOYED_CONTRACT_ADDRESS,
-    SEPOLIA_TESTNET_DEPLOYED_CONTRACT_ADDRESS,
-    ETHEREUM_MAINNET_DEPLOYED_CONTRACT_ADDRESS,
+    HELLO_WORLD_LOCAL_ADDRESS,
+    HELLO_WORLD_TESTNET_ADDRESS,
+    HELLO_WORLD_MAINNET_ADDRESS,
   },
 });
 
@@ -82,29 +82,13 @@ config.update({
   MAX_PRIORITY_FEE_PER_GAS_GWEI,
 });
 
-const logLevelSchema = Joi.string().valid(...config.logLevelList);
-let logLevelResult = logLevelSchema.validate(logLevel);
-if (logLevelResult.error) {
-  var msg = `Invalid log level "${logLevel}". Valid options are: [${config.logLevelList.join(
-    ", ",
-  )}]`;
-  console.error(msg);
-  process.exit(1);
-}
+validate.logLevel({ logLevel });
 if (debug) {
   logLevel = "debug";
 }
 logger.setLevel({ logLevel });
 
-const networkLabelSchema = Joi.string().valid(...config.networkLabelList);
-let networkLabelResult = networkLabelSchema.validate(networkLabel);
-if (networkLabelResult.error) {
-  var msg = `Invalid network "${networkLabel}". Valid options are: [${config.networkLabelList.join(
-    ", ",
-  )}]`;
-  console.error(msg);
-  process.exit(1);
-}
+validate.networkLabel({ networkLabel });
 const network = config.mapNetworkLabelToNetwork[networkLabel];
 
 if (!fs.existsSync(inputFileJson)) {
@@ -132,7 +116,7 @@ let { newMessage }: { newMessage: string } = inputData;
 
 // Setup
 
-import contract from "../artifacts/contracts/HelloWorld.sol/HelloWorld.json";
+import contract from "#root/artifacts/contracts/HelloWorld.sol/HelloWorld.json";
 
 let provider: ethers.Provider;
 
@@ -143,17 +127,17 @@ if (networkLabel == "local") {
   msg = `Connecting to local network at ${network}...`;
   provider = new ethers.JsonRpcProvider(network);
   DEPLOYER_PRIVATE_KEY = LOCAL_HARDHAT_PRIVATE_KEY;
-  DEPLOYED_CONTRACT_ADDRESS = LOCAL_HARDHAT_DEPLOYED_CONTRACT_ADDRESS;
+  DEPLOYED_CONTRACT_ADDRESS = HELLO_WORLD_LOCAL_ADDRESS;
 } else if (networkLabel == "testnet") {
   msg = `Connecting to Sepolia testnet...`;
   provider = new ethers.InfuraProvider(network, INFURA_API_KEY_NAME);
   DEPLOYER_PRIVATE_KEY = SEPOLIA_TESTNET_PRIVATE_KEY;
-  DEPLOYED_CONTRACT_ADDRESS = SEPOLIA_TESTNET_DEPLOYED_CONTRACT_ADDRESS;
+  DEPLOYED_CONTRACT_ADDRESS = HELLO_WORLD_TESTNET_ADDRESS;
 } else if (networkLabel == "mainnet") {
   msg = `Connecting to Ethereum mainnet...`;
   provider = new ethers.InfuraProvider(network, INFURA_API_KEY_NAME);
   DEPLOYER_PRIVATE_KEY = ETHEREUM_MAINNET_PRIVATE_KEY;
-  DEPLOYED_CONTRACT_ADDRESS = ETHEREUM_MAINNET_DEPLOYED_CONTRACT_ADDRESS;
+  DEPLOYED_CONTRACT_ADDRESS = HELLO_WORLD_MAINNET_ADDRESS;
 }
 log(msg);
 provider = provider!;

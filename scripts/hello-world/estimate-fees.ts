@@ -8,6 +8,7 @@ import _ from "lodash";
 import { config } from "#root/config";
 import ethereum from "#root/src/ethereum";
 import { createLogger } from "#root/lib/logging";
+import validate from "#root/lib/validate";
 
 // Environment variables
 import dotenv from "dotenv";
@@ -20,9 +21,6 @@ const {
   MAX_FEE_PER_GAS_GWEI,
   MAX_PRIORITY_FEE_PER_GAS_GWEI,
   INFURA_API_KEY_NAME,
-  LOCAL_HARDHAT_DEPLOYED_CONTRACT_ADDRESS,
-  SEPOLIA_TESTNET_DEPLOYED_CONTRACT_ADDRESS,
-  ETHEREUM_MAINNET_DEPLOYED_CONTRACT_ADDRESS,
 } = process.env;
 
 // Logging
@@ -44,48 +42,24 @@ let { debug, logLevel, network: networkLabel } = options;
 
 // Process and validate arguments
 
-ethereum.validateAddressesSync({
-  addresses: {
-    LOCAL_HARDHAT_DEPLOYED_CONTRACT_ADDRESS,
-    SEPOLIA_TESTNET_DEPLOYED_CONTRACT_ADDRESS,
-    ETHEREUM_MAINNET_DEPLOYED_CONTRACT_ADDRESS,
-  },
-});
-
 config.update({
   MAX_FEE_PER_TRANSACTION_USD,
   MAX_FEE_PER_GAS_GWEI,
   MAX_PRIORITY_FEE_PER_GAS_GWEI,
 });
 
-const logLevelSchema = Joi.string().valid(...config.logLevelList);
-let logLevelResult = logLevelSchema.validate(logLevel);
-if (logLevelResult.error) {
-  var msg = `Invalid log level "${logLevel}". Valid options are: [${config.logLevelList.join(
-    ", ",
-  )}]`;
-  console.error(msg);
-  process.exit(1);
-}
+validate.logLevel({ logLevel });
 if (debug) {
   logLevel = "debug";
 }
 logger.setLevel({ logLevel });
 
-const networkLabelSchema = Joi.string().valid(...config.networkLabelList);
-let networkLabelResult = networkLabelSchema.validate(networkLabel);
-if (networkLabelResult.error) {
-  var msg = `Invalid network "${networkLabel}". Valid options are: [${config.networkLabelList.join(
-    ", ",
-  )}]`;
-  console.error(msg);
-  process.exit(1);
-}
+validate.networkLabel({ networkLabel });
 const network = config.mapNetworkLabelToNetwork[networkLabel];
 
 // Setup
 
-import contract from "../artifacts/contracts/HelloWorld.sol/HelloWorld.json";
+import contract from "#root/artifacts/contracts/HelloWorld.sol/HelloWorld.json";
 
 let provider: ethers.Provider;
 
@@ -94,15 +68,12 @@ let DEPLOYED_CONTRACT_ADDRESS: string | undefined;
 if (networkLabel == "local") {
   msg = `Connecting to local network at ${network}...`;
   provider = new ethers.JsonRpcProvider(network);
-  DEPLOYED_CONTRACT_ADDRESS = LOCAL_HARDHAT_DEPLOYED_CONTRACT_ADDRESS;
 } else if (networkLabel == "testnet") {
   msg = `Connecting to Sepolia testnet...`;
   provider = new ethers.InfuraProvider(network, INFURA_API_KEY_NAME);
-  DEPLOYED_CONTRACT_ADDRESS = SEPOLIA_TESTNET_DEPLOYED_CONTRACT_ADDRESS;
 } else if (networkLabel == "mainnet") {
   msg = `Connecting to Ethereum mainnet...`;
   provider = new ethers.InfuraProvider(network, INFURA_API_KEY_NAME);
-  DEPLOYED_CONTRACT_ADDRESS = ETHEREUM_MAINNET_DEPLOYED_CONTRACT_ADDRESS;
 }
 log(msg);
 provider = provider!;
@@ -111,13 +82,9 @@ const contractFactoryHelloWorld = new ethers.ContractFactory(
   contract.bytecode,
   provider,
 );
-if (!ethers.isAddress(DEPLOYED_CONTRACT_ADDRESS)) {
-  log(`Invalid contract address: ${DEPLOYED_CONTRACT_ADDRESS}`);
-  log(`Switching to a dummy address: ${config.dummyAddress}`);
-  DEPLOYED_CONTRACT_ADDRESS = config.dummyAddress;
-}
+// We're able to use a dummy address because we're not actually calling any methods on the contract.
 const contractHelloWorld = new ethers.Contract(
-  DEPLOYED_CONTRACT_ADDRESS,
+  config.dummyAddress,
   contract.abi,
   provider,
 );
@@ -157,14 +124,6 @@ async function main() {
       console.log(`- ${key} limit exceeded: ${check.msg}`);
     }
   }
-
-  // Check if contract exists at address
-  let address = await contractHelloWorld.getAddress();
-  let check = await ethereum.contractFoundAt({ provider, address });
-  if (!check) {
-    console.log(`\nNo contract found at address ${address}.`);
-  }
-  log(`\nContract found at address: ${address}`);
 
   // Contract method call: update
   const newMessage = "Hello World! Updated.";

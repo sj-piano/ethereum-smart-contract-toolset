@@ -2,13 +2,13 @@
 import Big from "big.js";
 import { program } from "commander";
 import { ethers } from "ethers";
-import Joi from "joi";
 import _ from "lodash";
 
 // Local imports
 import { config } from "#root/config";
 import ethereum from "#root/src/ethereum";
 import { createLogger } from "#root/lib/logging";
+import validate from "#root/lib/validate";
 
 // Controls
 const initialMessage = "Hello World!";
@@ -73,34 +73,18 @@ config.update({
   MAX_PRIORITY_FEE_PER_GAS_GWEI,
 });
 
-const logLevelSchema = Joi.string().valid(...config.logLevelList);
-let logLevelResult = logLevelSchema.validate(logLevel);
-if (logLevelResult.error) {
-  var msg = `Invalid log level "${logLevel}". Valid options are: [${config.logLevelList.join(
-    ", ",
-  )}]`;
-  console.error(msg);
-  process.exit(1);
-}
+validate.logLevel({ logLevel });
 if (debug) {
   logLevel = "debug";
 }
 logger.setLevel({ logLevel });
 
-const networkLabelSchema = Joi.string().valid(...config.networkLabelList);
-let networkLabelResult = networkLabelSchema.validate(networkLabel);
-if (networkLabelResult.error) {
-  var msg = `Invalid network "${networkLabel}". Valid options are: [${config.networkLabelList.join(
-    ", ",
-  )}]`;
-  console.error(msg);
-  process.exit(1);
-}
+validate.networkLabel({ networkLabel });
 const network = config.mapNetworkLabelToNetwork[networkLabel];
 
 // Setup
 
-import contract from "../artifacts/contracts/HelloWorld.sol/HelloWorld.json";
+import contract from "#root/artifacts/contracts/HelloWorld.sol/HelloWorld.json";
 
 let provider: ethers.Provider;
 
