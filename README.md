@@ -162,7 +162,7 @@ This is a contract whose code can be upgraded. It uses the Universal Upgradeable
 - [`eslint-config-prettier`](https://github.com/prettier/eslint-config-prettier): Turns off all ESLint rules that have the potential to interfere with Prettier rules.
 - [`eslint-plugin-prettier`](https://github.com/prettier/eslint-plugin-prettier): Turns Prettier rules into ESLint rules.
 
-Private keys are managed in a `user-config.env` file.
+Private keys are stored in a `user-config.env` file.
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -240,7 +240,7 @@ Notes:
 ### Initial Setup
 
 
-See available commands:  
+See available commands:
 
 ```sh
 task --list
@@ -395,7 +395,7 @@ You can of course change the limits in the `user-config.env` file if you wish, a
 Example output, after setting `MAX_FEE_PER_TRANSACTION_USD = "0.01"`:
 
 ```bash
-stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/estimate-fees.ts
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/HelloWorld/estimate-fees.ts
 
 Contract deployment - estimated fee:
 - baseFeeUsd limit exceeded: Base fee (1.07 USD) exceeds limit specified in config (0.01 USD). Current base fee is 570179.0 gwei (570179000000000 wei, 0.000570179 ETH). Current ETH-USD exchange rate is 1873.22 USD.
@@ -406,12 +406,12 @@ Contract method call: 'update' - estimated fee:
 stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/get-balance.ts --address-file my-data/local-hardhat-address.txt
 10000.0 ETH (18732700.00 USD)
 
-stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/deploy.ts --log-level info
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/HelloWorld/deploy.ts --log-level info
 info:   Connecting to local network at http://localhost:8545...
 info:   Estimated fee: 0.000005338173277105 ETH (0.01 USD)
 - baseFeeUsd: Base fee (1.07 USD) exceeds limit specified in config (0.01 USD). Current base fee is 570179.0 gwei (570179000000000 wei, 0.000570179 ETH). Current ETH-USD exchange rate is 1873.3 USD.
 
-stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/hello-world/update-message.ts --input-file-json my-data/hello-world/update-message-local-network.json
+stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/HelloWorld/update-message.ts --input-file-json my-data/hello-world/update-message-local-network.json
 - baseFeeUsd: Base fee (0.06 USD) exceeds limit specified in config (0.01 USD). Current base fee is 31925.25 gwei (31925250000000 wei, 0.00003192525 ETH). Current ETH-USD exchange rate is 1873.39 USD.
 ```
 
