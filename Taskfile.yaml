@@ -40,7 +40,7 @@ tasks:
     # npx mocha --require ts-node/register test/**/*.ts
     # Example of use:
     # task test -- --grep "should deploy" --debug
-    # ^ Note the extra "--" before the arguments to pass to the command (CLI_ARGS).
+    # ^ Note the extra "--" before the arguments to pass CLI_ARGS to the command.
     cmds:
       - npx ts-mocha --project tsconfig.json test/**/*.ts {{.CLI_ARGS}}
     silent: true
@@ -81,34 +81,8 @@ tasks:
       - npm run --silent ts-node scripts/check-network-connections.ts
     silent: true
 
-  deploy-local:
-    desc: "Deploy the HelloWorld contract to a Hardhat node running locally"
-    cmds:
-      - npm run --silent ts-node scripts/hello-world-deploy.ts --network local
-    silent: true
-
-  deploy-testnet:
-    desc: "Deploy the HelloWorld contract to the Sepolia testnet"
-    cmds:
-      - npm run --silent ts-node scripts/hello-world-deploy.js --network sepolia
-    silent: true
-    prompt: This command will spend testnet Ethereum (SepoliaETH) - Do you want to continue?
-
-  deploy-mainnet:
-    desc: "Deploy the HelloWorld contract to the Ethereum mainnet"
-    cmds:
-      - npm run --silent ts-node scripts/hello-world-deploy.js --network mainnet
-    silent: true
-    prompt: This command will spend Ethereum (ETH) - Do you want to continue?
-
   hello-world-get-message:
-    internal: true
     cmds:
-      - npm run --silent ts-node scripts/hello-world-get-message.js {{.CLI_ARGS}}
+      - npm run --silent ts-node scripts/HelloWorld/get-message.ts -- {{.CLI_ARGS}}
     silent: true
 
-  get-message:
-    desc: "Get the message from the HelloWorld contract"
-    cmds:
-      - task: hello-world-get-message
-    silent: true
