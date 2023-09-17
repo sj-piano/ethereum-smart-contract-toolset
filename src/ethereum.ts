@@ -88,13 +88,7 @@ function deriveAddressSync({ privateKey }: { privateKey: string }) {
   return address;
 }
 
-function validateAddressSync({
-  address,
-  name,
-}: {
-  address: string | undefined;
-  name?: string;
-}) {
+function validateAddressSync({ address, name }: { address: string | undefined; name?: string }) {
   let nameSection = !_.isUndefined(name) ? `${name} ` : "";
   if (_.isUndefined(address)) {
     let msg = `Address ${nameSection}("${address}") is undefined.`;
@@ -107,11 +101,7 @@ function validateAddressSync({
   return true;
 }
 
-function validateAddressesSync({
-  addresses,
-}: {
-  addresses: Record<string, string | undefined>;
-}) {
+function validateAddressesSync({ addresses }: { addresses: Record<string, string | undefined> }) {
   if (!_.keys(addresses).length) {
     throw new Error(`Addresses "${addresses}" must not be empty.`);
   }
@@ -121,30 +111,23 @@ function validateAddressesSync({
   return true;
 }
 
-async function getBalanceETH({
-  provider,
-  address,
-}: {
-  provider: Provider;
-  address: string;
-}) {
+async function getBalanceEth({ provider, address }: { provider: Provider; address: string }) {
   let balanceWei = await provider.getBalance(address);
   let balanceEth = ethers.formatEther(balanceWei);
   balanceEth = new Big(balanceEth).toFixed(config.ETH_DP);
   return balanceEth;
 }
 
-async function contractFoundAt({
-  provider,
-  address,
-}: {
-  provider: Provider;
-  address: string;
-}) {
+async function getBytecode({ provider, address }: { provider: Provider; address: string }) {
   if (!ethers.isAddress(address)) {
     throw new Error(`Address "${address}" is invalid.`);
   }
-  let result = await provider.getCode(address);
+  const result = await provider.getCode(address);
+  return result;
+}
+
+async function contractExistsAt({ provider, address }: { provider: Provider; address: string }) {
+  const result = await getBytecode({ provider, address });
   if (result == "0x") return false;
   return true;
 }
@@ -156,22 +139,14 @@ async function getGasPrices({ provider }: { provider: Provider }) {
   const feeData = await provider.getFeeData();
   const { gasPrice } = feeData;
   const gasPriceWei = gasPrice?.toString() ?? "0";
-  const averagePriorityFeePerGasWei = (
-    BigInt(gasPriceWei) - BigInt(baseFeePerGasWei)
-  ).toString();
+  const averagePriorityFeePerGasWei = (BigInt(gasPriceWei) - BigInt(baseFeePerGasWei)).toString();
   // Convert values to Gwei and Ether.
   const baseFeePerGasGwei = ethers.formatUnits(baseFeePerGasWei, "gwei");
   const baseFeePerGasEth = ethers.formatUnits(baseFeePerGasWei, "ether");
   const gasPriceGwei = ethers.formatUnits(gasPriceWei, "gwei");
   const gasPriceEth = ethers.formatUnits(gasPriceWei, "ether");
-  const averagePriorityFeePerGasGwei = ethers.formatUnits(
-    averagePriorityFeePerGasWei,
-    "gwei",
-  );
-  const averagePriorityFeePerGasEth = ethers.formatUnits(
-    averagePriorityFeePerGasWei,
-    "ether",
-  );
+  const averagePriorityFeePerGasGwei = ethers.formatUnits(averagePriorityFeePerGasWei, "gwei");
+  const averagePriorityFeePerGasEth = ethers.formatUnits(averagePriorityFeePerGasWei, "ether");
   const basicPaymentCostEth = ethers.formatUnits(
     (BigInt(gasPriceWei) + BigInt(averagePriorityFeePerGasWei)) * 21000n,
     "ether",
@@ -210,9 +185,7 @@ async function getGasPricesWithFiat({ provider }: { provider: Provider }) {
   const baseFeePerGasUsd = Big(gasPrices.baseFeePerGasEth)
     .mul(Big(ethToUsd))
     .toFixed(config.ETH_DP);
-  const gasPriceUsd = Big(gasPrices.gasPriceEth)
-    .mul(Big(ethToUsd))
-    .toFixed(config.ETH_DP);
+  const gasPriceUsd = Big(gasPrices.gasPriceEth).mul(Big(ethToUsd)).toFixed(config.ETH_DP);
   const averagePriorityFeePerGasUsd = Big(gasPrices.averagePriorityFeePerGasEth)
     .mul(Big(ethToUsd))
     .toFixed(config.ETH_DP);
@@ -228,15 +201,7 @@ async function getGasPricesWithFiat({ provider }: { provider: Provider }) {
     basicPaymentCostUsd,
   };
 }
-
-async function estimateFees({
-  provider,
-  txRequest,
-}: {
-  provider: Provider;
-  txRequest: TransactionRequest;
-}) {
-  // We examine a specific transaction request and estimate its fees, taking into account the limits specified in config.
+function getFeeLimitChecksObj(): { [key: string]: any } {
   let feeLimitKeys = "baseFeePerGasWei baseFeeUsd maxFeeUsd".split(" ");
   let feeLimitChecks: { [key: string]: any } = {};
   feeLimitKeys.forEach((key) => {
@@ -244,29 +209,45 @@ async function estimateFees({
   });
   feeLimitChecks.limitExceededKeys = [];
   feeLimitChecks.anyLimitExceeded = false;
+  return feeLimitChecks;
+}
+
+// Note: This only works for a single transaction.
+// It's difficult to estimate fees for a series of transactions...
+async function estimateFeesForTx({
+  provider,
+  txRequest,
+}: {
+  provider: Provider;
+  txRequest: TransactionRequest;
+}) {
+  // We examine a specific transaction request and estimate its fees, taking into account the limits specified in config.
   const estimatedGasBigInt = await provider.estimateGas(txRequest);
   const estimatedGas = estimatedGasBigInt.toString();
   deb(`estimatedGas: ${estimatedGas}`);
-  const gasLimit = Big(estimatedGas)
-    .mul(Big(config.gasLimitMultiplier))
-    .toFixed(0);
+  return estimateFeesFromGas({ provider, estimatedGas });
+}
+
+async function estimateFeesFromGas({
+  provider,
+  estimatedGas,
+}: {
+  provider: Provider;
+  estimatedGas: string | bigint;
+}) {
+  estimatedGas = estimatedGas.toString();
+  let feeLimitChecks = getFeeLimitChecksObj();
+  const gasLimit = Big(estimatedGas).mul(Big(config.gasLimitMultiplier)).toFixed(0);
   deb(`gasLimit: ${gasLimit}`);
   const gasPrices = await getGasPricesWithFiat({ provider });
-  const {
-    baseFeePerGasWei,
-    baseFeePerGasGwei,
-    averagePriorityFeePerGasWei,
-    ethToUsd,
-  } = gasPrices;
+  const { baseFeePerGasWei, baseFeePerGasGwei, averagePriorityFeePerGasWei, ethToUsd } = gasPrices;
   // Check if the base-fee-per-gas is greater than our Wei limit.
   if (Big(baseFeePerGasWei).gt(Big(config.maxFeePerGasWei))) {
     let msg = `Current base fee per gas (${baseFeePerGasGwei} gwei, ${baseFeePerGasWei} wei) exceeds limit specified in config (${config.maxFeePerGasGwei} gwei, ${config.maxFeePerGasWei} wei).`;
     feeLimitChecks.baseFeePerGasWei = { exceeded: true, msg };
   }
   // Check if the base fee is greater than our USD limit.
-  const baseFeeWei = Big(estimatedGas)
-    .mul(Big(baseFeePerGasWei))
-    .toFixed(config.WEI_DP);
+  const baseFeeWei = Big(estimatedGas).mul(Big(baseFeePerGasWei)).toFixed(config.WEI_DP);
   deb(`baseFeeWei: ${baseFeeWei} wei`);
   const baseFeeGwei = ethers.formatUnits(baseFeeWei, "gwei");
   const baseFeeEth = ethers.formatEther(baseFeeWei).toString();
@@ -279,15 +260,11 @@ async function estimateFees({
   }
   // Calculate a maxFeePerGasWei for this transaction, based on the current ETH-USD price.
   // - Using this limit will prevent the later addition of a priority fee from exceeding our USD limit.
-  const feeLimitEth = Big(config.maxFeePerTransactionUsd)
-    .div(Big(ethToUsd))
-    .toFixed(config.ETH_DP);
+  const feeLimitEth = Big(config.maxFeePerTransactionUsd).div(Big(ethToUsd)).toFixed(config.ETH_DP);
   deb(`feeLimitEth: ${feeLimitEth} ETH`);
   const feeLimitWei = ethers.parseEther(feeLimitEth).toString();
   deb(`feeLimitWei: ${feeLimitWei} wei`);
-  const maxFeePerGasWei = Big(feeLimitWei)
-    .div(Big(estimatedGas))
-    .toFixed(config.WEI_DP);
+  const maxFeePerGasWei = Big(feeLimitWei).div(Big(estimatedGas)).toFixed(config.WEI_DP);
   deb(`maxFeePerGasWei: ${maxFeePerGasWei} wei`);
   // Calculate a max-priority-fee-per-gas for this transaction.
   // - We choose a max priority fee that is a multiple of the average priority fee.
@@ -298,9 +275,7 @@ async function estimateFees({
   if (Big(maxPriorityFeePerGasWei).gt(Big(config.maxPriorityFeePerGasWei))) {
     let msg = `Max priority fee per gas (${maxPriorityFeePerGasWei} wei) exceeds limit specified in config (${config.maxPriorityFeePerGasWei} wei).`;
     msg += ` Using config limit instead.`;
-    let comparatorWord = Big(averagePriorityFeePerGasWei).gt(
-      Big(config.maxPriorityFeePerGasWei),
-    )
+    let comparatorWord = Big(averagePriorityFeePerGasWei).gt(Big(config.maxPriorityFeePerGasWei))
       ? "greater"
       : "less";
     msg += ` Note: averagePriorityFeePerGasWei = ${averagePriorityFeePerGasWei} wei, which is ${comparatorWord} than config limit.`;
@@ -315,12 +290,8 @@ async function estimateFees({
   deb(`maxPriorityFeeWei: ${maxPriorityFeeWei} wei`);
   const maxPriorityFeeGwei = ethers.formatUnits(maxPriorityFeeWei, "gwei");
   const maxPriorityFeeEth = ethers.formatEther(maxPriorityFeeWei).toString();
-  const maxPriorityFeeUsd = Big(maxPriorityFeeEth)
-    .mul(Big(ethToUsd))
-    .toFixed(config.USD_DP);
-  const maxFeeWei = Big(baseFeeWei)
-    .plus(Big(maxPriorityFeeWei))
-    .toFixed(config.WEI_DP);
+  const maxPriorityFeeUsd = Big(maxPriorityFeeEth).mul(Big(ethToUsd)).toFixed(config.USD_DP);
+  const maxFeeWei = Big(baseFeeWei).plus(Big(maxPriorityFeeWei)).toFixed(config.WEI_DP);
   deb(`maxFeeWei: ${maxFeeWei} wei`);
   const maxFeeGwei = ethers.formatUnits(maxFeeWei, "gwei");
   const maxFeeEth = ethers.formatEther(maxFeeWei).toString();
@@ -338,13 +309,8 @@ async function estimateFees({
     let unusablePriorityFeeEth = Big(unusablePriorityFeeUsd)
       .div(Big(ethToUsd))
       .toFixed(config.ETH_DP);
-    let unusablePriorityFeeWei = ethers
-      .parseEther(unusablePriorityFeeEth)
-      .toString();
-    let unusablePriorityFeeGwei = ethers.formatUnits(
-      unusablePriorityFeeWei,
-      "gwei",
-    );
+    let unusablePriorityFeeWei = ethers.parseEther(unusablePriorityFeeEth).toString();
+    let unusablePriorityFeeGwei = ethers.formatUnits(unusablePriorityFeeWei, "gwei");
     let msg2 = ` The transaction won't be able to use its entire priority fee. Unusable amount = (${unusablePriorityFeeGwei} Gwei, ${unusablePriorityFeeUsd} USD), out of total available = (${maxPriorityFeeGwei} gwei, ${maxPriorityFeeUsd} USD).`;
     msg += msg2;
     deb(msg);
@@ -363,12 +329,10 @@ async function estimateFees({
     feeGwei = ethers.formatUnits(feeWei, "gwei");
   }
   // Set the anyLimitExceeded flag.
-  feeLimitKeys.forEach((key) => {
-    if (feeLimitChecks[key].exceeded) {
-      feeLimitChecks.limitExceededKeys.push(key);
-      feeLimitChecks.anyLimitExceeded = true;
-    }
-  });
+  feeLimitChecks.limitExceededKeys = Object.keys(feeLimitChecks).filter(
+    (key) => feeLimitChecks[key].exceeded,
+  );
+  feeLimitChecks.anyLimitExceeded = feeLimitChecks.limitExceededKeys.length > 0;
   return {
     gasPrices,
     estimatedGas,
@@ -420,15 +384,10 @@ async function sendEth({
     to: receiverAddress,
     value: BigInt(amountWei),
   };
-  let estimatedFees = await estimateFees({ provider, txRequest });
+  let estimatedFees = await estimateFeesForTx({ provider, txRequest });
   //deb(estimatedFees)
-  const {
-    maxFeePerGasWei,
-    maxPriorityFeePerGasWei,
-    feeEth,
-    feeUsd,
-    feeLimitChecks,
-  } = estimatedFees;
+  const { maxFeePerGasWei, maxPriorityFeePerGasWei, feeEth, feeUsd, feeLimitChecks } =
+    estimatedFees;
   if (feeLimitChecks.anyLimitExceeded) {
     for (let key of feeLimitChecks.limitExceededKeys) {
       let check = feeLimitChecks[key];
@@ -474,13 +433,7 @@ async function signAndSendTransaction({
   return txResponse;
 }
 
-async function getTxConfirms({
-  provider,
-  txHash,
-}: {
-  provider: Provider;
-  txHash: string;
-}) {
+async function getTxConfirms({ provider, txHash }: { provider: Provider; txHash: string }) {
   let blockNumber = await provider.getBlockNumber();
   //deb(`blockNumber=${blockNumber}`)
   let txReceipt = await provider.getTransactionReceipt(txHash);
@@ -493,13 +446,7 @@ async function getTxConfirms({
   return confirmations;
 }
 
-async function getTxFees({
-  provider,
-  txHash,
-}: {
-  provider: Provider;
-  txHash: string;
-}) {
+async function getTxFees({ provider, txHash }: { provider: Provider; txHash: string }) {
   // We assume that the transaction is type 2 (EIP-1559).
   let txReceipt = await provider.getTransactionReceipt(txHash);
   if (txReceipt == null) {
@@ -525,12 +472,14 @@ export default {
   deriveAddressSync,
   validateAddressSync,
   validateAddressesSync,
-  getBalanceETH,
-  contractFoundAt,
+  getBalanceEth,
+  getBytecode,
+  contractExistsAt,
   getGasPrices,
   getEthereumPriceInUsd,
   getGasPricesWithFiat,
-  estimateFees,
+  estimateFeesForTx,
+  estimateFeesFromGas,
   sendEth,
   signAndSendTransaction,
   getTxConfirms,
