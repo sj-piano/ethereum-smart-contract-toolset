@@ -39,11 +39,7 @@ const { logger, log, deb } = createLogger();
 program
   .option("-d, --debug", "log debug information")
   .option("--log-level <logLevel>", "Specify log level.", "error")
-  .option(
-    "--network <network>",
-    "specify the Ethereum network to connect to",
-    "local",
-  );
+  .option("--network <network>", "specify the Ethereum network to connect to", "local");
 program.parse();
 const options = program.opts();
 if (options.debug) console.log(options);
@@ -106,11 +102,7 @@ if (networkLabel == "local") {
 log(msg);
 DEPLOYER_PRIVATE_KEY = DEPLOYER_PRIVATE_KEY!;
 let signer = new ethers.Wallet(DEPLOYER_PRIVATE_KEY, provider!);
-let contractFactoryHelloWorld = new ethers.ContractFactory(
-  contract.abi,
-  contract.bytecode,
-  signer,
-);
+let contractFactoryHelloWorld = new ethers.ContractFactory(contract.abi, contract.bytecode, signer);
 
 // Run main function
 
@@ -124,22 +116,14 @@ main().catch((error) => {
 async function main() {
   // Estimate fees.
   // - Stop if any fee limit is exceeded.
-  let txRequest = await contractFactoryHelloWorld.getDeployTransaction(
-    initialMessage,
-  );
-  const estimatedFees = await ethereum.estimateFees({
+  let txRequest = await contractFactoryHelloWorld.getDeployTransaction(initialMessage);
+  const estimatedFees = await ethereum.estimateFeesForTx({
     provider,
     txRequest,
   });
   deb(estimatedFees);
-  const {
-    gasLimit,
-    maxFeePerGasWei,
-    maxPriorityFeePerGasWei,
-    feeEth,
-    feeUsd,
-    feeLimitChecks,
-  } = estimatedFees;
+  const { gasLimit, maxFeePerGasWei, maxPriorityFeePerGasWei, feeEth, feeUsd, feeLimitChecks } =
+    estimatedFees;
   log(`Estimated fee: ${feeEth} ETH (${feeUsd} USD)`);
   if (feeLimitChecks.anyLimitExceeded) {
     for (let key of feeLimitChecks.limitExceededKeys) {
@@ -156,9 +140,7 @@ async function main() {
   const signerAddress = await signer.getAddress();
   const signerBalanceWei = await provider.getBalance(signerAddress);
   const signerBalanceEth = ethers.formatEther(signerBalanceWei);
-  const signerBalanceUsd = Big(ethToUsd)
-    .mul(Big(signerBalanceEth))
-    .toFixed(config.USD_DP);
+  const signerBalanceUsd = Big(ethToUsd).mul(Big(signerBalanceEth)).toFixed(config.USD_DP);
   log(`Signer balance: ${signerBalanceEth} ETH (${signerBalanceUsd} USD)`);
   if (Big(signerBalanceEth).lt(Big(feeEth))) {
     console.error(
@@ -170,14 +152,11 @@ async function main() {
   // Deploy contract.
   // - Use the estimated fee values.
   // - Wait for deployment to complete.
-  const contractHelloWorld = await contractFactoryHelloWorld.deploy(
-    initialMessage,
-    {
-      gasLimit,
-      maxFeePerGas: maxFeePerGasWei,
-      maxPriorityFeePerGas: maxPriorityFeePerGasWei,
-    },
-  );
+  const contractHelloWorld = await contractFactoryHelloWorld.deploy(initialMessage, {
+    gasLimit,
+    maxFeePerGas: maxFeePerGasWei,
+    maxPriorityFeePerGas: maxPriorityFeePerGasWei,
+  });
   await contractHelloWorld.waitForDeployment();
 
   // Examine the results and find out how much was spent.

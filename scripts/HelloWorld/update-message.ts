@@ -41,15 +41,8 @@ const { logger, log, deb } = createLogger();
 program
   .option("-d, --debug", "log debug information")
   .option("--log-level <logLevel>", "Specify log level.", "error")
-  .option(
-    "--network <network>",
-    "specify the Ethereum network to connect to",
-    "local",
-  )
-  .requiredOption(
-    "--input-file-json <inputFileJson>",
-    "Path to JSON file containing input data.",
-  );
+  .option("--network <network>", "specify the Ethereum network to connect to", "local")
+  .requiredOption("--input-file-json <inputFileJson>", "Path to JSON file containing input data.");
 program.parse();
 const options = program.opts();
 if (options.debug) console.log(options);
@@ -147,11 +140,7 @@ if (!ethers.isAddress(DEPLOYED_CONTRACT_ADDRESS)) {
   logger.error(`Invalid contract address: ${DEPLOYED_CONTRACT_ADDRESS}`);
   process.exit(1);
 }
-const contractHelloWorld = new ethers.Contract(
-  DEPLOYED_CONTRACT_ADDRESS,
-  contract.abi,
-  signer,
-);
+const contractHelloWorld = new ethers.Contract(DEPLOYED_CONTRACT_ADDRESS, contract.abi, signer);
 
 // Run main function
 
@@ -167,7 +156,7 @@ async function main({ newMessage }: { newMessage: string }) {
   deb(`Current block number: ${blockNumber}`);
 
   let address = await contractHelloWorld.getAddress();
-  let check = await ethereum.contractFoundAt({ provider, address });
+  let check = await ethereum.contractExistsAt({ provider, address });
   if (!check) {
     logger.error(`No contract found at address ${address}.`);
     process.exit(1);
@@ -184,22 +173,14 @@ async function updateMessage({ newMessage }: { newMessage: string }) {
 
   // Estimate fees.
   // - Stop if any fee limit is exceeded.
-  const txRequest = await contractHelloWorld.update.populateTransaction(
-    newMessage,
-  );
-  const estimatedFees = await ethereum.estimateFees({
+  const txRequest = await contractHelloWorld.update.populateTransaction(newMessage);
+  const estimatedFees = await ethereum.estimateFeesForTx({
     provider,
     txRequest,
   });
   deb(estimatedFees);
-  const {
-    gasLimit,
-    maxFeePerGasWei,
-    maxPriorityFeePerGasWei,
-    feeEth,
-    feeUsd,
-    feeLimitChecks,
-  } = estimatedFees;
+  const { gasLimit, maxFeePerGasWei, maxPriorityFeePerGasWei, feeEth, feeUsd, feeLimitChecks } =
+    estimatedFees;
   log(`Estimated fee: ${feeEth} ETH (${feeUsd} USD)`);
   if (feeLimitChecks.anyLimitExceeded) {
     for (let key of feeLimitChecks.limitExceededKeys) {
@@ -216,9 +197,7 @@ async function updateMessage({ newMessage }: { newMessage: string }) {
   const signerAddress = await signer.getAddress();
   const signerBalanceWei = await provider.getBalance(signerAddress);
   const signerBalanceEth = ethers.formatEther(signerBalanceWei);
-  const signerBalanceUsd = Big(ethToUsd)
-    .mul(Big(signerBalanceEth))
-    .toFixed(config.USD_DP);
+  const signerBalanceUsd = Big(ethToUsd).mul(Big(signerBalanceEth)).toFixed(config.USD_DP);
   log(`Signer balance: ${signerBalanceEth} ETH (${signerBalanceUsd} USD)`);
   if (Big(signerBalanceEth).lt(Big(feeEth))) {
     console.error(
