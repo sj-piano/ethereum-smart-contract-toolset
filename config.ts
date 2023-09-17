@@ -5,7 +5,7 @@ import _ from "lodash";
 import { ethers } from "ethers";
 
 // Local imports
-import utils from "#root/lib/utils";
+import validate from "#root/lib/validate";
 
 /* Notes:
 - The main application or script will load the config, apply changes from cmdline arguments and environment variables if required, and pass it to the other modules or functions as an object.
@@ -37,9 +37,8 @@ class Config {
     this._maxFeePerGasGwei = "0";
     this._maxPriorityFeePerGasGwei = "0";
     this.gasLimitMultiplier = "1.0";
-    this.averagePriorityFeeMultiplier = "1.5";
-    this.eth_usd_price_url =
-      "https://api.pro.coinbase.com/products/ETH-USD/ticker";
+    this.averagePriorityFeeMultiplier = "1.0";
+    this.eth_usd_price_url = "https://api.pro.coinbase.com/products/ETH-USD/ticker";
     this.maxFeePerGasWei = "0";
     this.maxPriorityFeePerGasWei = "0";
     this.networkLabelList = "local testnet mainnet".split(" ");
@@ -71,9 +70,7 @@ class Config {
 
   set maxPriorityFeePerGasGwei(newValue: string) {
     this._maxPriorityFeePerGasGwei = newValue;
-    this.maxPriorityFeePerGasWei = ethers
-      .parseUnits(newValue, "gwei")
-      .toString();
+    this.maxPriorityFeePerGasWei = ethers.parseUnits(newValue, "gwei").toString();
   }
 
   // Methods
