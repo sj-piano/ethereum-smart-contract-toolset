@@ -99,10 +99,10 @@ See the balance of the address that will deploy the contract:
 `npm exec -- ts-node scripts/get-balance.ts --address-file my-data/local-hardhat-address.txt`
 
 See fee estimations for the different contract operations, including deployment:  
-`npm exec -- ts-node scripts/hello-world/estimate-fees.ts`
+`npm exec -- ts-node scripts/HelloWorld/estimate-fees.ts`
 
 Deploy the HelloWorld contract:  
-`npm exec -- ts-node scripts/hello-world/deploy.ts --log-level info`
+`npm exec -- ts-node scripts/HelloWorld/deploy.ts --log-level info`
 
 This will output an address. Copy this address into the `user-config.env` file as `HELLO_WORLD_LOCAL_ADDRESS`.
 
@@ -110,25 +110,25 @@ Confirm deployment:
 `npm exec -- ts-node scripts/check-contract-exists --debug --addressName='HELLO_WORLD_LOCAL_ADDRESS'`
 
 Print the message stored in the contract:  
-`npm exec -- ts-node scripts/hello-world/get-message.ts --debug`
+`npm exec -- ts-node scripts/HelloWorld/get-message.ts --debug`
 
 Create a new input file:  
-`cp my-data/hello-world/example-update-message.json my-data/hello-world/update-message-local.json`
+`cp my-data/HelloWorld/example-update-message.json my-data/HelloWorld/update-message-local.json`
 
 Open it and specify a new message e.g. `Hello Mars ! (local)`.
 
 Update the message stored in the contract:  
-`npm exec -- ts-node scripts/hello-world/update-message.ts --input-file-json my-data/hello-world/update-message-local.json --log-level info`
+`npm exec -- ts-node scripts/HelloWorld/update-message.ts --input-file-json my-data/HelloWorld/update-message-local.json --log-level info`
 
 Print the new message stored in the contract:  
-`npm exec -- ts-node scripts/hello-world/get-message.ts`
+`npm exec -- ts-node scripts/HelloWorld/get-message.ts`
 
 Example output:
 
 ```bash
 stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/get-balance.ts --address-file my-data/local-hardhat-address.txt
 10000.0 ETH (18741900.00 USD)
-stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/hello-world/estimate-fees.ts
+stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/HelloWorld/estimate-fees.ts
 
 Contract deployment - estimated fee:
 - feeEth: 0.0013185389375
@@ -138,7 +138,7 @@ Contract method call: 'update' - estimated fee:
 - feeEth: 0.0000502390625
 - feeUsd: 0.09
 
-stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/hello-world/deploy.ts --log-level info
+stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/HelloWorld/deploy.ts --log-level info
 info:   Connecting to local network at http://localhost:8545...
 info:   Estimated fee: 0.0013185389375 ETH (2.47 USD)
 info:   Signer balance: 10000.0 ETH (18742000.00 USD)
@@ -158,7 +158,7 @@ info:   Connecting to local network at http://localhost:8545...
 debug:  Current block number: 1
 Contract found at address: 0x5FbDB2315678afecb367f032d93F642f64180aa3
 
-stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/hello-world/get-message.ts --debug
+stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/HelloWorld/get-message.ts --debug
 { logLevel: 'error', network: 'local', debug: true }
 info:   Connecting to local network at http://localhost:8545...
 debug:  Current block number: 1
@@ -166,9 +166,9 @@ info:   Contract found at address: 0x5FbDB2315678afecb367f032d93F642f64180aa3
 info:   Message stored in HelloWorld contract:
 Hello World!
 
-stjohn@judgement:~/work/contract-toolset$ cp my-data/hello-world/example-update-message.json my-data/hello-world/update-message-local.json
+stjohn@judgement:~/work/contract-toolset$ cp my-data/HelloWorld/example-update-message.json my-data/HelloWorld/update-message-local.json
 
-stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/hello-world/update-message.ts --input-file-json my-data/hello-world/update-message-local.json --log-level info
+stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/HelloWorld/update-message.ts --input-file-json my-data/HelloWorld/update-message-local.json --log-level info
 info:   Connecting to local network at http://localhost:8545...
 info:   Contract found at address: 0x5FbDB2315678afecb367f032d93F642f64180aa3
 info:   Message stored in HelloWorld contract: Hello World!
@@ -179,7 +179,7 @@ info:   Final fee: 0.00007725958865898 ETH (0.14 USD)
 The new message is:
 Hello Mars ! (local)
 
-stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/hello-world/get-message.ts
+stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/HelloWorld/get-message.ts
 Hello Mars ! (local)
 ```
 
@@ -198,10 +198,10 @@ See the balance of the address that will deploy the contract:
 `npm exec -- ts-node scripts/get-balance.ts --address-file my-data/sepolia-testnet-address.txt`
 
 See fee estimations for the different contract operations, including deployment:  
-`npm exec -- ts-node scripts/hello-world/estimate-fees.ts --network=testnet`
+`npm exec -- ts-node scripts/HelloWorld/estimate-fees.ts --network=testnet`
 
 Deploy the contract to the Sepolia testnet:  
-`npm exec -- ts-node scripts/hello-world/deploy.ts --network=testnet`
+`npm exec -- ts-node scripts/HelloWorld/deploy.ts --network=testnet`
 
 This will output an address. Copy this address into the `user-config.env` file as `HELLO_WORLD_TESTNET_ADDRESS`.
 
@@ -209,18 +209,18 @@ Confirm deployment:
 `npm exec -- ts-node scripts/check-contract-exists --network=testnet --addressName='HELLO_WORLD_TESTNET_ADDRESS'`
 
 Print the message stored in the contract:  
-`npm exec -- ts-node scripts/hello-world/get-message.ts --network=testnet`
+`npm exec -- ts-node scripts/HelloWorld/get-message.ts --network=testnet`
 
-Create a new input file:
-`cp my-data/hello-world/example-update-message.json my-data/hello-world/update-message-testnet.json`
+Create a new input file:  
+`cp my-data/HelloWorld/example-update-message.json my-data/HelloWorld/update-message-testnet.json`
 
 Open it and specify a new message e.g. `Hello Mars ! (testnet)`.
 
 Update the message stored in the contract:  
-`npm exec -- ts-node scripts/hello-world/update-message.ts --network=testnet --input-file-json my-data/hello-world/update-message-testnet.json`
+`npm exec -- ts-node scripts/HelloWorld/update-message.ts --network=testnet --input-file-json my-data/HelloWorld/update-message-testnet.json`
 
 Print the new message stored in the contract:  
-`npm exec -- ts-node scripts/hello-world/get-message.ts --network=testnet`
+`npm exec -- ts-node scripts/HelloWorld/get-message.ts --network=testnet`
 
 Example output:
 
@@ -228,7 +228,7 @@ Example output:
 stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/get-balance.ts --network=testnet --address-file my-data/sepolia-testnet-address.txt
 0.409023392670777583 ETH (780.81 USD)
 
-stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/estimate-fees.ts --network=testnet
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/HelloWorld/estimate-fees.ts --network=testnet
 
 Contract deployment - estimated fee:
 - feeEth: 0.000000001001234324
@@ -238,22 +238,22 @@ Contract method call: 'update' - estimated fee:
 - feeEth: 0.000000000038147344
 - feeUsd: 0.00
 
-stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/deploy.ts --network=testnet
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/HelloWorld/deploy.ts --network=testnet
 0x02bCCb6Fa3e24b14566e571656EE53A7723884f7
 
 stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/check-contract-exists --network=testnet --addressName='HELLO_WORLD_TESTNET_ADDRESS'
 Contract found at address: 0x02bCCb6Fa3e24b14566e571656EE53A7723884f7
 
-stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/get-message.ts --network=testnet
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/HelloWorld/get-message.ts --network=testnet
 Hello World!
 
-stjohn@judgement:~/work/contract-template$ cp my-data/hello-world/example-update-message.json my-data/hello-world/update-message-testnet.json
+stjohn@judgement:~/work/contract-template$ cp my-data/HelloWorld/example-update-message.json my-data/HelloWorld/update-message-testnet.json
 
-stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/update-message.ts --network=testnet --input-file-json my-data/hello-world/update-message-testnet.json
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/HelloWorld/update-message.ts --network=testnet --input-file-json my-data/HelloWorld/update-message-testnet.json
 The new message is:
 Hello Mars ! (testnet)
 
-stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/get-message.ts --network=testnet
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/HelloWorld/get-message.ts --network=testnet
 Hello Mars ! (testnet)
 ```
 
@@ -270,12 +270,12 @@ See the balance of the address that will deploy the contract:
 `npm exec -- ts-node scripts/get-balance.ts --address-file my-data/ethereum-mainnet-address.txt`
 
 See fee estimations for the different contract operations, including deployment:  
-`npm exec -- ts-node scripts/hello-world/estimate-fees.ts --network=mainnet`
+`npm exec -- ts-node scripts/HelloWorld/estimate-fees.ts --network=mainnet`
 
 If a fee limit is exceeded, and you are willing to spend the money, increase the `MAX_FEE_PER_TRANSACTION_USD` value in `user-config.env`. Re-run the `hello-world/estimate-fees.ts` command above to confirm that no fee limit will be exceeded.
 
 Deploy the contract to the Ethereum mainnet:  
-`npm exec -- ts-node scripts/hello-world/deploy.ts --network=mainnet --log-level info`
+`npm exec -- ts-node scripts/HelloWorld/deploy.ts --network=mainnet --log-level info`
 
 This will output an address. Copy this address into the `user-config.env` file as `HELLO_WORLD_MAINNET_ADDRESS`.
 
@@ -283,18 +283,18 @@ Confirm deployment:
 `npm exec -- ts-node scripts/check-contract-exists --network=mainnet --addressName='HELLO_WORLD_MAINNET_ADDRESS' --log-level info`
 
 Print the message stored in the contract:  
-`npm exec -- ts-node scripts/hello-world/get-message.ts --network=mainnet --log-level info`
+`npm exec -- ts-node scripts/HelloWorld/get-message.ts --network=mainnet --log-level info`
 
 Create a new input file:  
-`cp my-data/hello-world/example-update-message.json my-data/hello-world/update-message-mainnet.json`
+`cp my-data/HelloWorld/example-update-message.json my-data/HelloWorld/update-message-mainnet.json`
 
 Open it and specify a new message e.g. `Hello Mars ! (mainnet)`.
 
 Update the message stored in the contract:  
-`npm exec -- ts-node scripts/hello-world/update-message.ts --network=mainnet --log-level info --input-file-json my-data/hello-world/update-message-mainnet.json`
+`npm exec -- ts-node scripts/HelloWorld/update-message.ts --network=mainnet --log-level info --input-file-json my-data/HelloWorld/update-message-mainnet.json`
 
 Print the new message stored in the contract:  
-`npm exec -- ts-node scripts/hello-world/get-message.ts --network=mainnet --log-level info`
+`npm exec -- ts-node scripts/HelloWorld/get-message.ts --network=mainnet --log-level info`
 
 Example output:
 
@@ -304,7 +304,7 @@ info:   Connecting to Ethereum mainnet...
 info:   Getting balance for address 0x4A846013314b892Be429F8626487109DD7b494a0...
 0.042281201108669793 ETH (80.73 USD)
 
-stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/estimate-fees.ts --network=mainnet
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/HelloWorld/estimate-fees.ts --network=mainnet
 
 Contract deployment - estimated fee:
 - baseFeeUsd limit exceeded: Base fee (17.47 USD) exceeds limit specified in config (5.00 USD). Current base fee is 9149184.714182905 gwei (9149184714182905 wei, 0.009149184714182905 ETH). Current ETH-USD exchange rate is 1909.52 USD.
@@ -315,7 +315,7 @@ Contract method call: 'update' - estimated fee:
 
 # Here, after seeing the estimated fees, I set the MAX_FEE_PER_TRANSACTION_USD value in user-config.env to "20.00".
 
-stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/estimate-fees.ts --network=mainnet
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/HelloWorld/estimate-fees.ts --network=mainnet
 
 Contract deployment - estimated fee:
 - feeEth: 0.009101423868100018
@@ -325,7 +325,7 @@ Contract method call: 'update' - estimated fee:
 - feeEth: 0.000346767124202408
 - feeUsd: 0.66
 
-stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/deploy.ts --network=mainnet --log-level info
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/HelloWorld/deploy.ts --network=mainnet --log-level info
 info:   Connecting to Ethereum mainnet...
 info:   Estimated fee: 0.009271102473677687 ETH (17.71 USD)
 info:   Signer balance: 0.042281201108669793 ETH (80.77 USD)
@@ -337,13 +337,13 @@ stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/check-con
 info:   Connecting to Ethereum mainnet...
 Contract found at address: 0xc2963E4f4C8456b21734c7c4811327A94324851E
 
-stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/get-message.ts --network=mainnet --log-level info
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/HelloWorld/get-message.ts --network=mainnet --log-level info
 info:   Connecting to Ethereum mainnet...
 info:   Contract found at address: 0xc2963E4f4C8456b21734c7c4811327A94324851E
 info:   Message stored in HelloWorld contract:
 Hello World!
 
-stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/update-message.ts --network=mainnet --log-level info --input-file-json my-data/hello-world/update-message-mainnet.json
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/HelloWorld/update-message.ts --network=mainnet --log-level info --input-file-json my-data/HelloWorld/update-message-mainnet.json
 info:   Connecting to Ethereum mainnet...
 info:   Contract found at address: 0xc2963E4f4C8456b21734c7c4811327A94324851E
 info:   Message stored in HelloWorld contract: Hello World!
@@ -354,7 +354,7 @@ info:   Final fee: 0.000581844011532384 ETH (1.11 USD)
 The new message is:
 Hello Mars ! (mainnet)
 
-stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/hello-world/get-message.ts --network=mainnet --log-level info
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/HelloWorld/get-message.ts --network=mainnet --log-level info
 info:   Connecting to Ethereum mainnet...
 info:   Contract found at address: 0xc2963E4f4C8456b21734c7c4811327A94324851E
 info:   Message stored in HelloWorld contract:
