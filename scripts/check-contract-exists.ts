@@ -133,7 +133,7 @@ async function main({ contractAddress }: { contractAddress: string }) {
 
   let address = contractAddress;
 
-  let check = await ethereum.contractFoundAt({ provider, address });
+  let check = await ethereum.contractExistsAt({ provider, address });
   if (!check) {
     console.error(`No contract found at address: ${address}`);
     process.exit(1);

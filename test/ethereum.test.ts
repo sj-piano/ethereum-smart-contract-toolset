@@ -3,7 +3,7 @@ import hardhat, { ethers } from "hardhat";
 //import helpers from "@nomicfoundation/hardhat-network-helpers"; // This doesn't work.
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const helpers = require("@nomicfoundation/hardhat-network-helpers");
-import { assert, expect, util } from "chai";
+import { assert, expect } from "chai";
 import _ from "lodash";
 
 // Local imports
@@ -15,11 +15,8 @@ import utils from "#root/lib/utils";
 
 // Environment variables
 import "dotenv/config";
-const {
-  MAX_FEE_PER_TRANSACTION_USD,
-  MAX_FEE_PER_GAS_GWEI,
-  MAX_PRIORITY_FEE_PER_GAS_GWEI,
-} = process.env;
+const { MAX_FEE_PER_TRANSACTION_USD, MAX_FEE_PER_GAS_GWEI, MAX_PRIORITY_FEE_PER_GAS_GWEI } =
+  process.env;
 
 // Controls
 let logLevel = "error";
@@ -69,26 +66,17 @@ describe("Ethereum private key", function () {
 
     it("Should throw an error if the private key is not a hex string", function () {
       const privateKey = "0x1234567890abcdef" + "zzzz";
-      assert.throws(
-        () => ethereum.validatePrivateKeySync({ privateKey }),
-        Error,
-      );
+      assert.throws(() => ethereum.validatePrivateKeySync({ privateKey }), Error);
     });
 
     it("Should throw an error if the private key is less than 32 bytes long", function () {
       const privateKey = "0x1234567890abcdef";
-      assert.throws(
-        () => ethereum.validatePrivateKeySync({ privateKey }),
-        Error,
-      );
+      assert.throws(() => ethereum.validatePrivateKeySync({ privateKey }), Error);
     });
 
     it("Should throw an error if the private key is more than 32 bytes long", function () {
       const privateKey = "0x" + "1234567890abcdef".repeat(4) + "1234";
-      assert.throws(
-        () => ethereum.validatePrivateKeySync({ privateKey }),
-        Error,
-      );
+      assert.throws(() => ethereum.validatePrivateKeySync({ privateKey }), Error);
     });
   });
 
@@ -115,11 +103,11 @@ describe("Ethereum private key", function () {
 
     it("Should transfer 0 wei", async function () {
       const [addr1, addr2] = await ethers.getSigners();
-      let addr1Balance = await ethereum.getBalanceETH({
+      let addr1Balance = await ethereum.getBalanceEth({
         provider,
         address: addr1.address,
       });
-      let addr2Balance = await ethereum.getBalanceETH({
+      let addr2Balance = await ethereum.getBalanceEth({
         provider,
         address: addr2.address,
       });
@@ -137,16 +125,15 @@ describe("Ethereum private key", function () {
       let txReceipt = await provider.getTransactionReceipt(txHash);
       let block = await provider.getBlock("latest");
       expect(block!.number).to.equal(1);
-      let addr1Balance2 = await ethereum.getBalanceETH({
+      let addr1Balance2 = await ethereum.getBalanceEth({
         provider,
         address: addr1.address,
       });
-      let addr2Balance2 = await ethereum.getBalanceETH({
+      let addr2Balance2 = await ethereum.getBalanceEth({
         provider,
         address: addr2.address,
       });
-      let differenceWei =
-        ethers.parseEther(addr2Balance2) - ethers.parseEther(addr2Balance);
+      let differenceWei = ethers.parseEther(addr2Balance2) - ethers.parseEther(addr2Balance);
       expect(differenceWei).to.equal(0);
     });
 
@@ -164,12 +151,12 @@ describe("Ethereum private key", function () {
 
       const [addr1, addr2] = await ethers.getSigners();
 
-      let addr1Balance = await ethereum.getBalanceETH({
+      let addr1Balance = await ethereum.getBalanceEth({
         provider,
         address: addr1.address,
       });
       //log("addr1Balance", addr1Balance);
-      let addr2Balance = await ethereum.getBalanceETH({
+      let addr2Balance = await ethereum.getBalanceEth({
         provider,
         address: addr2.address,
       });
@@ -209,20 +196,19 @@ describe("Ethereum private key", function () {
       //log("addr1.address", addr1.address);
       //log("addr2.address", addr2.address);
 
-      let addr1Balance2 = await ethereum.getBalanceETH({
+      let addr1Balance2 = await ethereum.getBalanceEth({
         provider,
         address: addr1.address,
       });
       //log("addr1Balance2", addr1Balance2);
 
-      let addr2Balance2 = await ethereum.getBalanceETH({
+      let addr2Balance2 = await ethereum.getBalanceEth({
         provider,
         address: addr2.address,
       });
       //log("addr2Balance2", addr2Balance2);
 
-      let differenceWei =
-        ethers.parseEther(addr2Balance2) - ethers.parseEther(addr2Balance);
+      let differenceWei = ethers.parseEther(addr2Balance2) - ethers.parseEther(addr2Balance);
       expect(differenceWei).to.equal(1);
 
       let { txFeeWei, txFeeEth } = await ethereum.getTxFees({
@@ -231,8 +217,7 @@ describe("Ethereum private key", function () {
       });
 
       let calculatedSpend = Number(amountWei) + Number(txFeeWei);
-      let spent =
-        ethers.parseEther(addr1Balance) - ethers.parseEther(addr1Balance2);
+      let spent = ethers.parseEther(addr1Balance) - ethers.parseEther(addr1Balance2);
       expect(spent).to.equal(calculatedSpend);
     });
   });
