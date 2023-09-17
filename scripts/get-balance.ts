@@ -10,6 +10,7 @@ import _ from "lodash";
 import { config } from "#root/config";
 import ethereum from "#root/src/ethereum";
 import { createLogger } from "#root/lib/logging";
+import validate from "#root/lib/validate";
 
 // Environment variables
 import dotenv from "dotenv";
@@ -43,29 +44,13 @@ let { debug, logLevel, network: networkLabel, address, addressFile } = options;
 
 // Process and validate arguments
 
-const logLevelSchema = Joi.string().valid(...config.logLevelList);
-let logLevelResult = logLevelSchema.validate(logLevel);
-if (logLevelResult.error) {
-  var msg = `Invalid log level "${logLevel}". Valid options are: [${config.logLevelList.join(
-    ", ",
-  )}]`;
-  console.error(msg);
-  process.exit(1);
-}
+validate.logLevel({ logLevel });
 if (debug) {
   logLevel = "debug";
 }
 logger.setLevel({ logLevel });
 
-const networkLabelSchema = Joi.string().valid(...config.networkLabelList);
-let networkLabelResult = networkLabelSchema.validate(networkLabel);
-if (networkLabelResult.error) {
-  var msg = `Invalid network "${networkLabel}". Valid options are: [${config.networkLabelList.join(
-    ", ",
-  )}]`;
-  console.error(msg);
-  process.exit(1);
-}
+validate.networkLabel({ networkLabel });
 const network = config.mapNetworkLabelToNetwork[networkLabel];
 
 if ((address && addressFile) || (!address && !addressFile)) {

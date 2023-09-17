@@ -85,19 +85,19 @@ class Config {
     MAX_PRIORITY_FEE_PER_GAS_GWEI: string | undefined;
   }): void {
     if (!_.isNil(MAX_FEE_PER_GAS_GWEI)) {
-      this.maxFeePerTransactionUsd = utils.validateNumericString({
+      this.maxFeePerTransactionUsd = validate.numericString({
         name: "MAX_FEE_PER_TRANSACTION_USD",
         value: String(MAX_FEE_PER_TRANSACTION_USD),
       });
     }
     if (!_.isNil(MAX_FEE_PER_GAS_GWEI)) {
-      this.maxFeePerGasGwei = utils.validateNumericString({
+      this.maxFeePerGasGwei = validate.numericString({
         name: "MAX_FEE_PER_GAS_GWEI",
         value: String(MAX_FEE_PER_GAS_GWEI),
       });
     }
     if (!_.isNil(MAX_PRIORITY_FEE_PER_GAS_GWEI)) {
-      this.maxPriorityFeePerGasGwei = utils.validateNumericString({
+      this.maxPriorityFeePerGasGwei = validate.numericString({
         name: "MAX_PRIORITY_FEE_PER_GAS_GWEI",
         value: String(MAX_PRIORITY_FEE_PER_GAS_GWEI),
       });
