@@ -1,8 +1,3 @@
-if (!process.env.IS_TS_NODE) {
-  //tslint:disable-next-line:no-var-requires
-  require("module-alias/register");
-}
-
 // Local imports
 import ethereum from "#root/src/ethereum";
 

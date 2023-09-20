@@ -24,11 +24,7 @@ const { logger, log, deb } = createLogger();
 program
   .option("-d, --debug", "log debug information")
   .option("--log-level <logLevel>", "Specify log level.", "error")
-  .option(
-    "--network <network>",
-    "specify the Ethereum network to connect to",
-    "local",
-  );
+  .option("--network <network>", "specify the Ethereum network to connect to", "local");
 program.parse();
 const options = program.opts();
 if (options.debug) console.log(options);
