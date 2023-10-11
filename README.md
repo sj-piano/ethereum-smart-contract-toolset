@@ -97,7 +97,7 @@ A collection of useful smart contracts, components, and management tools, writte
 * make a complaint
 * hire me
 
-Then [please contact me on Tela](https://www.tela.app/magic/stjohn_piano/a852c8). Thank you.
+Then [please contact me on Tela](https://www.tela.app/magic/stjohn_piano/ea344e). Thank you.
 
 [![Tela][tela-shield]][tela-url]
 
@@ -190,12 +190,9 @@ Please install:
 * npm & NodeJS: [nvm-based guide](https://github.com/nvm-sh/nvm#usage)
 * Metamask wallet (browser extension): [metamask.io](https://metamask.io)
 
-Tested under these operating systems:
-* Ubuntu 20.04.6 LTS (Focal Fossa) (Running on WSL 2 on Windows 10)
-
 Tested with these versions:
-* task: 3.27.0
-* nvm: 0.35.3
+* task: 3.28.0
+* nvm: 0.39.5
 * npm: 9.5.1
 * NodeJS: 18.16.0
 
@@ -267,6 +264,9 @@ Compile the contracts and run the tests.
 task compile-contracts
 
 task test
+
+# Run a single test:
+task test -- --grep "should deploy" --debug
 ```
 
 Hardhat runs the tests on a temporary local blockchain.
@@ -490,7 +490,7 @@ Distributed under the GNU Affero General Public License (AGPL). See [LICENSE.txt
 * make a complaint
 * hire me
 
-Then [please contact me on Tela](https://www.tela.app/magic/stjohn_piano/a852c8). Thank you.
+Then [please contact me on Tela](https://www.tela.app/magic/stjohn_piano/ea344e). Thank you.
 
 [![Tela][tela-shield]][tela-url]
 
@@ -530,7 +530,6 @@ A list of helpful resources:
 
 * Typescript Linting advice from Khalil Stemmler:  
     * [How to use ESLint with TypeScript](https://khalilstemmler.com/blogs/typescript/eslint-for-typescript)
-    * [How to use Prettier with ESLint and TypeScript in VSCode](https://khalilstemmler.com/blogs/tooling/prettier)
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
