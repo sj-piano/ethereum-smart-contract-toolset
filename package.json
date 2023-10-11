@@ -11,15 +11,13 @@
     "ts-node": "IS_TS_NODE=true ts-node",
     "tsc": "tsc",
     "clean": "rm -rf node_modules && rm -f package-lock.json",
-    "reset": "rm -rf artifacts build cache && npm run clean && npm install && npx hardhat compile"
+    "reset": "rm -rf artifacts build cache && npm run clean && npm install && npx hardhat compile",
+    "lint": "eslint --ext .ts ."
   },
   "author": {
     "name": "StJohn Piano",
     "linkedin": "https://www.linkedin.com/in/stjohnpiano",
-    "tela": "https://www.tela.app/magic/stjohn_piano/a852c8"
-  },
-  "imports": {
-    "#root/*.js": "./*.js"
+    "tela": "http://www.tela.app/magic/stjohn_piano/ea344e"
   },
   "_moduleAliases": {
     "#root": "./build",
@@ -38,7 +36,6 @@
     "joi": "17.9.2",
     "lodash": "4.17.21",
     "module-alias": "2.2.3",
-    "prettier": "3.0.0",
     "winston": "3.9.0",
     "winston-daily-rotate-file": "4.7.1"
   },
@@ -55,8 +52,6 @@
     "@typescript-eslint/parser": "6.1.0",
     "chai": "4.3.7",
     "eslint": "8.45.0",
-    "eslint-config-prettier": "8.8.0",
-    "eslint-plugin-prettier": "5.0.0",
     "hardhat": "2.15.0",
     "mocha": "10.2.0",
     "solhint": "3.4.1",
