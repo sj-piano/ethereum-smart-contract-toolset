@@ -24,7 +24,7 @@ logLevel = "info";
 //logLevel = "debug";
 
 // Logging
-const { logger, log, deb } = createLogger({ fileName: __filename, logLevel });
+const { logger, log, deb } = createLogger({ filePath: __filename, logLevel });
 
 // Test data
 const exampleAddress1 = "0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf";
@@ -139,7 +139,7 @@ describe("Ethereum private key", function () {
 
     it("Should transfer 1 wei", async function () {
       let result = await provider.send("hardhat_getAutomine");
-      deb("result", result);
+      deb(`result: ${result}`);
 
       await provider.send("evm_setAutomine", [false]);
 

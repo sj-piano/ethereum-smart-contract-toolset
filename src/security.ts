@@ -28,7 +28,7 @@ let logLevel = "error";
 logLevel = "info";
 
 // Logging
-const { logger, log, deb } = createLogger({ fileName: __filename, logLevel });
+const { logger, log, deb } = createLogger({ filePath: __filename, logLevel });
 
 // Functions
 

@@ -170,9 +170,9 @@ describe("UpgradeableContract", () => {
       };
       const parsedEvent = abi.parseLog(logData)!;
       log("----------------------");
-      log("Event Name:", parsedEvent.name);
-      log("Event Arguments:", parsedEvent.args);
-      log("Block Number:", event.blockNumber);
+      log(`Event Name: ${parsedEvent.name}`);
+      log(`Event Arguments: ${parsedEvent.args}`);
+      log(`Block Number: ${event.blockNumber}`);
       log("----------------------");
       newImplementationAddress = parsedEvent.args.implementation;
       //Could also have used: parsedEvent.args[0]
