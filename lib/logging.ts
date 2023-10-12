@@ -49,18 +49,28 @@ function parseStackTraceLine(stackTraceLine: string): StackTraceLine {
   at Logger.info (/app/lib/logging.ts:167:20)
   at processTicksAndRejections (node:internal/process/task_queues:95:5)
   at Object.onceWrapper (node:events:628:28)
+  at /Users/admin/Desktop/stuff/WORK_PERSONAL/smart_contracts/contract-toolset/test/UpgradeableCounter.test.ts:159:7
   */
- // Replace multiple spaces with a single space
+  // Replace multiple spaces with a single space
   stackTraceLine = stackTraceLine.replace(/\s+/g, ' ');
   let sections = stackTraceLine.trim().split(" ");
-  let functionName = sections[1];
-  let location = sections[2];
-  location = location.slice(1, -1); // Remove parentheses
+  let result;
+  let functionName;
+  let location;
+  if (sections.length == 2) {
+    location = sections[1];
+  } else if (sections.length == 3) {
+    functionName = sections[1];
+    location = sections[2];
+    location = location.slice(1, -1); // Remove parentheses
+  } else {
+    throw new Error(`Invalid stack trace line: ${stackTraceLine}`);
+  }
   let items = location.split(":");
   let filePath = items.slice(0, -2).join(":"); // Collect all but the last two items
   let lineNumber = items[items.length - 2];
   let columnNumber = items[items.length - 1];
-  let result = {
+  result = {
     functionName,
     filePath,
     lineNumber: parseInt(lineNumber, 10),
@@ -73,8 +83,9 @@ function parseStackTraceLine(stackTraceLine: string): StackTraceLine {
 function captureFunctionAndLine(index: number = 2) {
   try {
     throw new Error();
-  } catch (e: any) {
-    let stack = e.stack;
+  } catch (e) {
+    let stack = (e as Error).stack!;
+    //log2(stack)
     let lines = stack.split("\n").slice(1);
     // Use index = 2 to move up through:
     // - captureFunctionAndLine
