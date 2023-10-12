@@ -1,15 +1,13 @@
 {
-  "name": "ethereum-smart-contract-project-template-typescript",
+  "name": "ethereum-smart-contract-toolset",
   "version": "1.0.0",
-  "description": "A ready-for-production Ethereum smart contract project template, written in Solidity and Typescript.",
+  "description": "A collection of useful smart contracts, components, and management tools, written in Solidity and Typescript.",
   "license": "AGPL-3.0-only",
   "main": "build/index.js",
   "scripts": {
     "build": "tsc --project tsconfig.json",
     "clean-build": "rm -rf build && npm run build",
     "test": "npx hardhat test --typecheck",
-    "ts-node": "IS_TS_NODE=true ts-node",
-    "tsc": "tsc",
     "clean": "rm -rf node_modules && rm -f package-lock.json",
     "reset": "rm -rf artifacts build cache && npm run clean && npm install && npx hardhat compile",
     "lint": "eslint --ext .ts ."
@@ -52,7 +50,7 @@
     "@typescript-eslint/parser": "6.1.0",
     "chai": "4.3.7",
     "eslint": "8.45.0",
-    "hardhat": "2.15.0",
+    "hardhat": "2.18.1",
     "mocha": "10.2.0",
     "solhint": "3.4.1",
     "ts-mocha": "10.0.0",

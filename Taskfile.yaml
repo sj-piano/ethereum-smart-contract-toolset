@@ -43,12 +43,12 @@ tasks:
     desc: "Run the development tests on a temporary Hardhat node"
     # Alternative commands:
     # npx hardhat test --typecheck
-    # npx mocha --require ts-node/register test/**/*.ts
+    # npm exec -- mocha --require ts-node/register test/**/*.ts
     # Example of use:
     # task test -- --grep "should deploy" --debug
     # ^ Note the extra "--" before the arguments to pass CLI_ARGS to the command.
     cmds:
-      - npx ts-mocha --project tsconfig.json test/**/*.ts {{.CLI_ARGS}}
+      - npm exec -- mocha --require ts-node/register test/**/*.ts {{.CLI_ARGS}}
     silent: true
 
   show-example-script-commands:
