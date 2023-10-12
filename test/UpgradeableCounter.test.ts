@@ -1,47 +1,34 @@
 // Imports
-import { assert, expect } from "chai";
-import { program } from "commander";
-import hardhat, { ethers, upgrades } from "hardhat";
 import _ from "lodash";
+import { assert, expect } from "chai";
+import hardhat, { ethers, upgrades } from "hardhat";
 import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
+
 
 // Local imports
 import amounts from "#src/amounts";
 import { config } from "#root/config";
 import { createLogger } from "#root/lib/logging";
 import utils, { jd } from "#lib/utils";
-import validate from "#lib/validate";
 import ethereum from "#root/src/ethereum";
+
 
 // Types from typechain
 import { UpgradeableCounter, UpgradeableCounterV2 } from "../typechain-types";
 
+
 // Logging
-const { logger, log, deb } = createLogger();
+const { logger, log, deb } = createLogger({filePath: __filename});
 
-// Parse arguments
-program
-  .option("-d, --debug", "log debug information")
-  .option("--log-level <logLevel>", "Specify log level.", "error")
-  .allowUnknownOption();
-program.parse();
-const options = program.opts();
-if (options.debug) console.log(options);
-let { debug, logLevel } = options;
-
-// Validate arguments
-validate.logLevel({ logLevel });
 
 // Setup
-if (debug) {
-  logLevel = "debug";
-}
-logger.setLevel({ logLevel });
 let provider = hardhat.ethers.provider;
+
 
 // Tests
 
-describe("UpgradeableContract", () => {
+describe("UpgradeableContract with deployment fixture", () => {
+
   before(async function () {
     this.timeout(8000);
     await hardhat.network.provider.send("hardhat_reset");
@@ -181,11 +168,21 @@ describe("UpgradeableContract", () => {
     expect(newImplementationAddress2).to.equal(newImplementationAddress);
   });
 
+});
+
+
+describe("UpgradeableContract with manual deployment", () => {
+
+  beforeEach(async function () {
+    this.timeout(8000);
+    await hardhat.network.provider.send("hardhat_reset");
+  });
+
   it("should get the total gasUsed and ethSpent for the proxy deployment", async () => {
-    let logTest = false;
+    let logTest = true;
     let provider = ethers.provider;
-    let blockNumber = await provider.getBlockNumber();
-    //log("Current block number: " + blockNumber);
+    const blockNumber1 = await provider.getBlockNumber();
+    //log("Current block number: " + blockNumber1);
     const [admin, acc1, acc2] = await ethers.getSigners();
     const CounterFactory = await ethers.getContractFactory("UpgradeableCounter");
     const balance1 = await ethereum.getBalanceEth({
@@ -201,8 +198,9 @@ describe("UpgradeableContract", () => {
     await Counter.waitForDeployment();
     const counterAddress = await Counter.getAddress();
     //log("Counter address: " + counterAddress);
-    blockNumber = await ethers.provider.getBlockNumber();
-    //log("Current block number: " + blockNumber);
+    const blockNumber2 = await ethers.provider.getBlockNumber();
+    //log("Current block number: " + blockNumber2);
+    assert(blockNumber2 === blockNumber1 + 2)
     const balance2 = await ethereum.getBalanceEth({
       provider,
       address: admin.address,
@@ -211,7 +209,6 @@ describe("UpgradeableContract", () => {
     const diff = amounts.subtractAmountsEth([balance1, balance2]);
     const spentEthTotal1 = diff;
     if (logTest) log(`spentEthTotal1: ${spentEthTotal1}`);
-    assert(blockNumber === 2);
     let block1 = await provider.getBlock(1);
     block1 = block1!;
     let block2 = await provider.getBlock(2);
