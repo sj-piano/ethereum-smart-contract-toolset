@@ -19,11 +19,11 @@ import { EquityToken, EquityTokenV2 } from "../typechain-types";
 //const { logger, log, deb } = createLogger({filePath: __filename});
 
 
-// Constants
+// Variables
 let initialSupply = 10**6;
 let decimals = 6;
 let initialSupplyInteger = BigInt(initialSupply * 10**decimals);
-let admin: any, acc1: any, acc2: any;
+let admin, acc1, acc2;
 
 
 describe('EquityToken walkthrough', function () {
