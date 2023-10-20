@@ -28,7 +28,7 @@ const {
 } = process.env;
 
 // Logging
-const { logger, log, lj, deb } = createLogger();
+const { logger, log, deb } = createLogger();
 
 // Parse arguments
 program
