@@ -84,11 +84,11 @@ tasks:
   check-network-connections:
     desc: "Check the connections to the various Ethereum networks"
     cmds:
-      - npm run --silent ts-node scripts/check-network-connections.ts
+      - npm exec --silent ts-node scripts/check-network-connections.ts
     silent: true
 
   hello-world-get-message:
     cmds:
-      - npm run --silent ts-node scripts/HelloWorld/get-message.ts -- {{.CLI_ARGS}}
+      - npm exec --silent ts-node scripts/HelloWorld/get-message.ts -- {{.CLI_ARGS}}
     silent: true
 
