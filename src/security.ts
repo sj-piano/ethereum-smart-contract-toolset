@@ -10,8 +10,9 @@ import { ethers, Provider, TransactionRequest } from "ethers";
 
 // Local imports
 import { config } from "#root/config";
-import { createLogger } from "#root/lib/logging";
-import utils from "#root/lib/utils";
+import { createLogger } from "#lib/logging";
+import { getEnvVar } from "#lib/env-vars";
+import utils from "#lib/utils";
 
 // Environment variables
 import dotenv from "dotenv";
@@ -19,9 +20,7 @@ import path from "path";
 let rootDir = __dirname.substring(0, __dirname.lastIndexOf("/"));
 let envFile = path.join(rootDir, config.envFileName);
 dotenv.config({ path: envFile });
-const { LOCAL_HARDHAT_MNEMONIC_PHRASE } = utils.getEnvVar({
-  name: "LOCAL_HARDHAT_MNEMONIC_PHRASE",
-});
+const LOCAL_HARDHAT_MNEMONIC_PHRASE= getEnvVar("LOCAL_HARDHAT_MNEMONIC_PHRASE");
 
 // Controls
 let logLevel = "error";
