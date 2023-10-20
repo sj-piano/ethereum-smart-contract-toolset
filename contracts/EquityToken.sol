@@ -15,6 +15,8 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 contract EquityToken is ERC20Upgradeable, OwnableUpgradeable, UUPSUpgradeable {
 
     uint8 private constant _decimals = 6;
+    uint256 private _price; // USD per ETH.
+
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -25,12 +27,14 @@ contract EquityToken is ERC20Upgradeable, OwnableUpgradeable, UUPSUpgradeable {
     function initialize(
         string memory name_,
         string memory symbol_,
-        uint256 initialSupply_
+        uint256 initialSupply_,
+        uint256 price_
     ) initializer virtual public {
         //@dev We need to call the inherited initialisation functions explicitly.
         __ERC20_init(name_, symbol_);
         __Ownable_init();
         _mint(msg.sender, initialSupply_ * 10 ** decimals());
+        _price = price_;
     }
 
     //@dev required by the OZ UUPS module
@@ -50,6 +54,25 @@ contract EquityToken is ERC20Upgradeable, OwnableUpgradeable, UUPSUpgradeable {
 
     function mint(address to, uint256 amount) public virtual onlyOwner {
         _mint(to, amount);
+    }
+
+    function buyEquityTokens(uint256 quantity) public virtual payable {
+        uint256 costWei = quantity * _price / 10**18;
+        require(msg.value >= costWei, "Insufficient ETH received");
+        _transfer(owner(), msg.sender, quantity);
+    }
+
+    function getTokenPriceInWei() public view returns (uint256) {
+        return _price;
+    }
+
+    function setTokenPriceInWei(uint256 price) public virtual onlyOwner {
+        _price = price;
+    }
+
+    function withdraw() public virtual onlyOwner {
+        (bool success, ) = owner().call{value: address(this).balance}("");
+        require(success, "Failed to send Ether");
     }
 
 }
