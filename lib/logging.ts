@@ -31,6 +31,11 @@ function isObject(myVar: any): boolean {
 }
 
 
+function jd(obj: any): string {
+  return JSON.stringify(obj, null, 2);
+}
+
+
 let log2 = console.log;
 
 
@@ -305,6 +310,16 @@ class Logger {
     this.info(message, meta);
   }
 
+  lj(message: any, meta?: { isMeta: boolean, index: number}) {
+    if (meta && ! meta.isMeta) {
+      throw new Error(`Invalid meta: ${meta}`);
+    }
+    if (! meta) {
+      meta = { isMeta: true, index: 4 };
+    }
+    this.log(jd(message), meta);
+  }
+
 }
 
 function createLogger({
@@ -319,10 +334,11 @@ function createLogger({
     logTimestamp,
     logToFile,
   });
-  const log = logger.log.bind(logger);
-  const deb = logger.deb.bind(logger);
   const warn = logger.warn.bind(logger);
-  return { warn, logger, log, deb };
+  const deb = logger.deb.bind(logger);
+  const log = logger.log.bind(logger);
+  const lj = logger.lj.bind(logger);
+  return { logger, warn, deb, log, lj };
 }
 
 export { Logger, createLogger };
