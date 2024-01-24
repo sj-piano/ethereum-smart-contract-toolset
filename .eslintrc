@@ -13,10 +13,11 @@
     "plugin:@typescript-eslint/recommended"
   ],
   "rules": {
-    "@typescript-eslint/no-explicit-any": 0,
-    "@typescript-eslint/no-unused-vars": 0,
-    "no-var": [0],
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-unused-vars": "off",
     "prefer-const": [0],
-    "no-multiple-empty-lines": ["error", { "max": 3, "maxBOF": 0, "maxEOF": 1 }]
+    "no-multiple-empty-lines": ["error", { "max": 3, "maxBOF": 0, "maxEOF": 1 }],
+    "no-unexpected-multiline": "error",
+    "no-var": [0]
   }
 }
