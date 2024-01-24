@@ -101,7 +101,7 @@ Then [please contact me on Tela](https://www.tela.app/magic/stjohn_piano/ea344e)
 
 [![Tela][tela-shield]][tela-url]
 
-If you would like to add me as a professional contact, you can [send me a connection request on LinkedIn](https://www.linkedin.com/in/stjohnpiano):
+[Add me on LinkedIn](https://www.linkedin.com/in/stjohnpiano):
 
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
