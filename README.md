@@ -120,7 +120,7 @@ If you would like to add me as a professional contact, you can [send me a connec
 List of tools:
 
 
-* **Hello World** - [Open README](docs/hello-world/README.md)
+* **Hello World** - [Open README](docs/hello-world-README.md)
 
 A basic storage contract, which stores a message. The message can be updated.
 
