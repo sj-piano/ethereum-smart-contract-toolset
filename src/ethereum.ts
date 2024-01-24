@@ -201,6 +201,7 @@ async function getGasPricesWithFiat({ provider }: { provider: Provider }) {
     basicPaymentCostUsd,
   };
 }
+
 function getFeeLimitChecksObj(): { [key: string]: any } {
   let feeLimitKeys = "baseFeePerGasWei baseFeeUsd maxFeeUsd".split(" ");
   let feeLimitChecks: { [key: string]: any } = {};
