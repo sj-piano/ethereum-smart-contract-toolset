@@ -296,26 +296,26 @@ npm exec -- ts-node scripts/get-network-fees.ts --network=mainnet
 
 You'll need some SepoliaETH to use on the Sepolia Testnet. In your Metamask wallet, create a dedicated "Test" account. Switch to "Sepolia test network". Copy the address. Go to a Sepolia testnet faucet (e.g. this [PoW faucet](https://sepolia-faucet.pk910.de)) and get some SepoliaETH. Set the destination address to be your Metamask test address.
 
-Create a new private key and store it in the `my-data` directory:  
-`npm exec -- ts-node scripts/create-private-key.ts > my-data/sepolia-testnet-private-key.txt`
+Create a new private key and store it in the `user-data` directory:  
+`npm exec -- ts-node scripts/create-private-key.ts > user-data/sepolia-testnet-private-key.txt`
 
 Display the private key:  
-`cat my-data/sepolia-testnet-private-key.txt`
+`cat user-data/sepolia-testnet-private-key.txt`
 
 Store it in the `user-config.env` file as `SEPOLIA_TESTNET_PRIVATE_KEY`.
 
-Derive an Ethereum address from the private key and store it in the `my-data` directory:  
-`cat my-data/sepolia-testnet-private-key.txt | npm exec -- ts-node scripts/derive-address.ts > my-data/sepolia-testnet-address.txt`
+Derive an Ethereum address from the private key and store it in the `user-data` directory:  
+`cat user-data/sepolia-testnet-private-key.txt | npm exec -- ts-node scripts/derive-address.ts > user-data/sepolia-testnet-address.txt`
 
 Display the address:  
-`cat my-data/sepolia-testnet-address.txt`
+`cat user-data/sepolia-testnet-address.txt`
 
 Store it in the `user-config.env` file as `SEPOLIA_TESTNET_ADDRESS`.
 
 In Metamask, transfer a reasonable amount of SepoliaETH to this new address.
 
 See the balance of the address:  
-`npm exec -- ts-node scripts/get-balance.ts --network=testnet --address-file my-data/sepolia-testnet-address.txt`
+`npm exec -- ts-node scripts/get-balance.ts --network=testnet --address-file user-data/sepolia-testnet-address.txt`
 
 If you wish to retrieve your SepoliaETH from the address created in a Sepolia testnet walkthrough (e.g. you want to transfer it back to your Metamask test account), you'll need to use a tool that can make the transfer (create, sign, broadcast, and track the transaction). Such a tool is not provided in this project.
 
@@ -329,7 +329,7 @@ In your Metamask wallet, create a dedicated "Test" account. Switch to "Ethereum 
 
 Store it in the `user-config.env` file as `ETHEREUM_MAINNET_ADDRESS`.
 
-Store it in the `my-data` directory in a new file called `ethereum-mainnet-address.txt`.
+Store it in the `user-data` directory in a new file called `ethereum-mainnet-address.txt`.
 
 Now, export the corresponding private key from Metamask, using the following guide:
 
@@ -337,10 +337,10 @@ Metamask: [How to export an account's private key](https://support.metamask.io/h
 
 Store it in the `user-config.env` file as `ETHEREUM_MAINNET_PRIVATE_KEY`.
 
-Store it in the `my-data` directory in a new file called `ethereum-mainnet-private-key.txt`.
+Store it in the `user-data` directory in a new file called `ethereum-mainnet-private-key.txt`.
 
 See the balance of the address:  
-`npm exec -- ts-node scripts/get-balance.ts --network=mainnet --log-level info --address-file my-data/ethereum-mainnet-address.txt`
+`npm exec -- ts-node scripts/get-balance.ts --network=mainnet --log-level info --address-file user-data/ethereum-mainnet-address.txt`
 
 The result should match the balance shown in Metamask for your "Test" account.
 
@@ -403,7 +403,7 @@ Contract deployment - estimated fee:
 Contract method call: 'update' - estimated fee:
 - baseFeeUsd limit exceeded: Base fee (0.04 USD) exceeds limit specified in config (0.01 USD). Current base fee is 21725.0 gwei (21725000000000 wei, 0.000021725 ETH). Current ETH-USD exchange rate is 1873.22 USD.
 
-stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/get-balance.ts --address-file my-data/local-hardhat-address.txt
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/get-balance.ts --address-file user-data/local-hardhat-address.txt
 10000.0 ETH (18732700.00 USD)
 
 stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/HelloWorld/deploy.ts --log-level info
@@ -411,7 +411,7 @@ info:   Connecting to local network at http://localhost:8545...
 info:   Estimated fee: 0.000005338173277105 ETH (0.01 USD)
 - baseFeeUsd: Base fee (1.07 USD) exceeds limit specified in config (0.01 USD). Current base fee is 570179.0 gwei (570179000000000 wei, 0.000570179 ETH). Current ETH-USD exchange rate is 1873.3 USD.
 
-stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/HelloWorld/update-message.ts --input-file-json my-data/hello-world/update-message-local-network.json
+stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/HelloWorld/update-message.ts --input-file-json user-data/hello-world/update-message-local-network.json
 - baseFeeUsd: Base fee (0.06 USD) exceeds limit specified in config (0.01 USD). Current base fee is 31925.25 gwei (31925250000000 wei, 0.00003192525 ETH). Current ETH-USD exchange rate is 1873.39 USD.
 ```
 

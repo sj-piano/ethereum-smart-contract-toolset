@@ -43,18 +43,18 @@ npm exec -- ts-node scripts/hello-world/get-message.ts --network testnet
 npm exec -- ts-node scripts/hello-world/get-message.ts --network mainnet
 
 
-npm exec -- ts-node scripts/hello-world/update-message.ts --input-file-json input-data/example-update-message.json --debug
+npm exec -- ts-node scripts/hello-world/update-message.ts --input-file-json user-data/example-update-message.json --debug
 
-npm exec -- ts-node scripts/hello-world/update-message.ts --input-file-json input-data/example-update-message.json --debug --network testnet
+npm exec -- ts-node scripts/hello-world/update-message.ts --input-file-json user-data/example-update-message.json --debug --network testnet
 
-npm exec -- ts-node scripts/hello-world/update-message.ts --input-file-json input-data/example-update-message.json --debug --network mainnet
+npm exec -- ts-node scripts/hello-world/update-message.ts --input-file-json user-data/example-update-message.json --debug --network mainnet
 
 
 
 
 # Additional variants
 
-npm exec -- ts-node scripts/check-contract-exists.ts --network testnet --address-file input-data/example-contract-address.txt
+npm exec -- ts-node scripts/check-contract-exists.ts --network testnet --address-file user-data/example-contract-address.txt
 
 npm exec -- ts-node scripts/check-contract-exists.ts --network mainnet --address 0x50590A974646d333A93F89a37aBd2d2708671eAA
 
@@ -64,17 +64,17 @@ npm exec -- ts-node scripts/check-contract-exists.ts --network mainnet --address
 # Create a new Ethereum keypair and get its balance.
 
 
-npm exec -- ts-node scripts/create-private-key.ts > input-data/example-private-key.txt
+npm exec -- ts-node scripts/create-private-key.ts > user-data/example-private-key.txt
 
-cat input-data/example-private-key.txt
-
-
-cat input-data/example-private-key.txt | npm exec -- ts-node scripts/derive-address.ts > input-data/example-address.txt
-
-cat input-data/example-address.txt
+cat user-data/example-private-key.txt
 
 
-npm exec -- ts-node scripts/get-balance.ts --address-file input-data/example-address.txt
+cat user-data/example-private-key.txt | npm exec -- ts-node scripts/derive-address.ts > user-data/example-address.txt
+
+cat user-data/example-address.txt
+
+
+npm exec -- ts-node scripts/get-balance.ts --address-file user-data/example-address.txt
 
 npm exec -- ts-node scripts/get-balance.ts --address 0x3bEC26B3cC2a1B0b123e9044E4D0085EfE9bF526
 
