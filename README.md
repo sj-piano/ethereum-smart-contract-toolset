@@ -224,9 +224,9 @@ cp user-config.env.example user-config.env
 
 **IMPORTANT: Pay particular attention to the settings in the top section: `FINANCIAL CONTROLS`**
 
-Make sure that you are happy with these settings. If nothing else, be careful to at least double-check the `MAX_FEE_PER_TRANSACTION_USD` setting. This will govern how much you could potentially spend when you send a transaction to the Ethereum mainnet.
+Detailed guide to the settings: [Financial Controls](docs/financial-controls.md)
 
-*Also important*: You need to supply the Infura API key *name*, not the secret.
+Make sure that you are happy with these settings. If nothing else, be careful to at least double-check the `MAX_FEE_PER_TRANSACTION_USD` setting. This will govern how much you could potentially spend when you send a transaction to the Ethereum mainnet.
 
 Notes:
 
