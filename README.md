@@ -147,7 +147,7 @@ This is a contract whose code can be upgraded. It uses the Universal Upgradeable
 **Technologies & libraries:**
 - Task management: [`task`](https://taskfile.dev/)
 - NodeJS package manager: [`pnpm`](https://pnpm.io)
-- Ethereum library: [`ethers`](https://docs.ethers.org/v6)
+- Ethereum library: `ethers` v6: [docs](https://docs.ethers.org/v6), [repo](https://github.com/ethers-io/ethers.js)
 - Ethereum development environment: [`hardhat`](https://hardhat.org)
 - Decimal arithmetic: [`big.ts`](https://mikemcl.github.io/big.ts)
 - Test assertion: [`chai`](https://www.chaijs.com)
