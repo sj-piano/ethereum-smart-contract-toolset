@@ -96,7 +96,7 @@ This document contains walkthroughs with example output for several blockchain n
 We deploy the HelloWorld contract to the local Hardhat blockchain.
 
 See the balance of the address that will deploy the contract:  
-`npm exec -- ts-node scripts/get-balance.ts --address-file my-data/local-hardhat-address.txt`
+`npm exec -- ts-node scripts/get-balance.ts --address-file user-data/local-hardhat-address.txt`
 
 See fee estimations for the different contract operations, including deployment:  
 `npm exec -- ts-node scripts/HelloWorld/estimate-fees.ts`
@@ -113,12 +113,12 @@ Print the message stored in the contract:
 `npm exec -- ts-node scripts/HelloWorld/get-message.ts --debug`
 
 Create a new input file:  
-`cp my-data/HelloWorld/example-update-message.json my-data/HelloWorld/update-message-local.json`
+`cp user-data/HelloWorld/example-update-message.json user-data/HelloWorld/update-message-local.json`
 
 Open it and specify a new message e.g. `Hello Mars ! (local)`.
 
 Update the message stored in the contract:  
-`npm exec -- ts-node scripts/HelloWorld/update-message.ts --input-file-json my-data/HelloWorld/update-message-local.json --log-level info`
+`npm exec -- ts-node scripts/HelloWorld/update-message.ts --input-file-json user-data/HelloWorld/update-message-local.json --log-level info`
 
 Print the new message stored in the contract:  
 `npm exec -- ts-node scripts/HelloWorld/get-message.ts`
@@ -126,7 +126,7 @@ Print the new message stored in the contract:
 Example output:
 
 ```bash
-stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/get-balance.ts --address-file my-data/local-hardhat-address.txt
+stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/get-balance.ts --address-file user-data/local-hardhat-address.txt
 10000.0 ETH (18741900.00 USD)
 stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/HelloWorld/estimate-fees.ts
 
@@ -166,9 +166,9 @@ info:   Contract found at address: 0x5FbDB2315678afecb367f032d93F642f64180aa3
 info:   Message stored in HelloWorld contract:
 Hello World!
 
-stjohn@judgement:~/work/contract-toolset$ cp my-data/HelloWorld/example-update-message.json my-data/HelloWorld/update-message-local.json
+stjohn@judgement:~/work/contract-toolset$ cp user-data/HelloWorld/example-update-message.json user-data/HelloWorld/update-message-local.json
 
-stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/HelloWorld/update-message.ts --input-file-json my-data/HelloWorld/update-message-local.json --log-level info
+stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/HelloWorld/update-message.ts --input-file-json user-data/HelloWorld/update-message-local.json --log-level info
 info:   Connecting to local network at http://localhost:8545...
 info:   Contract found at address: 0x5FbDB2315678afecb367f032d93F642f64180aa3
 info:   Message stored in HelloWorld contract: Hello World!
@@ -195,7 +195,7 @@ Hello Mars ! (local)
 
 
 See the balance of the address that will deploy the contract:  
-`npm exec -- ts-node scripts/get-balance.ts --address-file my-data/sepolia-testnet-address.txt`
+`npm exec -- ts-node scripts/get-balance.ts --address-file user-data/sepolia-testnet-address.txt`
 
 See fee estimations for the different contract operations, including deployment:  
 `npm exec -- ts-node scripts/HelloWorld/estimate-fees.ts --network=testnet`
@@ -212,12 +212,12 @@ Print the message stored in the contract:
 `npm exec -- ts-node scripts/HelloWorld/get-message.ts --network=testnet`
 
 Create a new input file:  
-`cp my-data/HelloWorld/example-update-message.json my-data/HelloWorld/update-message-testnet.json`
+`cp user-data/HelloWorld/example-update-message.json user-data/HelloWorld/update-message-testnet.json`
 
 Open it and specify a new message e.g. `Hello Mars ! (testnet)`.
 
 Update the message stored in the contract:  
-`npm exec -- ts-node scripts/HelloWorld/update-message.ts --network=testnet --input-file-json my-data/HelloWorld/update-message-testnet.json`
+`npm exec -- ts-node scripts/HelloWorld/update-message.ts --network=testnet --input-file-json user-data/HelloWorld/update-message-testnet.json`
 
 Print the new message stored in the contract:  
 `npm exec -- ts-node scripts/HelloWorld/get-message.ts --network=testnet`
@@ -225,7 +225,7 @@ Print the new message stored in the contract:
 Example output:
 
 ```bash
-stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/get-balance.ts --network=testnet --address-file my-data/sepolia-testnet-address.txt
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/get-balance.ts --network=testnet --address-file user-data/sepolia-testnet-address.txt
 0.409023392670777583 ETH (780.81 USD)
 
 stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/HelloWorld/estimate-fees.ts --network=testnet
@@ -247,9 +247,9 @@ Contract found at address: 0x02bCCb6Fa3e24b14566e571656EE53A7723884f7
 stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/HelloWorld/get-message.ts --network=testnet
 Hello World!
 
-stjohn@judgement:~/work/contract-template$ cp my-data/HelloWorld/example-update-message.json my-data/HelloWorld/update-message-testnet.json
+stjohn@judgement:~/work/contract-template$ cp user-data/HelloWorld/example-update-message.json user-data/HelloWorld/update-message-testnet.json
 
-stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/HelloWorld/update-message.ts --network=testnet --input-file-json my-data/HelloWorld/update-message-testnet.json
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/HelloWorld/update-message.ts --network=testnet --input-file-json user-data/HelloWorld/update-message-testnet.json
 The new message is:
 Hello Mars ! (testnet)
 
@@ -267,7 +267,7 @@ Hello Mars ! (testnet)
 
 
 See the balance of the address that will deploy the contract:  
-`npm exec -- ts-node scripts/get-balance.ts --address-file my-data/ethereum-mainnet-address.txt`
+`npm exec -- ts-node scripts/get-balance.ts --address-file user-data/ethereum-mainnet-address.txt`
 
 See fee estimations for the different contract operations, including deployment:  
 `npm exec -- ts-node scripts/HelloWorld/estimate-fees.ts --network=mainnet`
@@ -286,12 +286,12 @@ Print the message stored in the contract:
 `npm exec -- ts-node scripts/HelloWorld/get-message.ts --network=mainnet --log-level info`
 
 Create a new input file:  
-`cp my-data/HelloWorld/example-update-message.json my-data/HelloWorld/update-message-mainnet.json`
+`cp user-data/HelloWorld/example-update-message.json user-data/HelloWorld/update-message-mainnet.json`
 
 Open it and specify a new message e.g. `Hello Mars ! (mainnet)`.
 
 Update the message stored in the contract:  
-`npm exec -- ts-node scripts/HelloWorld/update-message.ts --network=mainnet --log-level info --input-file-json my-data/HelloWorld/update-message-mainnet.json`
+`npm exec -- ts-node scripts/HelloWorld/update-message.ts --network=mainnet --log-level info --input-file-json user-data/HelloWorld/update-message-mainnet.json`
 
 Print the new message stored in the contract:  
 `npm exec -- ts-node scripts/HelloWorld/get-message.ts --network=mainnet --log-level info`
@@ -299,7 +299,7 @@ Print the new message stored in the contract:
 Example output:
 
 ```bash
-stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/get-balance.ts --network=mainnet --log-level info --address-file my-data/ethereum-mainnet-address.txt
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/get-balance.ts --network=mainnet --log-level info --address-file user-data/ethereum-mainnet-address.txt
 info:   Connecting to Ethereum mainnet...
 info:   Getting balance for address 0x4A846013314b892Be429F8626487109DD7b494a0...
 0.042281201108669793 ETH (80.73 USD)
@@ -343,7 +343,7 @@ info:   Contract found at address: 0xc2963E4f4C8456b21734c7c4811327A94324851E
 info:   Message stored in HelloWorld contract:
 Hello World!
 
-stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/HelloWorld/update-message.ts --network=mainnet --log-level info --input-file-json my-data/HelloWorld/update-message-mainnet.json
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/HelloWorld/update-message.ts --network=mainnet --log-level info --input-file-json user-data/HelloWorld/update-message-mainnet.json
 info:   Connecting to Ethereum mainnet...
 info:   Contract found at address: 0xc2963E4f4C8456b21734c7c4811327A94324851E
 info:   Message stored in HelloWorld contract: Hello World!

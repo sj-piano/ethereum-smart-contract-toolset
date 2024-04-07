@@ -120,12 +120,12 @@ Then [please contact me on Tela](https://www.tela.app/magic/stjohn_piano/ea344e)
 List of tools:
 
 
-* **Hello World** - [Open README](docs/hello-world-README.md)
+* **Hello World** - [Open README](docs/README-hello-world.md)
 
 A basic storage contract, which stores a message. The message can be updated.
 
 
-* **Upgradeable Smart Contract** (UUPS Pattern) - [Open README](docs/upgradeable-uups-README.md)
+* **Upgradeable Smart Contract** (UUPS Pattern) - [Open README](docs/README-upgradeable-uups.md)
 
 This is a contract whose code can be upgraded. It uses the Universal Upgradeable Proxy Standard (UUPS) pattern, published in [ERC-1822](https://eips.ethereum.org/EIPS/eip-1822).
 
