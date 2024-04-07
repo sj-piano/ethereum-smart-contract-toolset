@@ -2,7 +2,6 @@
 import _ from "lodash";
 import { program } from "commander";
 import { ethers } from "ethers";
-import Joi from "joi";
 
 
 // Local imports
@@ -56,6 +55,7 @@ if (networkLabel == "local") {
 }
 log(msg);
 
+
 // Run main function
 
 main().catch((error) => {
@@ -63,7 +63,9 @@ main().catch((error) => {
   process.exit(1);
 });
 
+
 // Functions
+
 
 async function main() {
   let blockNumber = await provider.getBlockNumber();

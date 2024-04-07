@@ -91,7 +91,7 @@ class Config {
     this.maxPriorityFeePerGasWei = "0";
     this.networkLabelList = "local testnet mainnet".split(" ");
     this.networkLabelToNetwork = {
-      local: "http://localhost:8545",
+      local: "http://127.0.0.1:8545",
       testnet: "sepolia",
       mainnet: "mainnet",
     };
