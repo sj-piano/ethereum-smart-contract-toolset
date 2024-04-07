@@ -15,7 +15,7 @@ import path from "path";
 let rootDir = __dirname.substring(0, __dirname.lastIndexOf("/"));
 let envFile = path.join(rootDir, config.envFileName);
 dotenv.config({ path: envFile });
-const { INFURA_API_KEY_NAME } = process.env;
+const { INFURA_API_KEY } = process.env;
 
 // Logging
 const { logger, log, deb } = createLogger();
@@ -67,10 +67,10 @@ if (networkLabel == "local") {
   provider = new ethers.JsonRpcProvider(network);
 } else if (networkLabel == "testnet") {
   msg = `Connecting to Sepolia testnet...`;
-  provider = new ethers.InfuraProvider(network, INFURA_API_KEY_NAME);
+  provider = new ethers.InfuraProvider(network, INFURA_API_KEY);
 } else if (networkLabel == "mainnet") {
   msg = `Connecting to Ethereum mainnet...`;
-  provider = new ethers.InfuraProvider(network, INFURA_API_KEY_NAME);
+  provider = new ethers.InfuraProvider(network, INFURA_API_KEY);
 }
 log(msg);
 

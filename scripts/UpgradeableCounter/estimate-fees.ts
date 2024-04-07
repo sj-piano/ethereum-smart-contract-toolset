@@ -24,7 +24,7 @@ const {
   MAX_FEE_PER_TRANSACTION_USD,
   MAX_FEE_PER_GAS_GWEI,
   MAX_PRIORITY_FEE_PER_GAS_GWEI,
-  INFURA_API_KEY_NAME,
+  INFURA_API_KEY,
 } = process.env;
 
 // Logging
@@ -72,10 +72,10 @@ if (networkLabel == "local") {
   provider = new ethers.JsonRpcProvider(network);
 } else if (networkLabel == "testnet") {
   msg = `Connecting to Sepolia testnet...`;
-  provider = new ethers.InfuraProvider(network, INFURA_API_KEY_NAME);
+  provider = new ethers.InfuraProvider(network, INFURA_API_KEY);
 } else if (networkLabel == "mainnet") {
   msg = `Connecting to Ethereum mainnet...`;
-  provider = new ethers.InfuraProvider(network, INFURA_API_KEY_NAME);
+  provider = new ethers.InfuraProvider(network, INFURA_API_KEY);
 }
 log(msg);
 provider = provider!;

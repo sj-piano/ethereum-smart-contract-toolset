@@ -16,7 +16,7 @@ import path from "path";
 let rootDir = __dirname.substring(0, __dirname.lastIndexOf("/"));
 let envFile = path.join(rootDir, config.envFileName);
 dotenv.config({ path: envFile });
-const { INFURA_API_KEY_NAME } = process.env;
+const { INFURA_API_KEY } = process.env;
 
 // Logging
 const { logger, log, deb } = createLogger();
@@ -91,7 +91,7 @@ async function main() {
   network = config.mapNetworkLabelToNetwork[networkLabel];
   msg = `Connecting to ${networkLabel} network at ${network}...`;
   log(msg);
-  provider = new ethers.InfuraProvider(network, INFURA_API_KEY_NAME);
+  provider = new ethers.InfuraProvider(network, INFURA_API_KEY);
   try {
     let blockNumber = await provider.getBlockNumber();
     log(`Current block number: ${blockNumber}`);
@@ -109,7 +109,7 @@ async function main() {
   network = config.mapNetworkLabelToNetwork[networkLabel];
   msg = `Connecting to ${networkLabel} network at ${network}...`;
   log(msg);
-  provider = new ethers.InfuraProvider(network, INFURA_API_KEY_NAME);
+  provider = new ethers.InfuraProvider(network, INFURA_API_KEY);
   try {
     let blockNumber = await provider.getBlockNumber();
     log(`Current block number: ${blockNumber}`);
