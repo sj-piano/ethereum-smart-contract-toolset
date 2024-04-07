@@ -6,6 +6,11 @@ user-data/sepolia-testnet-private-key.txt
 user-data/ethereum-mainnet-address.txt
 user-data/ethereum-mainnet-private-key.txt
 
+# Tool files
+user-data/HelloWorld/update-message-local.json
+user-data/HelloWorld/update-message-testnet.json
+user-data/HelloWorld/update-message-mainnet.json
+
 # Logs
 logs
 

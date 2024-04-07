@@ -1,10 +1,11 @@
 // Imports
+import _ from "lodash";
 import Ajv from "ajv";
 import Big from "big.js";
 import { program } from "commander";
 import { ethers } from "ethers";
 import fs from "fs";
-import _ from "lodash";
+
 
 // Local imports
 import config from "#root/config";
@@ -12,16 +13,9 @@ import ethereum from "#root/src/eth-toolset";
 import { createLogger } from "#root/lib/logging";
 import validate from "#root/lib/validate";
 
+
 // Load environment variables
-import dotenv from "dotenv";
-import path from "path";
-let rootDir = __dirname.substring(0, __dirname.lastIndexOf("/"));
-let envFile = path.join(rootDir, config.envFileName);
-dotenv.config({ path: envFile });
 const {
-  MAX_FEE_PER_TRANSACTION_USD,
-  MAX_FEE_PER_GAS_GWEI,
-  MAX_PRIORITY_FEE_PER_GAS_GWEI,
   INFURA_API_KEY,
   LOCAL_HARDHAT_PRIVATE_KEY,
   LOCAL_HARDHAT_ADDRESS,
@@ -32,10 +26,12 @@ const {
   HELLO_WORLD_LOCAL_ADDRESS,
   HELLO_WORLD_TESTNET_ADDRESS,
   HELLO_WORLD_MAINNET_ADDRESS,
-} = process.env;
+} = config.env;
+
 
 // Logging
 const { logger, log, deb } = createLogger();
+
 
 // Parse arguments
 program
@@ -47,6 +43,7 @@ program.parse();
 const options = program.opts();
 if (options.debug) console.log(options);
 let { debug, logLevel, network: networkLabel, inputFileJson } = options;
+
 
 // Process and validate arguments
 
@@ -67,12 +64,6 @@ ethereum.validateAddressesSync({
     HELLO_WORLD_TESTNET_ADDRESS,
     HELLO_WORLD_MAINNET_ADDRESS,
   },
-});
-
-config.update({
-  MAX_FEE_PER_TRANSACTION_USD,
-  MAX_FEE_PER_GAS_GWEI,
-  MAX_PRIORITY_FEE_PER_GAS_GWEI,
 });
 
 validate.logLevel({ logLevel });
@@ -107,6 +98,7 @@ if (!validInputData) {
 }
 let { newMessage }: { newMessage: string } = inputData;
 
+
 // Setup
 
 import contract from "#root/artifacts/contracts/HelloWorld.sol/HelloWorld.json";
@@ -115,7 +107,7 @@ let provider: ethers.Provider;
 
 var msg: string = "Unknown error";
 let DEPLOYER_PRIVATE_KEY: string | undefined;
-let DEPLOYED_CONTRACT_ADDRESS: string | undefined;
+let DEPLOYED_CONTRACT_ADDRESS: string = "";
 if (networkLabel == "local") {
   msg = `Connecting to local network at ${network}...`;
   provider = new ethers.JsonRpcProvider(network);
@@ -142,16 +134,19 @@ if (!ethers.isAddress(DEPLOYED_CONTRACT_ADDRESS)) {
 }
 const contractHelloWorld = new ethers.Contract(DEPLOYED_CONTRACT_ADDRESS, contract.abi, signer);
 
+
 // Run main function
 
-main({ newMessage }).catch((error) => {
+main({ newMessage, DEPLOYED_CONTRACT_ADDRESS }).catch((error) => {
   console.error(error);
   process.exit(1);
 });
 
+
 // Functions
 
-async function main({ newMessage }: { newMessage: string }) {
+
+async function main({ newMessage, DEPLOYED_CONTRACT_ADDRESS }: { newMessage: string, DEPLOYED_CONTRACT_ADDRESS: string }) {
   let blockNumber = await provider.getBlockNumber();
   deb(`Current block number: ${blockNumber}`);
 
@@ -197,7 +192,7 @@ async function updateMessage({ newMessage }: { newMessage: string }) {
   const signerAddress = await signer.getAddress();
   const signerBalanceWei = await provider.getBalance(signerAddress);
   const signerBalanceEth = ethers.formatEther(signerBalanceWei);
-  const signerBalanceUsd = Big(ethToUsd).mul(Big(signerBalanceEth)).toFixed(config.USD_DP);
+  const signerBalanceUsd = Big(ethToUsd).mul(Big(signerBalanceEth)).toFixed(config.constants.USD_DECIMAL_PLACES);
   log(`Signer balance: ${signerBalanceEth} ETH (${signerBalanceUsd} USD)`);
   if (Big(signerBalanceEth).lt(Big(feeEth))) {
     console.error(
@@ -282,13 +277,11 @@ async function updateMessage({ newMessage }: { newMessage: string }) {
   const txFeeWei = txReceipt.fee;
   deb(`txFeeWei: ${txFeeWei}`);
   const txFeeEth = ethers.formatEther(txFeeWei).toString();
-  const txFeeUsd = Big(ethToUsd).mul(Big(txFeeEth)).toFixed(config.USD_DP);
+  const txFeeUsd = Big(ethToUsd).mul(Big(txFeeEth)).toFixed(config.constants.USD_DECIMAL_PLACES);
   log(`Final fee: ${txFeeEth} ETH (${txFeeUsd} USD)`);
 
   // Report the final result.
   const message2 = await contractHelloWorld.message();
-  logger.print(message);
-  ("The new message is: ");
-  logger.print(message);
-  message2;
+  logger.print("The new message is: ");
+  logger.print(message2);
 }

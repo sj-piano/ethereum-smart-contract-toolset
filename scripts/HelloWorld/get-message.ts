@@ -1,34 +1,29 @@
 // Imports
+import _ from "lodash";
 import { program } from "commander";
 import { ethers } from "ethers";
 import fs from "fs";
-import _ from "lodash";
+
 
 // Local imports
 import config from "#root/config";
-import ethereum from "#root/src/eth-toolset";
+import ethToolset from "#root/src/eth-toolset";
 import { createLogger } from "#root/lib/logging";
 import validate from "#root/lib/validate";
-import utils from "#root/lib/utils";
+
 
 // Load environment variables
-import dotenv from "dotenv";
-import path from "path";
-let rootDir = __dirname.substring(0, __dirname.lastIndexOf("/"));
-let envFile = path.join(rootDir, config.envFileName);
-dotenv.config({ path: envFile });
 const {
-  MAX_FEE_PER_TRANSACTION_USD,
-  MAX_FEE_PER_GAS_GWEI,
-  MAX_PRIORITY_FEE_PER_GAS_GWEI,
   INFURA_API_KEY,
   HELLO_WORLD_LOCAL_ADDRESS,
   HELLO_WORLD_TESTNET_ADDRESS,
   HELLO_WORLD_MAINNET_ADDRESS,
 } = process.env;
 
+
 // Logging
 const { logger, log, deb } = createLogger();
+
 
 // Parse arguments
 program
@@ -41,20 +36,15 @@ const options = program.opts();
 if (options.debug) console.log(options);
 let { debug, logLevel, network: networkLabel, addressFile } = options;
 
+
 // Process and validate arguments
 
-ethereum.validateAddressesSync({
+ethToolset.validateAddressesSync({
   addresses: {
     HELLO_WORLD_LOCAL_ADDRESS,
     HELLO_WORLD_TESTNET_ADDRESS,
     HELLO_WORLD_MAINNET_ADDRESS,
   },
-});
-
-config.update({
-  MAX_FEE_PER_TRANSACTION_USD,
-  MAX_FEE_PER_GAS_GWEI,
-  MAX_PRIORITY_FEE_PER_GAS_GWEI,
 });
 
 validate.logLevel({ logLevel });
@@ -72,10 +62,10 @@ if (fs.existsSync(addressFile)) {
   deb(`Address found in ${addressFile}: ${contractAddress}`);
 }
 
+
 // Setup
 
 import contract from "#root/artifacts/contracts/HelloWorld.sol/HelloWorld.json";
-import { sleep } from "#root/lib/utils";
 
 let provider: ethers.Provider;
 
@@ -106,6 +96,7 @@ if (!ethers.isAddress(DEPLOYED_CONTRACT_ADDRESS)) {
 }
 const contractHelloWorld = new ethers.Contract(DEPLOYED_CONTRACT_ADDRESS, contract.abi, provider);
 
+
 // Run main function
 
 main().catch((error) => {
@@ -113,14 +104,16 @@ main().catch((error) => {
   process.exit(1);
 });
 
+
 // Functions
+
 
 async function main() {
   let blockNumber = await provider.getBlockNumber();
   deb(`Current block number: ${blockNumber}`);
 
   let address = await contractHelloWorld.getAddress();
-  let check = await ethereum.contractExistsAt({ provider, address });
+  let check = await ethToolset.contractExistsAt({ provider, address });
   if (!check) {
     logger.error(`No contract found at address ${address}.`);
     process.exit(1);
