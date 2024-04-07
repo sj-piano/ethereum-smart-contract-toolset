@@ -1,10 +1,11 @@
 // Imports
+import _ from "lodash";
+import { assert, expect } from "chai";
 import hardhat, { ethers } from "hardhat";
 //import helpers from "@nomicfoundation/hardhat-network-helpers"; // This doesn't work.
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const helpers = require("@nomicfoundation/hardhat-network-helpers");
-import { assert, expect } from "chai";
-import _ from "lodash";
+
 
 // Local imports
 import amounts from "#src/amounts";
@@ -13,32 +14,27 @@ import ethereum from "#root/src/eth-toolset";
 import { createLogger } from "#root/lib/logging";
 import utils from "#root/lib/utils";
 
-// Environment variables
-import "dotenv/config";
-const { MAX_FEE_PER_TRANSACTION_USD, MAX_FEE_PER_GAS_GWEI, MAX_PRIORITY_FEE_PER_GAS_GWEI } =
-  process.env;
 
 // Controls
 let logLevel = "error";
 logLevel = "info";
 //logLevel = "debug";
 
+
 // Logging
 const { logger, log, deb } = createLogger({ filePath: __filename, logLevel });
 
+
 // Test data
 const exampleAddress1 = "0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf";
+
 
 // Setup
 let hre = hardhat;
 let provider = hre.ethers.provider;
 let network = hre.network;
 const networkLabel = "local";
-config.update({
-  MAX_FEE_PER_TRANSACTION_USD,
-  MAX_FEE_PER_GAS_GWEI,
-  MAX_PRIORITY_FEE_PER_GAS_GWEI,
-});
+
 
 // Tests
 

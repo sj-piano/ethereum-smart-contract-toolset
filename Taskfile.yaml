@@ -42,7 +42,8 @@ tasks:
   test:
     desc: "Run the development tests on a temporary Hardhat node"
     # Alternative commands:
-    # pnpm run hardhat test --typecheck
+    # pnpm exec hardhat test
+    # pnpm exec hardhat test --typecheck
     # npm exec -- mocha --require ts-node/register test/**/*.ts
     # Example of use:
     # task test -- --grep "should deploy" --debug
