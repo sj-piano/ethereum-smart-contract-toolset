@@ -12,7 +12,7 @@ import validate from "#root/lib/validate";
 
 // Controls
 let networkConnectionsToCheck = [
-  "fork",
+  "local",
   "testnet",
   "mainnet",
 ];
@@ -67,8 +67,8 @@ async function checkConnection({provider, connections, networkLabel, network}) {
 
 async function main() {
   let connections = {
-    fork: {
-      description: "Hardhat fork",
+    local: {
+      description: "local Hardhat network",
       connected: false,
     },
     testnet: {
@@ -81,8 +81,8 @@ async function main() {
     },
   };
 
-  // Check local Hardhat fork network connection
-  let networkLabel = "fork";
+  // Check local Hardhat network connection
+  let networkLabel = "local";
   let network = config.networkLabelToNetwork[networkLabel];
   let provider = new ethers.JsonRpcProvider(network);
 
