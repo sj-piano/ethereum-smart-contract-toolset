@@ -20,12 +20,8 @@ export type { Initializable } from "./@openzeppelin/contracts-upgradeable/proxy/
 export { Initializable__factory } from "./factories/@openzeppelin/contracts-upgradeable/proxy/utils/Initializable__factory";
 export type { UUPSUpgradeable } from "./@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable";
 export { UUPSUpgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable__factory";
-export type { PausableUpgradeable } from "./@openzeppelin/contracts-upgradeable/security/PausableUpgradeable";
-export { PausableUpgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/security/PausableUpgradeable__factory";
 export type { ERC20Upgradeable } from "./@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable";
 export { ERC20Upgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable__factory";
-export type { ERC20BurnableUpgradeable } from "./@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable";
-export { ERC20BurnableUpgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable__factory";
 export type { IERC20MetadataUpgradeable } from "./@openzeppelin/contracts-upgradeable/token/ERC20/extensions/IERC20MetadataUpgradeable";
 export { IERC20MetadataUpgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/token/ERC20/extensions/IERC20MetadataUpgradeable__factory";
 export type { IERC20Upgradeable } from "./@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable";

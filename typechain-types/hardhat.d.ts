@@ -42,17 +42,9 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.UUPSUpgradeable__factory>;
     getContractFactory(
-      name: "PausableUpgradeable",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.PausableUpgradeable__factory>;
-    getContractFactory(
       name: "ERC20Upgradeable",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC20Upgradeable__factory>;
-    getContractFactory(
-      name: "ERC20BurnableUpgradeable",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ERC20BurnableUpgradeable__factory>;
     getContractFactory(
       name: "IERC20MetadataUpgradeable",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -126,20 +118,10 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.UUPSUpgradeable>;
     getContractAt(
-      name: "PausableUpgradeable",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.PausableUpgradeable>;
-    getContractAt(
       name: "ERC20Upgradeable",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.ERC20Upgradeable>;
-    getContractAt(
-      name: "ERC20BurnableUpgradeable",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.ERC20BurnableUpgradeable>;
     getContractAt(
       name: "IERC20MetadataUpgradeable",
       address: string | ethers.Addressable,
@@ -215,17 +197,9 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.UUPSUpgradeable>;
     deployContract(
-      name: "PausableUpgradeable",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.PausableUpgradeable>;
-    deployContract(
       name: "ERC20Upgradeable",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ERC20Upgradeable>;
-    deployContract(
-      name: "ERC20BurnableUpgradeable",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.ERC20BurnableUpgradeable>;
     deployContract(
       name: "IERC20MetadataUpgradeable",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -299,20 +273,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.UUPSUpgradeable>;
     deployContract(
-      name: "PausableUpgradeable",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.PausableUpgradeable>;
-    deployContract(
       name: "ERC20Upgradeable",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ERC20Upgradeable>;
-    deployContract(
-      name: "ERC20BurnableUpgradeable",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.ERC20BurnableUpgradeable>;
     deployContract(
       name: "IERC20MetadataUpgradeable",
       args: any[],
