@@ -107,7 +107,7 @@ Deploy the HelloWorld contract:
 This will output an address. Copy this address into the `user-config.env` file as `HELLO_WORLD_LOCAL_ADDRESS`.
 
 Confirm deployment:  
-`npm exec -- ts-node scripts/check-contract-exists --debug --addressName='HELLO_WORLD_LOCAL_ADDRESS'`
+`npm exec -- ts-node scripts/check-contract-exists --debug --address-name='HELLO_WORLD_LOCAL_ADDRESS'`
 
 Print the message stored in the contract:  
 `npm exec -- ts-node scripts/HelloWorld/get-message.ts --debug`
@@ -146,12 +146,12 @@ info:   Final fee: 0.0012472665625 ETH (2.34 USD)
 info:   Contract deployed to address:
 0x5FbDB2315678afecb367f032d93F642f64180aa3
 
-stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/check-contract-exists --debug --addressName='HELLO_WORLD_LOCAL_ADDRESS'
+stjohn@judgement:~/work/contract-toolset$ npm exec -- ts-node scripts/check-contract-exists --debug --address-name='HELLO_WORLD_LOCAL_ADDRESS'
 {
   logLevel: 'error',
   network: 'local',
   debug: true,
-  addressName: 'HELLO_WORLD_LOCAL_ADDRESS'
+  address-name: 'HELLO_WORLD_LOCAL_ADDRESS'
 }
 debug:  Address found in .env file: 0x5FbDB2315678afecb367f032d93F642f64180aa3
 info:   Connecting to local network at http://localhost:8545...
@@ -206,7 +206,7 @@ Deploy the contract to the Sepolia testnet:
 This will output an address. Copy this address into the `user-config.env` file as `HELLO_WORLD_TESTNET_ADDRESS`.
 
 Confirm deployment:  
-`npm exec -- ts-node scripts/check-contract-exists --network=testnet --addressName='HELLO_WORLD_TESTNET_ADDRESS'`
+`npm exec -- ts-node scripts/check-contract-exists --network=testnet --address-name='HELLO_WORLD_TESTNET_ADDRESS'`
 
 Print the message stored in the contract:  
 `npm exec -- ts-node scripts/HelloWorld/get-message.ts --network=testnet`
@@ -241,7 +241,7 @@ Contract method call: 'update' - estimated fee:
 stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/HelloWorld/deploy.ts --network=testnet
 0x02bCCb6Fa3e24b14566e571656EE53A7723884f7
 
-stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/check-contract-exists --network=testnet --addressName='HELLO_WORLD_TESTNET_ADDRESS'
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/check-contract-exists --network=testnet --address-name='HELLO_WORLD_TESTNET_ADDRESS'
 Contract found at address: 0x02bCCb6Fa3e24b14566e571656EE53A7723884f7
 
 stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/HelloWorld/get-message.ts --network=testnet
@@ -280,7 +280,7 @@ Deploy the contract to the Ethereum mainnet:
 This will output an address. Copy this address into the `user-config.env` file as `HELLO_WORLD_MAINNET_ADDRESS`.
 
 Confirm deployment:  
-`npm exec -- ts-node scripts/check-contract-exists --network=mainnet --addressName='HELLO_WORLD_MAINNET_ADDRESS' --log-level info`
+`npm exec -- ts-node scripts/check-contract-exists --network=mainnet --address-name='HELLO_WORLD_MAINNET_ADDRESS' --log-level info`
 
 Print the message stored in the contract:  
 `npm exec -- ts-node scripts/HelloWorld/get-message.ts --network=mainnet --log-level info`
@@ -333,7 +333,7 @@ info:   Final fee: 0.009006010206038837 ETH (17.21 USD)
 info:   Contract deployed to address:
 0xc2963E4f4C8456b21734c7c4811327A94324851E
 
-stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/check-contract-exists --network=mainnet --addressName='HELLO_WORLD_MAINNET_ADDRESS' --log-level info
+stjohn@judgement:~/work/contract-template$ npm exec -- ts-node scripts/check-contract-exists --network=mainnet --address-name='HELLO_WORLD_MAINNET_ADDRESS' --log-level info
 info:   Connecting to Ethereum mainnet...
 Contract found at address: 0xc2963E4f4C8456b21734c7c4811327A94324851E
 

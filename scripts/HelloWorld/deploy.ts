@@ -1,28 +1,23 @@
 // Imports
+import _ from "lodash";
 import Big from "big.js";
 import { program } from "commander";
 import { ethers } from "ethers";
-import _ from "lodash";
+
 
 // Local imports
 import config from "#root/config";
-import ethereum from "#root/src/eth-toolset";
+import ethToolset from "#root/src/eth-toolset";
 import { createLogger } from "#root/lib/logging";
 import validate from "#root/lib/validate";
+
 
 // Controls
 const initialMessage = "Hello World!";
 
+
 // Load environment variables
-import dotenv from "dotenv";
-import path from "path";
-let rootDir = __dirname.substring(0, __dirname.lastIndexOf("/"));
-let envFile = path.join(rootDir, config.envFileName);
-dotenv.config({ path: envFile });
 const {
-  MAX_FEE_PER_TRANSACTION_USD,
-  MAX_FEE_PER_GAS_GWEI,
-  MAX_PRIORITY_FEE_PER_GAS_GWEI,
   INFURA_API_KEY,
   LOCAL_HARDHAT_PRIVATE_KEY,
   LOCAL_HARDHAT_ADDRESS,
@@ -30,10 +25,12 @@ const {
   SEPOLIA_TESTNET_ADDRESS,
   ETHEREUM_MAINNET_PRIVATE_KEY,
   ETHEREUM_MAINNET_ADDRESS,
-} = process.env;
+} = config.env;
+
 
 // Logging
 const { logger, log, deb } = createLogger();
+
 
 // Parse arguments
 program
@@ -45,9 +42,10 @@ const options = program.opts();
 if (options.debug) console.log(options);
 let { debug, logLevel, network: networkLabel } = options;
 
+
 // Process and validate arguments
 
-ethereum.validatePrivateKeysSync({
+ethToolset.validatePrivateKeysSync({
   privateKeys: {
     LOCAL_HARDHAT_PRIVATE_KEY,
     SEPOLIA_TESTNET_PRIVATE_KEY,
@@ -55,18 +53,12 @@ ethereum.validatePrivateKeysSync({
   },
 });
 
-ethereum.validateAddressesSync({
+ethToolset.validateAddressesSync({
   addresses: {
     LOCAL_HARDHAT_ADDRESS,
     SEPOLIA_TESTNET_ADDRESS,
     ETHEREUM_MAINNET_ADDRESS,
   },
-});
-
-config.update({
-  MAX_FEE_PER_TRANSACTION_USD,
-  MAX_FEE_PER_GAS_GWEI,
-  MAX_PRIORITY_FEE_PER_GAS_GWEI,
 });
 
 validate.logLevel({ logLevel });
@@ -77,6 +69,7 @@ logger.setLevel({ logLevel });
 
 validate.networkLabel({ networkLabel });
 const network = config.networkLabelToNetwork[networkLabel];
+
 
 // Setup
 
@@ -104,6 +97,7 @@ DEPLOYER_PRIVATE_KEY = DEPLOYER_PRIVATE_KEY!;
 let signer = new ethers.Wallet(DEPLOYER_PRIVATE_KEY, provider!);
 let contractFactoryHelloWorld = new ethers.ContractFactory(contract.abi, contract.bytecode, signer);
 
+
 // Run main function
 
 main().catch((error) => {
@@ -111,13 +105,15 @@ main().catch((error) => {
   process.exit(1);
 });
 
+
 // Functions
+
 
 async function main() {
   // Estimate fees.
   // - Stop if any fee limit is exceeded.
   let txRequest = await contractFactoryHelloWorld.getDeployTransaction(initialMessage);
-  const estimatedFees = await ethereum.estimateFeesForTx({
+  const estimatedFees = await ethToolset.estimateFeesForTx({
     provider,
     txRequest,
   });
@@ -140,7 +136,7 @@ async function main() {
   const signerAddress = await signer.getAddress();
   const signerBalanceWei = await provider.getBalance(signerAddress);
   const signerBalanceEth = ethers.formatEther(signerBalanceWei);
-  const signerBalanceUsd = Big(ethToUsd).mul(Big(signerBalanceEth)).toFixed(config.USD_DP);
+  const signerBalanceUsd = Big(ethToUsd).mul(Big(signerBalanceEth)).toFixed(config.constants.USD_DECIMAL_PLACES);
   log(`Signer balance: ${signerBalanceEth} ETH (${signerBalanceUsd} USD)`);
   if (Big(signerBalanceEth).lt(Big(feeEth))) {
     console.error(
@@ -181,7 +177,7 @@ async function main() {
   const txFeeWei = txReceipt.fee;
   deb(`txFeeWei: ${txFeeWei}`);
   const txFeeEth = ethers.formatEther(txFeeWei).toString();
-  const txFeeUsd = Big(ethToUsd).mul(Big(txFeeEth)).toFixed(config.USD_DP);
+  const txFeeUsd = Big(ethToUsd).mul(Big(txFeeEth)).toFixed(config.constants.USD_DECIMAL_PLACES);
   log(`Final fee: ${txFeeEth} ETH (${txFeeUsd} USD)`);
 
   // Report the final result.
