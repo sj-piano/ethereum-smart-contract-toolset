@@ -1,25 +1,27 @@
 // Imports
+import _ from "lodash";
 import { program } from "commander";
 import { ethers } from "ethers";
-import fs from "fs";
-import Joi from "joi";
-import _ from "lodash";
+
 
 // Local imports
-import { config } from "#root/config";
-import ethereum from "#root/src/ethereum";
+import config from "#root/config";
 import { createLogger } from "#root/lib/logging";
+import validate from "#root/lib/validate";
 
-// Environment variables
-import dotenv from "dotenv";
-import path from "path";
-let rootDir = __dirname.substring(0, __dirname.lastIndexOf("/"));
-let envFile = path.join(rootDir, config.envFileName);
-dotenv.config({ path: envFile });
-const { INFURA_API_KEY } = process.env;
+
+// Controls
+let networkConnectionsToCheck = [
+  "fork",
+  "testnet",
+  "mainnet",
+];
+
 
 // Logging
+const log2 = console.log;
 const { logger, log, deb } = createLogger();
+
 
 // Parse arguments
 program
@@ -32,15 +34,7 @@ let { debug, logLevel } = options;
 
 // Process and validate arguments
 
-const logLevelSchema = Joi.string().valid(...config.logLevelList);
-let logLevelResult = logLevelSchema.validate(logLevel);
-if (logLevelResult.error) {
-  var msg = `Invalid log level "${logLevel}". Valid options are: [${config.logLevelList.join(
-    ", ",
-  )}]`;
-  console.error(msg);
-  process.exit(1);
-}
+validate.logLevel({ logLevel });
 if (debug) {
   logLevel = "debug";
 }
@@ -53,12 +47,28 @@ main().catch((error) => {
   process.exit(1);
 });
 
-// Main function
+// Functions
+
+async function checkConnection({provider, connections, networkLabel, network}) {
+  let msg = `Connecting to ${networkLabel} network: ${network}...`;
+  log(msg);
+  try {
+    // _detectNetwork() will throw an error if the connection fails. It won't retry.
+    let detected = await provider._detectNetwork();
+    let blockNumber = await provider.getBlockNumber();
+    log(`- ${networkLabel} network: current block number = ${blockNumber}`);
+    connections[networkLabel].connected = true;
+  } catch (error) {
+    provider.destroy();
+    logger.error(`Could not connect to ${networkLabel} network: ${network}.`);
+    logger.error(error);
+  }
+}
 
 async function main() {
   let connections = {
-    local: {
-      description: "local hardhat node",
+    fork: {
+      description: "Hardhat fork",
       connected: false,
     },
     testnet: {
@@ -71,64 +81,41 @@ async function main() {
     },
   };
 
-  // Check local network connection
-  let networkLabel = "local";
-  let network = config.mapNetworkLabelToNetwork[networkLabel];
-  let msg = `Connecting to ${networkLabel} network at ${network}...`;
-  log(msg);
+  // Check local Hardhat fork network connection
+  let networkLabel = "fork";
+  let network = config.networkLabelToNetwork[networkLabel];
   let provider = new ethers.JsonRpcProvider(network);
-  try {
-    let blockNumber = await provider.getBlockNumber();
-    log(`Current block number: ${blockNumber}`);
-    connections.local.connected = true;
-  } catch (error) {
-    logger.error(`Could not connect to ${networkLabel} network at ${network}.`);
-    deb(error);
+
+  if (networkConnectionsToCheck.includes(networkLabel)) {
+    await checkConnection({provider, connections, networkLabel, network});
   }
 
   // Check Sepolia testnet network connection (via Infura)
   networkLabel = "testnet";
-  network = config.mapNetworkLabelToNetwork[networkLabel];
-  msg = `Connecting to ${networkLabel} network at ${network}...`;
-  log(msg);
-  provider = new ethers.InfuraProvider(network, INFURA_API_KEY);
-  try {
-    let blockNumber = await provider.getBlockNumber();
-    log(`Current block number: ${blockNumber}`);
-    connections.testnet = {
-      description: "Sepolia testnet",
-      connected: true,
-    };
-  } catch (error) {
-    logger.error(`Could not connect to ${networkLabel} network at ${network}.`);
-    deb(error);
+  network = config.networkLabelToNetwork[networkLabel];
+  provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
+  if (networkConnectionsToCheck.includes(networkLabel)) {
+    await checkConnection({provider, connections, networkLabel, network});
   }
 
   // Check Ethereum Mainnet network connection (via Infura)
   networkLabel = "mainnet";
-  network = config.mapNetworkLabelToNetwork[networkLabel];
-  msg = `Connecting to ${networkLabel} network at ${network}...`;
-  log(msg);
-  provider = new ethers.InfuraProvider(network, INFURA_API_KEY);
-  try {
-    let blockNumber = await provider.getBlockNumber();
-    log(`Current block number: ${blockNumber}`);
-    connections.mainnet = {
-      description: "Ethereum Mainnet",
-      connected: true,
-    };
-  } catch (error) {
-    logger.error(`Could not connect to ${networkLabel} network at ${network}.`);
-    deb(error);
+  network = config.networkLabelToNetwork[networkLabel];
+  provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
+  if (networkConnectionsToCheck.includes(networkLabel)) {
+    await checkConnection({provider, connections, networkLabel, network});
   }
 
   // Display results
-  console.log(`Network connections:`);
+  log2(`Network connections:`);
   _.forEach(connections, (connection, networkLabel) => {
-    let { description, connected } = connection;
-    let msg = `- ${networkLabel}: ${description} - ${
-      connected ? "connected" : "not connected"
-    }`;
-    console.log(msg);
+    if (networkConnectionsToCheck.includes(networkLabel)) {
+      let { description, connected } = connection;
+      let msg = `- ${networkLabel}: ${description} - ${
+        connected ? "connected" : "not connected"
+      }`;
+      log2(msg);
+    }
   });
+
 }

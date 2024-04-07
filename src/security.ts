@@ -9,7 +9,7 @@ import _ from "lodash";
 import { ethers, Provider, TransactionRequest } from "ethers";
 
 // Local imports
-import { config } from "#root/config";
+import config from "#root/config";
 import { createLogger } from "#lib/logging";
 import { getEnvVar } from "#lib/env-vars";
 import utils from "#lib/utils";

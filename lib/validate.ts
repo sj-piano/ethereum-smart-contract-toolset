@@ -2,7 +2,7 @@
 import Joi from "joi";
 
 // Local imports
-import { config } from "#root/config";
+import config from "#root/config";
 import utils from "#lib/utils";
 
 // Functions

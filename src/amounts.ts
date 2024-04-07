@@ -3,7 +3,7 @@ import Big from "big.js";
 import _ from "lodash";
 
 // Local imports
-import { config } from "#root/config";
+import config from "#root/config";
 import { createLogger } from "#root/lib/logging";
 import utils, { jd } from "#lib/utils";
 import validate from "#lib/validate";

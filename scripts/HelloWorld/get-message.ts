@@ -5,7 +5,7 @@ import fs from "fs";
 import _ from "lodash";
 
 // Local imports
-import { config } from "#root/config";
+import config from "#root/config";
 import ethereum from "#root/src/ethereum";
 import { createLogger } from "#root/lib/logging";
 import validate from "#root/lib/validate";
@@ -64,7 +64,7 @@ if (debug) {
 logger.setLevel({ logLevel });
 
 validate.networkLabel({ networkLabel });
-const network = config.mapNetworkLabelToNetwork[networkLabel];
+const network = config.networkLabelToNetwork[networkLabel];
 
 let contractAddress;
 if (fs.existsSync(addressFile)) {

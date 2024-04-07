@@ -5,7 +5,7 @@ import Joi from "joi";
 import _ from "lodash";
 
 // Local imports
-import { config } from "#root/config";
+import config from "#root/config";
 import ethereum from "#root/src/ethereum";
 import { createLogger } from "#root/lib/logging";
 
@@ -55,7 +55,7 @@ if (networkLabelResult.error) {
   console.error(msg);
   process.exit(1);
 }
-const network = config.mapNetworkLabelToNetwork[networkLabel];
+const network = config.networkLabelToNetwork[networkLabel];
 
 // Setup
 

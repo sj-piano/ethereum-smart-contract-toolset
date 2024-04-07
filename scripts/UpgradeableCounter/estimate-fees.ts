@@ -5,7 +5,7 @@ import hre from "hardhat";
 import { program } from "commander";
 
 // Local imports
-import { config } from "#root/config";
+import config from "#root/config";
 import amounts from "#root/src/amounts";
 import ethereum from "#root/src/ethereum";
 import { createLogger } from "#root/lib/logging";
@@ -56,7 +56,7 @@ logger.setLevel({ logLevel });
 ethereum.setLogLevel({ logLevel });
 
 validate.networkLabel({ networkLabel });
-const network = config.mapNetworkLabelToNetwork[networkLabel];
+const network = config.networkLabelToNetwork[networkLabel];
 
 // Setup
 
