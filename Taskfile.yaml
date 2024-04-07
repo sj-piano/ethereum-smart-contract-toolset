@@ -11,44 +11,44 @@ tasks:
   lint:
     desc: "Lint the Typescript code"
     cmds:
-      - npx eslint './**/*.ts'
+      - pnpm run lint
     silent: true
 
   lint-contracts:
     desc: "Lint the Solidity contracts"
     cmds:
-      - npx solhint 'contracts/**/*.sol'
+      - pnpm run lint-contracts
     silent: true
 
   compile-contracts:
     desc: "Compile the Solidity contracts"
     cmds:
-      - npx hardhat compile
+      - pnpm exec hardhat compile
     silent: true
 
   clean-and-compile-contracts:
     desc: "Clean the compilation directories, then compile the Solidity contracts"
     cmds:
-      - npx hardhat clean
-      - npx hardhat compile
+      - pnpm exec hardhat clean
+      - pnpm exec hardhat compile
     silent: true
 
   reset:
     desc: "Completely reset the NodeJS Hardhat environment"
     cmds:
-      - npm run reset
+      - pnpm run reset
     silent: true
 
   test:
     desc: "Run the development tests on a temporary Hardhat node"
     # Alternative commands:
-    # npx hardhat test --typecheck
+    # pnpm run hardhat test --typecheck
     # npm exec -- mocha --require ts-node/register test/**/*.ts
     # Example of use:
     # task test -- --grep "should deploy" --debug
     # ^ Note the extra "--" before the arguments to pass CLI_ARGS to the command.
     cmds:
-      - npm exec -- mocha --require ts-node/register test/**/*.ts {{.CLI_ARGS}}
+      - pnpm exec -- mocha --require ts-node/register test/**/*.ts {{.CLI_ARGS}}
     silent: true
 
   show-example-script-commands:
@@ -60,35 +60,29 @@ tasks:
   check-formatting:
     desc: "Check the formatting of the Typescript code"
     cmds:
-      - npx prettier --config .prettierrc './**/*.ts' --check
+      - pnpm exec prettier --config .prettierrc './**/*.ts' --check
     silent: true
 
   fix-formatting:
     desc: "Reformat the Typescript code"
     cmds:
-      - npx prettier --config .prettierrc './**/*.ts' --write
-    silent: true
-
-  lint:
-    desc: "Lint the Typescript code"
-    cmds:
-      - npx eslint './**/*.ts'
+      - pnpm exec prettier --config .prettierrc './**/*.ts' --write
     silent: true
 
   start-local-node:
     desc: "Start a local Hardhat node"
     cmds:
-      - npx hardhat node
+      - pnpm exec hardhat node
     silent: true
 
   check-network-connections:
     desc: "Check the connections to the various Ethereum networks"
     cmds:
-      - npm exec --silent ts-node scripts/check-network-connections.ts
+      - pnpm exec --silent ts-node scripts/check-network-connections.ts
     silent: true
 
   hello-world-get-message:
     cmds:
-      - npm exec --silent ts-node scripts/HelloWorld/get-message.ts -- {{.CLI_ARGS}}
+      - pnpm exec --silent ts-node scripts/HelloWorld/get-message.ts -- {{.CLI_ARGS}}
     silent: true
 

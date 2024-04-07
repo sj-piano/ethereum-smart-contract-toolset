@@ -6,11 +6,12 @@
   "main": "build/index.js",
   "scripts": {
     "build": "tsc --project tsconfig.json",
-    "clean-build": "rm -rf build && npm run build",
-    "test": "npx hardhat test --typecheck",
+    "clean-build": "rm -rf build && pnpm run build",
+    "test": "pnpm exec hardhat test --typecheck",
     "clean": "rm -rf node_modules && rm -f package-lock.json",
-    "reset": "rm -rf artifacts build cache && npm run clean && npm install && npx hardhat compile",
-    "lint": "eslint --ext .ts ."
+    "reset": "rm -rf artifacts build cache && pnpm run clean && pnpm install && pnpm exec hardhat compile",
+    "lint": "eslint --ext .ts .",
+    "lint-contracts": "solhint 'contracts/**/*.sol'"
   },
   "author": {
     "name": "StJohn Piano",
