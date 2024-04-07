@@ -1,11 +1,21 @@
 // Imports
+import _ from "lodash";
+import fs from "fs";
 import Joi from "joi";
+
 
 // Local imports
 import config from "#root/config";
+import { createLogger } from "#root/lib/logging";
 import utils from "#lib/utils";
 
+// Logging
+const log2 = console.log;
+const { logger, log, deb } = createLogger();
+
+
 // Functions
+
 
 function logLevel({ logLevel }: { logLevel: string }) {
   const logLevelSchema = Joi.string().valid(...config.logLevelList);
@@ -63,4 +73,31 @@ function string(options: { name: string; value: string }): string {
   return value;
 }
 
-export default { logLevel, networkLabel, numericString, number, string };
+function loadArgumentFromOneSource(valueName: string, value: string, valueFile: string) {
+  let msg = `Exactly one of the arguments '--${valueName}' or '--${valueName}-file' must be provided.`;
+  if ((value && valueFile) || (!value && !valueFile)) {
+    console.error(msg);
+    process.exit(1);
+  }
+  if (value) {
+    return value;
+  }
+  if (valueFile && !fs.existsSync(valueFile)) {
+    console.error(`${valueName} file not found: ${valueFile}`);
+    process.exit(1);
+  }
+  if (valueFile && fs.existsSync(valueFile)) {
+    let value2 = fs.readFileSync(valueFile).toString().trim();
+    deb(`${valueName} found in ${valueFile}: ${value2}`);
+    return value2;
+  }
+}
+
+export default {
+  logLevel,
+  networkLabel,
+  numericString,
+  number,
+  string,
+  loadArgumentFromOneSource,
+};

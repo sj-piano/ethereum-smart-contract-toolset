@@ -2,7 +2,7 @@
 import fs from "fs";
 
 // Local imports
-import ethereum from "#src/ethereum";
+import ethereum from "#root/src/eth-toolset";
 
 // Logging
 const log2 = console.log;

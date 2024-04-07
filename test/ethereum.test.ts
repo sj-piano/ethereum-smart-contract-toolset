@@ -9,7 +9,7 @@ import _ from "lodash";
 // Local imports
 import amounts from "#src/amounts";
 import config from "#root/config";
-import ethereum from "#src/ethereum";
+import ethereum from "#root/src/eth-toolset";
 import { createLogger } from "#root/lib/logging";
 import utils from "#root/lib/utils";
 

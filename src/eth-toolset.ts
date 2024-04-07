@@ -1,25 +1,30 @@
 // Imports
+import _ from "lodash";
 import axios from "axios";
 import Big from "big.js";
 import crypto from "crypto";
 import { ethers, Provider, TransactionRequest } from "ethers";
-import _ from "lodash";
+
 
 // Local imports
 import amounts from "#src/amounts";
-import { Config, config } from "#root/config";
-import { Logger, createLogger } from "#root/lib/logging";
+import config from "#root/config";
+import { createLogger } from "#root/lib/logging";
 import security from "#src/security";
 import utils from "#root/lib/utils";
+
 
 // Controls
 let logLevel = "error";
 logLevel = "info";
 
+
 // Logging
 const { logger, log, deb } = createLogger({ filePath: __filename, logLevel });
 
+
 // Functions
+
 
 function createPrivateKeySync() {
   const randomBytes = crypto.randomBytes(32);
@@ -114,7 +119,7 @@ function validateAddressesSync({ addresses }: { addresses: Record<string, string
 async function getBalanceEth({ provider, address }: { provider: Provider; address: string }) {
   let balanceWei = await provider.getBalance(address);
   let balanceEth = ethers.formatEther(balanceWei);
-  balanceEth = new Big(balanceEth).toFixed(config.ETH_DP);
+  balanceEth = new Big(balanceEth).toFixed(config.constants.ETH_DECIMAL_PLACES);
   return balanceEth;
 }
 
@@ -184,14 +189,14 @@ async function getGasPricesWithFiat({ provider }: { provider: Provider }) {
   const ethToUsd = await getEthereumPriceInUsd();
   const baseFeePerGasUsd = Big(gasPrices.baseFeePerGasEth)
     .mul(Big(ethToUsd))
-    .toFixed(config.ETH_DP);
-  const gasPriceUsd = Big(gasPrices.gasPriceEth).mul(Big(ethToUsd)).toFixed(config.ETH_DP);
+    .toFixed(config.constants.ETH_DECIMAL_PLACES);
+  const gasPriceUsd = Big(gasPrices.gasPriceEth).mul(Big(ethToUsd)).toFixed(config.constants.ETH_DECIMAL_PLACES);
   const averagePriorityFeePerGasUsd = Big(gasPrices.averagePriorityFeePerGasEth)
     .mul(Big(ethToUsd))
-    .toFixed(config.ETH_DP);
+    .toFixed(config.constants.ETH_DECIMAL_PLACES);
   const basicPaymentCostUsd = Big(gasPrices.basicPaymentCostEth)
     .mul(Big(ethToUsd))
-    .toFixed(config.USD_DP);
+    .toFixed(config.constants.USD_DECIMAL_PLACES);
   return {
     ...gasPrices,
     ethToUsd,
@@ -202,7 +207,7 @@ async function getGasPricesWithFiat({ provider }: { provider: Provider }) {
   };
 }
 
-function getFeeLimitChecksObj(): { [key: string]: any } {
+function getFeeLimitChecksObjSync(): { [key: string]: any } {
   let feeLimitKeys = "baseFeePerGasWei baseFeeUsd maxFeeUsd".split(" ");
   let feeLimitChecks: { [key: string]: any } = {};
   feeLimitKeys.forEach((key) => {
@@ -237,7 +242,7 @@ async function estimateFeesFromGas({
   estimatedGas: string | bigint;
 }) {
   estimatedGas = estimatedGas.toString();
-  let feeLimitChecks = getFeeLimitChecksObj();
+  let feeLimitChecks = getFeeLimitChecksObjSync();
   const gasLimit = Big(estimatedGas).mul(Big(config.gasLimitMultiplier)).toFixed(0);
   deb(`gasLimit: ${gasLimit}`);
   const gasPrices = await getGasPricesWithFiat({ provider });
@@ -248,11 +253,11 @@ async function estimateFeesFromGas({
     feeLimitChecks.baseFeePerGasWei = { exceeded: true, msg };
   }
   // Check if the base fee is greater than our USD limit.
-  const baseFeeWei = Big(estimatedGas).mul(Big(baseFeePerGasWei)).toFixed(config.WEI_DP);
+  const baseFeeWei = Big(estimatedGas).mul(Big(baseFeePerGasWei)).toFixed(config.constants.WEI_DECIMAL_PLACES);
   deb(`baseFeeWei: ${baseFeeWei} wei`);
   const baseFeeGwei = ethers.formatUnits(baseFeeWei, "gwei");
   const baseFeeEth = ethers.formatEther(baseFeeWei).toString();
-  const baseFeeUsd = Big(baseFeeEth).mul(Big(ethToUsd)).toFixed(config.USD_DP);
+  const baseFeeUsd = Big(baseFeeEth).mul(Big(ethToUsd)).toFixed(config.constants.USD_DECIMAL_PLACES);
   deb(`baseFeeUsd: ${baseFeeUsd} USD`);
   if (Big(baseFeeUsd).gt(Big(config.maxFeePerTransactionUsd))) {
     let msg = `Base fee (${baseFeeUsd} USD) exceeds limit specified in config (${config.maxFeePerTransactionUsd} USD).`;
@@ -261,18 +266,18 @@ async function estimateFeesFromGas({
   }
   // Calculate a maxFeePerGasWei for this transaction, based on the current ETH-USD price.
   // - Using this limit will prevent the later addition of a priority fee from exceeding our USD limit.
-  const feeLimitEth = Big(config.maxFeePerTransactionUsd).div(Big(ethToUsd)).toFixed(config.ETH_DP);
+  const feeLimitEth = Big(config.maxFeePerTransactionUsd).div(Big(ethToUsd)).toFixed(config.constants.ETH_DECIMAL_PLACES);
   deb(`feeLimitEth: ${feeLimitEth} ETH`);
   const feeLimitWei = ethers.parseEther(feeLimitEth).toString();
   deb(`feeLimitWei: ${feeLimitWei} wei`);
-  const maxFeePerGasWei = Big(feeLimitWei).div(Big(estimatedGas)).toFixed(config.WEI_DP);
+  const maxFeePerGasWei = Big(feeLimitWei).div(Big(estimatedGas)).toFixed(config.constants.WEI_DECIMAL_PLACES);
   deb(`maxFeePerGasWei: ${maxFeePerGasWei} wei`);
   // Calculate a max-priority-fee-per-gas for this transaction.
   // - We choose a max priority fee that is a multiple of the average priority fee.
   // - If it exceeds our max-priority-fee-per-gas limit (set in config), reduce it to the limit.
   let maxPriorityFeePerGasWei = Big(averagePriorityFeePerGasWei)
     .mul(Big(config.averagePriorityFeeMultiplier))
-    .toFixed(config.WEI_DP);
+    .toFixed(config.constants.WEI_DECIMAL_PLACES);
   if (Big(maxPriorityFeePerGasWei).gt(Big(config.maxPriorityFeePerGasWei))) {
     let msg = `Max priority fee per gas (${maxPriorityFeePerGasWei} wei) exceeds limit specified in config (${config.maxPriorityFeePerGasWei} wei).`;
     msg += ` Using config limit instead.`;
@@ -287,16 +292,16 @@ async function estimateFeesFromGas({
   // Calculate the max possible fee.
   const maxPriorityFeeWei = Big(estimatedGas)
     .mul(Big(maxPriorityFeePerGasWei))
-    .toFixed(config.WEI_DP);
+    .toFixed(config.constants.WEI_DECIMAL_PLACES);
   deb(`maxPriorityFeeWei: ${maxPriorityFeeWei} wei`);
   const maxPriorityFeeGwei = ethers.formatUnits(maxPriorityFeeWei, "gwei");
   const maxPriorityFeeEth = ethers.formatEther(maxPriorityFeeWei).toString();
-  const maxPriorityFeeUsd = Big(maxPriorityFeeEth).mul(Big(ethToUsd)).toFixed(config.USD_DP);
-  const maxFeeWei = Big(baseFeeWei).plus(Big(maxPriorityFeeWei)).toFixed(config.WEI_DP);
+  const maxPriorityFeeUsd = Big(maxPriorityFeeEth).mul(Big(ethToUsd)).toFixed(config.constants.USD_DECIMAL_PLACES);
+  const maxFeeWei = Big(baseFeeWei).plus(Big(maxPriorityFeeWei)).toFixed(config.constants.WEI_DECIMAL_PLACES);
   deb(`maxFeeWei: ${maxFeeWei} wei`);
   const maxFeeGwei = ethers.formatUnits(maxFeeWei, "gwei");
   const maxFeeEth = ethers.formatEther(maxFeeWei).toString();
-  const maxFeeUsd = Big(maxFeeEth).mul(Big(ethToUsd)).toFixed(config.USD_DP);
+  const maxFeeUsd = Big(maxFeeEth).mul(Big(ethToUsd)).toFixed(config.constants.USD_DECIMAL_PLACES);
   deb(`maxFeeUsd: ${maxFeeUsd} USD`);
   // Handle the situation where the base fee is below the limit, but the max fee is above it.
   if (
@@ -306,10 +311,10 @@ async function estimateFeesFromGas({
     let msg = `Max fee (${maxFeeUsd} USD) exceeds limit specified in config (${config.maxFeePerTransactionUsd} USD).`;
     let unusablePriorityFeeUsd = Big(maxFeeUsd)
       .minus(Big(config.maxFeePerTransactionUsd))
-      .toFixed(config.USD_DP);
+      .toFixed(config.constants.USD_DECIMAL_PLACES);
     let unusablePriorityFeeEth = Big(unusablePriorityFeeUsd)
       .div(Big(ethToUsd))
-      .toFixed(config.ETH_DP);
+      .toFixed(config.constants.ETH_DECIMAL_PLACES);
     let unusablePriorityFeeWei = ethers.parseEther(unusablePriorityFeeEth).toString();
     let unusablePriorityFeeGwei = ethers.formatUnits(unusablePriorityFeeWei, "gwei");
     let msg2 = ` The transaction won't be able to use its entire priority fee. Unusable amount = (${unusablePriorityFeeGwei} Gwei, ${unusablePriorityFeeUsd} USD), out of total available = (${maxPriorityFeeGwei} gwei, ${maxPriorityFeeUsd} USD).`;
@@ -325,7 +330,7 @@ async function estimateFeesFromGas({
   // If we've passed a USD feeLimit, we re-calculate the final fee estimates backwards from maxFeePerTransactionUsd.
   if (feeLimitChecks.baseFeeUsd.exceeded || feeLimitChecks.maxFeeUsd.exceeded) {
     feeUsd = config.maxFeePerTransactionUsd;
-    feeEth = Big(feeUsd).div(Big(ethToUsd)).toFixed(config.ETH_DP);
+    feeEth = Big(feeUsd).div(Big(ethToUsd)).toFixed(config.constants.ETH_DECIMAL_PLACES);
     feeWei = ethers.parseEther(feeEth).toString();
     feeGwei = ethers.formatUnits(feeWei, "gwei");
   }

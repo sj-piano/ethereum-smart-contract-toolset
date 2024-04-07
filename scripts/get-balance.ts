@@ -8,7 +8,7 @@ import _ from "lodash";
 
 // Local imports
 import config from "#root/config";
-import ethereum from "#root/src/ethereum";
+import ethereum from "#root/src/eth-toolset";
 import { createLogger } from "#root/lib/logging";
 import validate from "#root/lib/validate";
 

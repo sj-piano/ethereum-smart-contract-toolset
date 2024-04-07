@@ -1,5 +1,5 @@
 // Local imports
-import ethereum from "#root/src/ethereum";
+import ethereum from "#root/src/eth-toolset";
 
 // Logging
 let log2 = console.log;

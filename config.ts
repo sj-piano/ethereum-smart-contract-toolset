@@ -117,6 +117,9 @@ class Config {
       'LOCAL_HARDHAT_ADDRESS',
       'ETHEREUM_MAINNET_PRIVATE_KEY',
       'ETHEREUM_MAINNET_ADDRESS',
+      'HELLO_WORLD_LOCAL_ADDRESS',
+      'HELLO_WORLD_TESTNET_ADDRESS',
+      'HELLO_WORLD_MAINNET_ADDRESS',
     ], this.envFileName);
     // Derive additional env vars from existing ones.
     this.env.INFURA_API_MAINNET_URL = this.infuraApiMainnetUrlBase + '/' + this.env.INFURA_API_KEY;
@@ -141,6 +144,13 @@ class Config {
   }
 
   // Methods
+
+  getEnvVar({name}: {name: string}): string {
+    if (!_.has(this.env, name)) {
+      throw new Error(`Environment variable '${name}' not found in ${this.envFileName}.`);
+    }
+    return this.env[name];
+  }
 
   update({
     MAX_FEE_PER_TRANSACTION_USD,

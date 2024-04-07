@@ -7,7 +7,7 @@ import { program } from "commander";
 // Local imports
 import config from "#root/config";
 import amounts from "#root/src/amounts";
-import ethereum from "#root/src/ethereum";
+import ethereum from "#root/src/eth-toolset";
 import { createLogger } from "#root/lib/logging";
 import validate from "#root/lib/validate";
 

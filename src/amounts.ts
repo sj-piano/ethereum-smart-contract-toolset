@@ -1,6 +1,6 @@
 // Imports
-import Big from "big.js";
 import _ from "lodash";
+import Big from "big.js";
 
 // Local imports
 import config from "#root/config";
@@ -20,10 +20,10 @@ let weiPerEth = Big(10 ** 18);
 let gweiPerEth = Big(10 ** 9);
 let weiPerGwei = Big(10 ** 9);
 let zeroWei = "0";
-let zeroEth = "0." + "0".repeat(config.ETH_DP);
+let zeroEth = "0." + "0".repeat(config.constants.ETH_DECIMAL_PLACES);
 
 // Setup
-let { WEI_DP, GWEI_DP, ETH_DP, USD_DP } = config;
+let { ETH_DECIMAL_PLACES, GWEI_DECIMAL_PLACES, USD_DECIMAL_PLACES, WEI_DECIMAL_PLACES } = config.constants;
 
 // Functions
 
@@ -49,13 +49,13 @@ function validateAmountEth({ amountEth }: { amountEth: string }): boolean {
 
 function weiToEth({ amountWei }: { amountWei: string }) {
   validateAmountWei({ amountWei });
-  const amountEth = Big(amountWei).div(weiPerEth).toFixed(ETH_DP);
+  const amountEth = Big(amountWei).div(weiPerEth).toFixed(ETH_DECIMAL_PLACES);
   return amountEth;
 }
 
 function ethToWei({ amountEth }: { amountEth: string }) {
   validateAmountEth({ amountEth });
-  const amountWei = Big(amountEth).times(weiPerEth).toFixed(WEI_DP);
+  const amountWei = Big(amountEth).times(weiPerEth).toFixed(WEI_DECIMAL_PLACES);
   return amountWei;
 }
 
@@ -69,7 +69,7 @@ function multiplyAmountWei({
   const m = String(multiplier);
   validateAmountWei({ amountWei });
   validate.string({ name: "multiplier", value: m });
-  const amountWei2 = Big(amountWei).times(Big(m)).toFixed(WEI_DP);
+  const amountWei2 = Big(amountWei).times(Big(m)).toFixed(WEI_DECIMAL_PLACES);
   return amountWei2;
 }
 
@@ -83,7 +83,7 @@ function multiplyAmountEth({
   const m = String(multiplier);
   validateAmountEth({ amountEth });
   validate.string({ name: "multiplier", value: m });
-  const amountEth2 = Big(amountEth).times(Big(m)).toFixed(ETH_DP);
+  const amountEth2 = Big(amountEth).times(Big(m)).toFixed(ETH_DECIMAL_PLACES);
   return amountEth2;
 }
 
@@ -96,7 +96,7 @@ function addAmountsEth(amounts: string[]): string {
     let amountWei2 = ethToWei({ amountEth: amount });
     totalWeiBig = totalWeiBig.plus(Big(amountWei2));
   }
-  let totalWei = totalWeiBig.toFixed(WEI_DP);
+  let totalWei = totalWeiBig.toFixed(WEI_DECIMAL_PLACES);
   let amountEth = weiToEth({ amountWei: totalWei });
   return amountEth;
 }
@@ -114,7 +114,7 @@ function subtractAmountsEth(amounts: string[]): string {
     let amountWei2 = ethToWei({ amountEth: amount });
     amountWeiBig = amountWeiBig.minus(Big(amountWei2));
   }
-  let finalWei = amountWeiBig.toFixed(WEI_DP);
+  let finalWei = amountWeiBig.toFixed(WEI_DECIMAL_PLACES);
   let finalEth = weiToEth({ amountWei: finalWei });
   return finalEth;
 }
