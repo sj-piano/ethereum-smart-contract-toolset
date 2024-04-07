@@ -1,8 +1,10 @@
 # User files
-my-data/sepolia-testnet-address.txt
-my-data/sepolia-testnet-private-key.txt
-my-data/ethereum-mainnet-address.txt
-my-data/ethereum-mainnet-private-key.txt
+user-data/address.txt
+user-data/private-key.txt
+user-data/sepolia-testnet-address.txt
+user-data/sepolia-testnet-private-key.txt
+user-data/ethereum-mainnet-address.txt
+user-data/ethereum-mainnet-private-key.txt
 
 # Logs
 logs
