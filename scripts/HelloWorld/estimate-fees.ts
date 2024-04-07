@@ -1,8 +1,8 @@
 // Imports
+import _ from "lodash";
 import { program } from "commander";
 import { ethers } from "ethers";
-import Joi from "joi";
-import _ from "lodash";
+
 
 // Local imports
 import config from "#root/config";
@@ -10,21 +10,16 @@ import ethereum from "#root/src/eth-toolset";
 import { createLogger } from "#root/lib/logging";
 import validate from "#root/lib/validate";
 
+
 // Environment variables
-import dotenv from "dotenv";
-import path from "path";
-let rootDir = __dirname.substring(0, __dirname.lastIndexOf("/"));
-let envFile = path.join(rootDir, config.envFileName);
-dotenv.config({ path: envFile });
 const {
-  MAX_FEE_PER_TRANSACTION_USD,
-  MAX_FEE_PER_GAS_GWEI,
-  MAX_PRIORITY_FEE_PER_GAS_GWEI,
   INFURA_API_KEY,
-} = process.env;
+} = config.env;
+
 
 // Logging
 const { logger, log, lj, deb } = createLogger();
+
 
 // Parse arguments
 program
@@ -36,13 +31,8 @@ const options = program.opts();
 if (options.debug) console.log(options);
 let { debug, logLevel, network: networkLabel } = options;
 
-// Process and validate arguments
 
-config.update({
-  MAX_FEE_PER_TRANSACTION_USD,
-  MAX_FEE_PER_GAS_GWEI,
-  MAX_PRIORITY_FEE_PER_GAS_GWEI,
-});
+// Process and validate arguments
 
 validate.logLevel({ logLevel });
 if (debug) {
@@ -53,6 +43,7 @@ logger.setLevel({ logLevel });
 validate.networkLabel({ networkLabel });
 const network = config.networkLabelToNetwork[networkLabel];
 
+
 // Setup
 
 import contract from "#root/artifacts/contracts/HelloWorld.sol/HelloWorld.json";
@@ -60,7 +51,6 @@ import contract from "#root/artifacts/contracts/HelloWorld.sol/HelloWorld.json";
 let provider: ethers.Provider;
 
 var msg: string = "Unknown error";
-let DEPLOYED_CONTRACT_ADDRESS: string | undefined;
 if (networkLabel == "local") {
   msg = `Connecting to local network at ${network}...`;
   provider = new ethers.JsonRpcProvider(network);
@@ -81,6 +71,7 @@ const contractFactoryHelloWorld = new ethers.ContractFactory(
 // We're able to use a dummy address because we're not actually calling any methods on the contract.
 const contractHelloWorld = new ethers.Contract(config.dummyAddress, contract.abi, provider);
 
+
 // Run main function
 
 main().catch((error) => {
@@ -88,7 +79,9 @@ main().catch((error) => {
   process.exit(1);
 });
 
+
 // Functions
+
 
 async function main() {
   let blockNumber = await provider.getBlockNumber();

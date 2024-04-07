@@ -1,5 +1,6 @@
 // Package configuration values, stored in a class.
 
+
 // Imports
 import _ from "lodash";
 import Big from "big.js";
@@ -7,15 +8,18 @@ import dotenv from "dotenv";
 import { ethers } from "ethers";
 import path from "path";
 
+
 // Local imports
 import constants from "#lib/constants";
 import { createLogger } from "#lib/logging";
 import { getEnvVars } from '#lib/env-vars';
 import validate from "#root/lib/validate";
 
+
 // Logging
 const log2 = console.log;
 const { logger, log, deb } = createLogger();
+
 
 // Language adjustments
 
@@ -125,6 +129,17 @@ class Config {
     this.env.INFURA_API_MAINNET_URL = this.infuraApiMainnetUrlBase + '/' + this.env.INFURA_API_KEY;
     this.env.MAX_FEE_PER_GAS_WEI = Big(this.env.MAX_FEE_PER_GAS_GWEI).mul(10**9).toFixed(0);
     this.env.MAX_PRIORITY_FEE_PER_GAS_WEI = Big(this.env.MAX_PRIORITY_FEE_PER_GAS_GWEI).mul(10**9).toFixed(0);
+    // Update some class attributes, using the env vars.
+    let {
+      MAX_FEE_PER_TRANSACTION_USD,
+      MAX_FEE_PER_GAS_GWEI,
+      MAX_PRIORITY_FEE_PER_GAS_GWEI,
+    } = this.env;
+    this.updateSync({
+      MAX_FEE_PER_TRANSACTION_USD,
+      MAX_FEE_PER_GAS_GWEI,
+      MAX_PRIORITY_FEE_PER_GAS_GWEI,
+    });
   }
 
   // Setters
@@ -152,7 +167,7 @@ class Config {
     return this.env[name];
   }
 
-  update({
+  updateSync({
     MAX_FEE_PER_TRANSACTION_USD,
     MAX_FEE_PER_GAS_GWEI,
     MAX_PRIORITY_FEE_PER_GAS_GWEI,
@@ -184,7 +199,6 @@ class Config {
 
 
 // Export singleton instance of config
-
 
 let config = new Config();
 config.loadEnvVarsSync();
