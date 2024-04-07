@@ -1,24 +1,20 @@
 // Imports
+import _ from "lodash";
 import { program } from "commander";
 import { ethers } from "ethers";
 import Joi from "joi";
-import _ from "lodash";
+
 
 // Local imports
 import config from "#root/config";
 import ethereum from "#root/src/eth-toolset";
 import { createLogger } from "#root/lib/logging";
+import validate from "#root/lib/validate";
 
-// Environment variables
-import dotenv from "dotenv";
-import path from "path";
-let rootDir = __dirname.substring(0, __dirname.lastIndexOf("/"));
-let envFile = path.join(rootDir, config.envFileName);
-dotenv.config({ path: envFile });
-const { INFURA_API_KEY } = process.env;
 
 // Logging
 const { logger, log, deb } = createLogger();
+
 
 // Parse arguments
 program
@@ -30,32 +26,18 @@ const options = program.opts();
 if (options.debug) console.log(options);
 let { debug, logLevel, network: networkLabel } = options;
 
+
 // Process and validate arguments
 
-const logLevelSchema = Joi.string().valid(...config.logLevelList);
-let logLevelResult = logLevelSchema.validate(logLevel);
-if (logLevelResult.error) {
-  var msg = `Invalid log level "${logLevel}". Valid options are: [${config.logLevelList.join(
-    ", ",
-  )}]`;
-  console.error(msg);
-  process.exit(1);
-}
+validate.logLevel({ logLevel });
 if (debug) {
   logLevel = "debug";
 }
 logger.setLevel({ logLevel });
 
-const networkLabelSchema = Joi.string().valid(...config.networkLabelList);
-let networkLabelResult = networkLabelSchema.validate(networkLabel);
-if (networkLabelResult.error) {
-  let msg = `Invalid network "${networkLabel}". Valid options are: [${config.networkLabelList.join(
-    ", ",
-  )}]`;
-  console.error(msg);
-  process.exit(1);
-}
+validate.networkLabel({ networkLabel });
 const network = config.networkLabelToNetwork[networkLabel];
+
 
 // Setup
 
@@ -67,10 +49,10 @@ if (networkLabel == "local") {
   provider = new ethers.JsonRpcProvider(network);
 } else if (networkLabel == "testnet") {
   msg = `Connecting to Sepolia testnet...`;
-  provider = new ethers.InfuraProvider(network, INFURA_API_KEY);
+  provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
 } else if (networkLabel == "mainnet") {
   msg = `Connecting to Ethereum mainnet...`;
-  provider = new ethers.InfuraProvider(network, INFURA_API_KEY);
+  provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
 }
 log(msg);
 
