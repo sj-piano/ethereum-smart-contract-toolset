@@ -46,12 +46,15 @@ dependencies:
     version: 4.7.1(winston@3.9.0)
 
 devDependencies:
+  '@nomicfoundation/hardhat-ethers':
+    specifier: 3.0.0
+    version: 3.0.0(ethers@6.6.0)(hardhat@2.18.1)
   '@nomicfoundation/hardhat-toolbox':
     specifier: 3.0.0
-    version: 3.0.0(@nomicfoundation/hardhat-chai-matchers@2.0.4)(@nomicfoundation/hardhat-ethers@3.0.5)(@nomicfoundation/hardhat-network-helpers@1.0.10)(@nomicfoundation/hardhat-verify@1.1.1)(@typechain/ethers-v6@0.4.3)(@typechain/hardhat@8.0.3)(@types/chai@4.3.5)(@types/mocha@10.0.1)(@types/node@20.3.3)(chai@4.3.7)(ethers@6.6.0)(hardhat-gas-reporter@1.0.10)(hardhat@2.18.1)(solidity-coverage@0.8.6)(ts-node@10.9.1)(typechain@8.3.2)(typescript@5.1.6)
+    version: 3.0.0(@nomicfoundation/hardhat-chai-matchers@2.0.4)(@nomicfoundation/hardhat-ethers@3.0.0)(@nomicfoundation/hardhat-network-helpers@1.0.10)(@nomicfoundation/hardhat-verify@1.1.1)(@typechain/ethers-v6@0.4.3)(@typechain/hardhat@8.0.3)(@types/chai@4.3.5)(@types/mocha@10.0.1)(@types/node@20.3.3)(chai@4.3.7)(ethers@6.6.0)(hardhat-gas-reporter@1.0.10)(hardhat@2.18.1)(solidity-coverage@0.8.6)(ts-node@10.9.1)(typechain@8.3.2)(typescript@5.1.6)
   '@openzeppelin/hardhat-upgrades':
     specifier: 2.0.1
-    version: 2.0.1(@nomicfoundation/hardhat-ethers@3.0.5)(@nomicfoundation/hardhat-verify@1.1.1)(ethers@6.6.0)(hardhat@2.18.1)
+    version: 2.0.1(@nomicfoundation/hardhat-ethers@3.0.0)(@nomicfoundation/hardhat-verify@1.1.1)(ethers@6.6.0)(hardhat@2.18.1)
   '@types/big.js':
     specifier: 6.1.6
     version: 6.1.6
@@ -851,7 +854,7 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@nomicfoundation/hardhat-chai-matchers@2.0.4(@nomicfoundation/hardhat-ethers@3.0.5)(chai@4.3.7)(ethers@6.6.0)(hardhat@2.18.1):
+  /@nomicfoundation/hardhat-chai-matchers@2.0.4(@nomicfoundation/hardhat-ethers@3.0.0)(chai@4.3.7)(ethers@6.6.0)(hardhat@2.18.1):
     resolution: {integrity: sha512-nvCeGgcN5mBQPP8TeWTrUB63JathBNj6igtpBC43za4CDglK1/UxzbYBl2WiLlNbzSQXACk3+gm/2xEbWanu5g==}
     peerDependencies:
       '@nomicfoundation/hardhat-ethers': ^3.0.0
@@ -859,7 +862,7 @@ packages:
       ethers: ^6.1.0
       hardhat: ^2.9.4
     dependencies:
-      '@nomicfoundation/hardhat-ethers': 3.0.5(ethers@6.6.0)(hardhat@2.18.1)
+      '@nomicfoundation/hardhat-ethers': 3.0.0(ethers@6.6.0)(hardhat@2.18.1)
       '@types/chai-as-promised': 7.1.8
       chai: 4.3.7
       chai-as-promised: 7.1.1(chai@4.3.7)
@@ -869,18 +872,14 @@ packages:
       ordinal: 1.0.3
     dev: true
 
-  /@nomicfoundation/hardhat-ethers@3.0.5(ethers@6.6.0)(hardhat@2.18.1):
-    resolution: {integrity: sha512-RNFe8OtbZK6Ila9kIlHp0+S80/0Bu/3p41HUpaRIoHLm6X3WekTd83vob3rE54Duufu1edCiBDxspBzi2rxHHw==}
+  /@nomicfoundation/hardhat-ethers@3.0.0(ethers@6.6.0)(hardhat@2.18.1):
+    resolution: {integrity: sha512-0A2hs39YUta//O9EcITnFw/iGzUztJ4FB4UIc2mgdZ2nXvDZUmkQO+Vtdt/guJ6gP66EPbwvFW7t1SRReMGrvg==}
     peerDependencies:
       ethers: ^6.1.0
       hardhat: ^2.0.0
     dependencies:
-      debug: 4.3.4(supports-color@8.1.1)
       ethers: 6.6.0
       hardhat: 2.18.1(ts-node@10.9.1)(typescript@5.1.6)
-      lodash.isequal: 4.5.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /@nomicfoundation/hardhat-network-helpers@1.0.10(hardhat@2.18.1):
@@ -892,7 +891,7 @@ packages:
       hardhat: 2.18.1(ts-node@10.9.1)(typescript@5.1.6)
     dev: true
 
-  /@nomicfoundation/hardhat-toolbox@3.0.0(@nomicfoundation/hardhat-chai-matchers@2.0.4)(@nomicfoundation/hardhat-ethers@3.0.5)(@nomicfoundation/hardhat-network-helpers@1.0.10)(@nomicfoundation/hardhat-verify@1.1.1)(@typechain/ethers-v6@0.4.3)(@typechain/hardhat@8.0.3)(@types/chai@4.3.5)(@types/mocha@10.0.1)(@types/node@20.3.3)(chai@4.3.7)(ethers@6.6.0)(hardhat-gas-reporter@1.0.10)(hardhat@2.18.1)(solidity-coverage@0.8.6)(ts-node@10.9.1)(typechain@8.3.2)(typescript@5.1.6):
+  /@nomicfoundation/hardhat-toolbox@3.0.0(@nomicfoundation/hardhat-chai-matchers@2.0.4)(@nomicfoundation/hardhat-ethers@3.0.0)(@nomicfoundation/hardhat-network-helpers@1.0.10)(@nomicfoundation/hardhat-verify@1.1.1)(@typechain/ethers-v6@0.4.3)(@typechain/hardhat@8.0.3)(@types/chai@4.3.5)(@types/mocha@10.0.1)(@types/node@20.3.3)(chai@4.3.7)(ethers@6.6.0)(hardhat-gas-reporter@1.0.10)(hardhat@2.18.1)(solidity-coverage@0.8.6)(ts-node@10.9.1)(typechain@8.3.2)(typescript@5.1.6):
     resolution: {integrity: sha512-MsteDXd0UagMksqm9KvcFG6gNKYNa3GGNCy73iQ6bEasEgg2v8Qjl6XA5hjs8o5UD5A3153B6W2BIVJ8SxYUtA==}
     peerDependencies:
       '@nomicfoundation/hardhat-chai-matchers': ^2.0.0
@@ -913,8 +912,8 @@ packages:
       typechain: ^8.2.0
       typescript: '>=4.5.0'
     dependencies:
-      '@nomicfoundation/hardhat-chai-matchers': 2.0.4(@nomicfoundation/hardhat-ethers@3.0.5)(chai@4.3.7)(ethers@6.6.0)(hardhat@2.18.1)
-      '@nomicfoundation/hardhat-ethers': 3.0.5(ethers@6.6.0)(hardhat@2.18.1)
+      '@nomicfoundation/hardhat-chai-matchers': 2.0.4(@nomicfoundation/hardhat-ethers@3.0.0)(chai@4.3.7)(ethers@6.6.0)(hardhat@2.18.1)
+      '@nomicfoundation/hardhat-ethers': 3.0.0(ethers@6.6.0)(hardhat@2.18.1)
       '@nomicfoundation/hardhat-network-helpers': 1.0.10(hardhat@2.18.1)
       '@nomicfoundation/hardhat-verify': 1.1.1(hardhat@2.18.1)
       '@typechain/ethers-v6': 0.4.3(ethers@6.6.0)(typechain@8.3.2)(typescript@5.1.6)
@@ -1078,7 +1077,7 @@ packages:
       - encoding
     dev: true
 
-  /@openzeppelin/hardhat-upgrades@2.0.1(@nomicfoundation/hardhat-ethers@3.0.5)(@nomicfoundation/hardhat-verify@1.1.1)(ethers@6.6.0)(hardhat@2.18.1):
+  /@openzeppelin/hardhat-upgrades@2.0.1(@nomicfoundation/hardhat-ethers@3.0.0)(@nomicfoundation/hardhat-verify@1.1.1)(ethers@6.6.0)(hardhat@2.18.1):
     resolution: {integrity: sha512-8yreWaXKyQ+A6w9D1URCCojt2o10DEox2kZkVIpacpF1inauAvc0sLKLJnqPmbYqrid7m6sRZmH9QByJH2H2nQ==}
     hasBin: true
     peerDependencies:
@@ -1090,7 +1089,7 @@ packages:
       '@nomicfoundation/hardhat-verify':
         optional: true
     dependencies:
-      '@nomicfoundation/hardhat-ethers': 3.0.5(ethers@6.6.0)(hardhat@2.18.1)
+      '@nomicfoundation/hardhat-ethers': 3.0.0(ethers@6.6.0)(hardhat@2.18.1)
       '@nomicfoundation/hardhat-verify': 1.1.1(hardhat@2.18.1)
       '@openzeppelin/defender-base-client': 1.54.1(debug@4.3.4)
       '@openzeppelin/platform-deploy-client': 0.9.0(debug@4.3.4)
@@ -3942,10 +3941,6 @@ packages:
 
   /lodash.clonedeep@4.5.0:
     resolution: {integrity: sha512-H5ZhCF25riFd9uB5UCkVKo61m3S/xZk1x4wA6yp/L3RFP6Z/eHH1ymQcGLo7J3GMPfm0V/7m1tryHuGVxpqEBQ==}
-    dev: true
-
-  /lodash.isequal@4.5.0:
-    resolution: {integrity: sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==}
     dev: true
 
   /lodash.merge@4.6.2:

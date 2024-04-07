@@ -39,6 +39,7 @@
     "winston-daily-rotate-file": "4.7.1"
   },
   "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "3.0.0",
     "@nomicfoundation/hardhat-toolbox": "3.0.0",
     "@openzeppelin/hardhat-upgrades": "2.0.1",
     "@types/big.js": "6.1.6",
