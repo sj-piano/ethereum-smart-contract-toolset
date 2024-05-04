@@ -2,6 +2,9 @@
 # Example commands for the scripts.
 
 
+### General
+
+
 pnpm exec -- ts-node scripts/check-network-connections.ts --debug
 
 
@@ -13,6 +16,18 @@ pnpm exec -- ts-node scripts/get-network-fees.ts --network local
 pnpm exec -- ts-node scripts/get-network-fees.ts --network testnet
 
 pnpm exec -- ts-node scripts/get-network-fees.ts --network mainnet
+
+
+
+pnpm exec -- ts-node scripts/check-contract-exists.ts
+
+pnpm exec -- ts-node scripts/check-contract-exists.ts --network testnet
+
+pnpm exec -- ts-node scripts/check-contract-exists.ts --network mainnet
+
+
+
+### Hello World
 
 
 pnpm exec -- ts-node scripts/hello-world/estimate-fees.ts
@@ -27,13 +42,6 @@ pnpm exec -- ts-node scripts/hello-world/deploy.ts
 pnpm exec -- ts-node scripts/hello-world/deploy.ts --network testnet
 
 pnpm exec -- ts-node scripts/hello-world/deploy.ts --network mainnet
-
-
-pnpm exec -- ts-node scripts/check-contract-exists.ts
-
-pnpm exec -- ts-node scripts/check-contract-exists.ts --network testnet
-
-pnpm exec -- ts-node scripts/check-contract-exists.ts --network mainnet
 
 
 pnpm exec -- ts-node scripts/hello-world/get-message.ts
@@ -52,7 +60,7 @@ pnpm exec -- ts-node scripts/hello-world/update-message.ts --input-file-json use
 
 
 
-# Additional variants
+### Additional variants
 
 pnpm exec -- ts-node scripts/check-contract-exists.ts --network testnet --address-file user-data/example-contract-address.txt
 
@@ -61,7 +69,7 @@ pnpm exec -- ts-node scripts/check-contract-exists.ts --network mainnet --addres
 
 
 
-# Create a new Ethereum keypair and get its balance.
+### Create a new Ethereum keypair and get its balance.
 
 
 pnpm exec -- ts-node scripts/create-private-key.ts > user-data/private-key.txt
@@ -81,4 +89,20 @@ pnpm exec -- ts-node scripts/get-balance.ts --address 0x3bEC26B3cC2a1B0b123e9044
 pnpm exec -- ts-node scripts/get-balance.ts --address 0x3bEC26B3cC2a1B0b123e9044E4D0085EfE9bF526 --network testnet
 
 pnpm exec -- ts-node scripts/get-balance.ts --address 0x3bEC26B3cC2a1B0b123e9044E4D0085EfE9bF526 --network mainnet
+
+
+
+
+
+# Payment Tracking
+
+pnpm exec -- ts-node scripts/track-usdc-transfers.ts --debug --network mainnet
+
+
+task test -- --grep "Test getCanonicalSignature" --debug
+
+
+pnpm exec -- ts-node scripts/download-block.ts --debug --network mainnet --block-number 19655518
+
+
 
