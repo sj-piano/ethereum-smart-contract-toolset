@@ -13,7 +13,6 @@ import path from "path";
 import constants from "#lib/constants";
 import { createLogger } from "#lib/logging";
 import { getEnvVars } from '#lib/env-vars';
-import validate from "#root/lib/validate";
 
 
 // Logging
