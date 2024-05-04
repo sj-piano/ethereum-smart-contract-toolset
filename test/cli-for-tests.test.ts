@@ -1,4 +1,11 @@
+/*
+mocha will import all files in the test directory and run them.
+The following code will handle any command line arguments passed to the tests e.g. --debug.
+*/
+
+
 // Imports
+import _ from "lodash";
 import { program } from "commander";
 
 
