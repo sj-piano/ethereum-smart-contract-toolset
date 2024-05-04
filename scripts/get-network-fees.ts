@@ -6,7 +6,7 @@ import { ethers } from "ethers";
 
 // Local imports
 import config from "#root/config";
-import ethereum from "#root/src/eth-toolset";
+import ethToolset from "#root/src/eth-toolset";
 import { createLogger } from "#root/lib/logging";
 import validate from "#root/lib/validate";
 
@@ -70,6 +70,6 @@ main().catch((error) => {
 async function main() {
   let blockNumber = await provider.getBlockNumber();
   deb(`Current block number: ${blockNumber}`);
-  const fees = await ethereum.getGasPricesWithFiat({ provider });
+  const fees = await ethToolset.getGasPricesWithFiat({ provider });
   console.log(fees);
 }

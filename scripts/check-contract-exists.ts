@@ -61,7 +61,7 @@ const network = config.networkLabelToNetwork[networkLabel];
 let contractAddress: string;
 
 if (addressName) {
-  address = config.getEnvVar({ name: addressName });
+  address = config.getEnvVarInConfig(addressName);
   deb(`Address ${addressName} found in .env file: ${address}`);
 } else {
   address = validate.loadArgumentFromOneSource('address', address, addressFile);
