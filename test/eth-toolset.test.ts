@@ -240,5 +240,28 @@ describe("Ethereum private key", function () {
       let spent = ethers.parseEther(addr1Balance) - ethers.parseEther(addr1Balance2);
       expect(spent).to.equal(calculatedSpend);
     });
+
+
   });
+
+
+  describe("Test getCanonicalSignature", function () {
+
+
+    it("Should correctly convert a complex signature to a canonical form", function () {
+        const signature = "Transfer(address indexed _from, address indexed _to, uint256 _value)";
+        const expectedCanonical = "Transfer(address,address,uint256)";
+        const result = ethToolset.getCanonicalSignature(signature);
+        expect(result).to.equal(expectedCanonical);
+    });
+
+
+    it("Should throw an error for an invalid function signature", function () {
+        const badSignature = "InvalidFunction";
+        expect(() => ethToolset.getCanonicalSignature(badSignature)).to.throw(Error, 'Invalid function signature');
+    });
+
+});
+
+
 });

@@ -486,6 +486,31 @@ async function getTxFees({ provider, txHash }: { provider: Provider; txHash: str
   };
 }
 
+
+function getCanonicalSignature(signature: string): string {
+  // Match the function name and parameters
+  const match = signature.match(/(\w+)\((.*)\)/);
+  if (!match) {
+      throw new Error('Invalid function signature');
+  }
+
+  // Extract the function name and parameters string
+  const functionName: string = match[1];
+  const parameters: string = match[2];
+
+  // Split parameters into an array, remove names and 'indexed' keyword, keeping only the types
+  const canonicalParams: string = parameters.split(',').map(param => {
+      // Extract only the type (first word)
+      const type: string = param.trim().split(/\s+/)[0];
+      return type;
+  }).join(',');
+
+  // Reconstruct the canonical function signature
+  return `${functionName}(${canonicalParams})`;
+}
+
+
+
 // Exports
 export default {
   setLogLevel: logger.setLevel.bind(logger),
@@ -508,4 +533,5 @@ export default {
   signAndSendTransaction,
   getTxConfirms,
   getTxFees,
+  getCanonicalSignature,
 };
