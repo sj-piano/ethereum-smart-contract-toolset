@@ -32,6 +32,7 @@ function createPrivateKeySync() {
   return privateKey;
 }
 
+
 function privateKeyIsValidSync({
   privateKey,
   name,
@@ -58,6 +59,7 @@ function privateKeyIsValidSync({
   return { valid: true, msg: "" };
 }
 
+
 function validatePrivateKeySync({
   privateKey,
   name,
@@ -71,6 +73,7 @@ function validatePrivateKeySync({
   }
   return true;
 }
+
 
 function validatePrivateKeysSync({
   privateKeys,
@@ -86,12 +89,14 @@ function validatePrivateKeysSync({
   return true;
 }
 
+
 function deriveAddressSync({ privateKey }: { privateKey: string }) {
   validatePrivateKeySync({ privateKey });
   const wallet = new ethers.Wallet(privateKey);
   const address = wallet.address;
   return address;
 }
+
 
 function validateAddressSync({ address, name }: { address: string | undefined; name?: string }) {
   let nameSection = !_.isUndefined(name) ? `${name} ` : "";
@@ -106,6 +111,7 @@ function validateAddressSync({ address, name }: { address: string | undefined; n
   return true;
 }
 
+
 function validateAddressesSync({ addresses }: { addresses: Record<string, string | undefined> }) {
   if (!_.keys(addresses).length) {
     throw new Error(`Addresses "${addresses}" must not be empty.`);
@@ -116,12 +122,14 @@ function validateAddressesSync({ addresses }: { addresses: Record<string, string
   return true;
 }
 
+
 async function getBalanceEth({ provider, address }: { provider: Provider; address: string }) {
   let balanceWei = await provider.getBalance(address);
   let balanceEth = ethers.formatEther(balanceWei);
   balanceEth = new Big(balanceEth).toFixed(config.constants.ETH_DECIMAL_PLACES);
   return balanceEth;
 }
+
 
 async function getBytecode({ provider, address }: { provider: Provider; address: string }) {
   if (!ethers.isAddress(address)) {
@@ -131,11 +139,13 @@ async function getBytecode({ provider, address }: { provider: Provider; address:
   return result;
 }
 
+
 async function contractExistsAt({ provider, address }: { provider: Provider; address: string }) {
   const result = await getBytecode({ provider, address });
   if (result == "0x") return false;
   return true;
 }
+
 
 async function getGasPrices({ provider }: { provider: Provider }) {
   const block = await provider.getBlock("latest");
@@ -172,9 +182,10 @@ async function getGasPrices({ provider }: { provider: Provider }) {
   };
 }
 
+
 async function getEthereumPriceInUsd() {
   try {
-    const response = await axios.get(config.eth_usd_price_url);
+    const response = await axios.get(config.ethUsdPriceUrl);
     const price = response.data.price;
     return price;
   } catch (error: any) {
@@ -182,6 +193,7 @@ async function getEthereumPriceInUsd() {
     throw error;
   }
 }
+
 
 async function getGasPricesWithFiat({ provider }: { provider: Provider }) {
   // Include fiat values for gas prices.
@@ -206,6 +218,7 @@ async function getGasPricesWithFiat({ provider }: { provider: Provider }) {
     basicPaymentCostUsd,
   };
 }
+
 
 function getFeeLimitChecksObjSync(): { [key: string]: any } {
   let feeLimitKeys = "baseFeePerGasWei baseFeeUsd maxFeeUsd".split(" ");
@@ -233,6 +246,7 @@ async function estimateFeesForTx({
   deb(`estimatedGas: ${estimatedGas}`);
   return estimateFeesFromGas({ provider, estimatedGas });
 }
+
 
 async function estimateFeesFromGas({
   provider,
@@ -361,6 +375,7 @@ async function estimateFeesFromGas({
   };
 }
 
+
 async function sendEth({
   networkLabel,
   provider,
@@ -415,6 +430,7 @@ async function sendEth({
   return txResponse;
 }
 
+
 async function signAndSendTransaction({
   networkLabel,
   provider,
@@ -439,6 +455,7 @@ async function signAndSendTransaction({
   return txResponse;
 }
 
+
 async function getTxConfirms({ provider, txHash }: { provider: Provider; txHash: string }) {
   let blockNumber = await provider.getBlockNumber();
   //deb(`blockNumber=${blockNumber}`)
@@ -451,6 +468,7 @@ async function getTxConfirms({ provider, txHash }: { provider: Provider; txHash:
   let confirmations = blockNumber - txReceipt.blockNumber + 1;
   return confirmations;
 }
+
 
 async function getTxFees({ provider, txHash }: { provider: Provider; txHash: string }) {
   // We assume that the transaction is type 2 (EIP-1559).
