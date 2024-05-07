@@ -26,7 +26,7 @@ program
   .option("-d, --debug", "log debug information")
   .option("--log-level <logLevel>", "Specify log level.", "error")
   .option("--network <network>", "specify the Ethereum network to connect to", "local")
-  .option('--start-block <startBlock>', 'block number at which to start looking for transfers', '19655518');
+  .option('--start-block <startBlock>', 'block number at which to start looking for transfers', '17000000');
 program.parse();
 const options = program.opts();
 if (options.debug) console.log(options);

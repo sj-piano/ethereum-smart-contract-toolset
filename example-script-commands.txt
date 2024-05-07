@@ -104,7 +104,7 @@ pnpm exec -- ts-node scripts/track-usdc-transfers.ts --debug --network polygonMa
 task test -- --grep "Test getCanonicalSignature" --debug
 
 
-pnpm exec -- ts-node scripts/download-block.ts --debug --network mainnet --block-number 19655518
+pnpm exec -- ts-node scripts/download-block.ts --debug --network mainnet --block-number 17000000
 
 pnpm exec -- ts-node scripts/download-block.ts --debug --network polygonMainnet --block-number 56352804
 
