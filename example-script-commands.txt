@@ -96,13 +96,17 @@ pnpm exec -- ts-node scripts/get-balance.ts --address 0x3bEC26B3cC2a1B0b123e9044
 
 # Payment Tracking
 
-pnpm exec -- ts-node scripts/track-usdc-transfers.ts --debug --network mainnet
+pnpm exec -- ts-node scripts/track-usdc-transfers.ts --debug --network mainnet --start-block 17000000
+
+pnpm exec -- ts-node scripts/track-usdc-transfers.ts --debug --network polygonMainnet --start-block 56352804
 
 
 task test -- --grep "Test getCanonicalSignature" --debug
 
 
 pnpm exec -- ts-node scripts/download-block.ts --debug --network mainnet --block-number 19655518
+
+pnpm exec -- ts-node scripts/download-block.ts --debug --network polygonMainnet --block-number 56352804
 
 
 

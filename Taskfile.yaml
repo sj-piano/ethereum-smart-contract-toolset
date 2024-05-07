@@ -12,7 +12,7 @@ tasks:
     desc: "Lint the Typescript code"
     cmds:
       - pnpm run lint
-    silent: true
+    silent: false
 
   lint-contracts:
     desc: "Lint the Solidity contracts"
