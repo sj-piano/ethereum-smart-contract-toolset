@@ -11,6 +11,7 @@
     "clean": "rm -rf node_modules && rm -f package-lock.json",
     "reset": "rm -rf artifacts build cache && pnpm run clean && pnpm install && pnpm exec hardhat compile",
     "lint": "eslint --ext .ts .",
+    "lint-fix": "eslint --ext .ts . --fix",
     "lint-contracts": "solhint 'contracts/**/*.sol'"
   },
   "author": {

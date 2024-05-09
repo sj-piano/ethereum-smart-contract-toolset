@@ -1,7 +1,6 @@
-version: '3'
+version: "3"
 
 tasks:
-
   hello:
     desc: "Hello World from Task!"
     cmds:
@@ -12,6 +11,12 @@ tasks:
     desc: "Lint the Typescript code"
     cmds:
       - pnpm run lint
+    silent: false
+
+  lint-fix:
+    desc: "Lint the Typescript code and fix the issues"
+    cmds:
+      - pnpm run lint-fix
     silent: false
 
   lint-contracts:
@@ -86,4 +91,3 @@ tasks:
     cmds:
       - pnpm exec ts-node scripts/HelloWorld/get-message.ts -- {{.CLI_ARGS}}
     silent: true
-
