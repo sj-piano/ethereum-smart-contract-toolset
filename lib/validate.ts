@@ -1,13 +1,13 @@
 // Imports
-import _ from "lodash";
-import fs from "fs";
-import Joi from "joi";
+import _ from 'lodash';
+import fs from 'fs';
+import Joi from 'joi';
 
 
 // Local imports
-import config from "#root/config";
-import { createLogger } from "#root/lib/logging";
-import utils from "#lib/utils";
+import config from '#root/config';
+import { createLogger } from '#root/lib/logging';
+import utils from '#lib/utils';
 
 // Logging
 const log2 = console.log;
@@ -22,7 +22,7 @@ function logLevel({ logLevel }: { logLevel: string }) {
   let logLevelResult = logLevelSchema.validate(logLevel);
   if (logLevelResult.error) {
     let msg = `Invalid log level "${logLevel}". Valid options are: [${config.logLevelList.join(
-      ", ",
+      ', ',
     )}]`;
     console.error(msg);
     process.exit(1);
@@ -34,7 +34,7 @@ function networkLabel({ networkLabel }: { networkLabel: string }) {
   let networkLabelResult = networkLabelSchema.validate(networkLabel);
   if (networkLabelResult.error) {
     let msg = `Invalid network "${networkLabel}". Valid options are: [${config.networkLabelList.join(
-      ", ",
+      ', ',
     )}]`;
     console.error(msg);
     process.exit(1);

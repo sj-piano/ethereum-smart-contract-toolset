@@ -1,7 +1,7 @@
 // Utilities for working with shell variables.
 
-import { createLogger } from "#lib/logging";
-import { env } from "process";
+import { createLogger } from '#lib/logging';
+import { env } from 'process';
 
 // Logging
 const log2 = console.log;

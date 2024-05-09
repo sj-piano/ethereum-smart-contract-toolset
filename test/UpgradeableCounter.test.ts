@@ -1,24 +1,24 @@
 // Imports
-import _ from "lodash";
-import { assert, expect } from "chai";
-import hardhat, { ethers, upgrades } from "hardhat";
-import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
+import _ from 'lodash';
+import { assert, expect } from 'chai';
+import hardhat, { ethers, upgrades } from 'hardhat';
+import { loadFixture } from '@nomicfoundation/hardhat-toolbox/network-helpers';
 
 
 // Local imports
-import amounts from "#src/amounts";
-import config from "#root/config";
-import { createLogger } from "#lib/logging";
-import utils, { jd } from "#lib/utils";
-import ethereum from "#root/src/eth-toolset";
+import amounts from '#src/amounts';
+import config from '#root/config';
+import { createLogger } from '#lib/logging';
+import utils, { jd } from '#lib/utils';
+import ethereum from '#root/src/eth-toolset';
 
 
 // Types from typechain
-import { UpgradeableCounter, UpgradeableCounterV2 } from "../typechain-types";
+import { UpgradeableCounter, UpgradeableCounterV2 } from '../typechain-types';
 
 
 // Logging
-const { logger, log, deb } = createLogger({filePath: __filename});
+const { logger, log, deb } = createLogger({ filePath: __filename });
 
 
 // Setup
@@ -27,41 +27,41 @@ let provider = hardhat.ethers.provider;
 
 // Tests
 
-describe("UpgradeableContract with deployment fixture", () => {
+describe('UpgradeableContract with deployment fixture', () => {
 
   before(async function () {
     this.timeout(8000);
-    await hardhat.network.provider.send("hardhat_reset");
+    await hardhat.network.provider.send('hardhat_reset');
   });
 
-  it.skip("foo", async () => {
-    log("foo");
+  it.skip('foo', async () => {
+    log('foo');
   });
 
   async function deployUpgradeableCounterFixture() {
     const [admin, acc1, acc2] = await ethers.getSigners();
-    const CounterFactory = await ethers.getContractFactory("UpgradeableCounter");
+    const CounterFactory = await ethers.getContractFactory('UpgradeableCounter');
     const Counter = (await upgrades.deployProxy(CounterFactory, [], {
-      initializer: "initialize",
-      kind: "uups",
+      initializer: 'initialize',
+      kind: 'uups',
     })) as unknown as UpgradeableCounter;
     await Counter.waitForDeployment();
     const counterAddress = await Counter.getAddress();
     return { Counter, counterAddress, admin, acc1, acc2 };
   }
 
-  it("should deploy", async () => {
+  it('should deploy', async () => {
     const { Counter, counterAddress } = await loadFixture(deployUpgradeableCounterFixture);
     expect(await Counter.version()).to.equal(1);
     log(`counterAddress: ${counterAddress}`);
   });
 
-  it("should upgrade", async () => {
+  it('should upgrade', async () => {
     const { Counter, counterAddress } = await loadFixture(deployUpgradeableCounterFixture);
     let version = await Counter.version();
     expect(version).to.equal(1);
     //log(`Version: ${version}`);
-    const CounterV2Factory = await ethers.getContractFactory("UpgradeableCounterV2");
+    const CounterV2Factory = await ethers.getContractFactory('UpgradeableCounterV2');
     const CounterV2 = await upgrades.upgradeProxy(counterAddress, CounterV2Factory);
     expect(await CounterV2.version()).to.equal(1);
     const newVersion = 2;
@@ -69,14 +69,14 @@ describe("UpgradeableContract with deployment fixture", () => {
     expect(await CounterV2.version()).to.equal(newVersion);
   });
 
-  it("should confirm that upgrading only changes the implementationAddress", async () => {
+  it('should confirm that upgrading only changes the implementationAddress', async () => {
     const { Counter, counterAddress, admin, acc1 } = await loadFixture(
       deployUpgradeableCounterFixture,
     );
     const adminAddress = await Counter.getAdminAddress();
     expect(adminAddress).to.equal(admin.address);
     const implementationAddress = await Counter.getImplementationAddress();
-    const CounterV2Factory = await ethers.getContractFactory("UpgradeableCounterV2");
+    const CounterV2Factory = await ethers.getContractFactory('UpgradeableCounterV2');
     const CounterV2 = await upgrades.upgradeProxy(counterAddress, CounterV2Factory);
     const counterAddress2 = await Counter.getAddress();
     expect(counterAddress2).to.equal(counterAddress);
@@ -86,32 +86,32 @@ describe("UpgradeableContract with deployment fixture", () => {
     expect(implementationAddress2).to.not.equal(implementationAddress);
   });
 
-  it("should prevent a non-admin from upgrading", async () => {
+  it('should prevent a non-admin from upgrading', async () => {
     const { Counter, counterAddress, admin, acc1 } = await loadFixture(
       deployUpgradeableCounterFixture,
     );
-    const CounterV2Factory = await ethers.getContractFactory("UpgradeableCounterV2", acc1);
+    const CounterV2Factory = await ethers.getContractFactory('UpgradeableCounterV2', acc1);
     await expect(upgrades.upgradeProxy(counterAddress, CounterV2Factory)).to.be.revertedWith(
-      "Ownable: caller is not the owner",
+      'Ownable: caller is not the owner',
     );
     // We can also do this more manually:
     const constructorArgs: any[] = [];
     const CounterV2 = (await ethers.deployContract(
-      "UpgradeableCounterV2",
+      'UpgradeableCounterV2',
       constructorArgs,
       acc1,
     )) as unknown as UpgradeableCounterV2;
     const newImplementationAddress = await CounterV2.getAddress();
     await expect(Counter.connect(acc1).upgradeTo(newImplementationAddress)).to.be.revertedWith(
-      "Ownable: caller is not the owner",
+      'Ownable: caller is not the owner',
     );
   });
 
-  it("should confirm that data added in V2 is available in V3", async () => {
+  it('should confirm that data added in V2 is available in V3', async () => {
     const { Counter, counterAddress } = await loadFixture(deployUpgradeableCounterFixture);
-    const CounterV2Factory = await ethers.getContractFactory("UpgradeableCounterV2");
+    const CounterV2Factory = await ethers.getContractFactory('UpgradeableCounterV2');
     const CounterV2 = await upgrades.upgradeProxy(counterAddress, CounterV2Factory);
-    const CounterV3Factory = await ethers.getContractFactory("UpgradeableCounterV3");
+    const CounterV3Factory = await ethers.getContractFactory('UpgradeableCounterV3');
     const CounterV3 = await upgrades.upgradeProxy(counterAddress, CounterV3Factory);
     const newVersion = 3;
     await CounterV3.setVersion(newVersion);
@@ -123,23 +123,23 @@ describe("UpgradeableContract with deployment fixture", () => {
     expect(await CounterV3.value()).to.equal(0);
   });
 
-  it("should confirm that after an upgrade, non-admins cannot upgrade", async () => {
+  it('should confirm that after an upgrade, non-admins cannot upgrade', async () => {
     const { Counter, counterAddress, admin, acc1 } = await loadFixture(
       deployUpgradeableCounterFixture,
     );
-    const CounterV2Factory = await ethers.getContractFactory("UpgradeableCounterV2");
+    const CounterV2Factory = await ethers.getContractFactory('UpgradeableCounterV2');
     const CounterV2 = await upgrades.upgradeProxy(counterAddress, CounterV2Factory);
-    const CounterV3Factory = await ethers.getContractFactory("UpgradeableCounterV3", acc1);
+    const CounterV3Factory = await ethers.getContractFactory('UpgradeableCounterV3', acc1);
     await expect(upgrades.upgradeProxy(counterAddress, CounterV3Factory)).to.be.revertedWith(
-      "Ownable: caller is not the owner",
+      'Ownable: caller is not the owner',
     );
   });
 
-  it("should detect Upgraded events", async () => {
+  it('should detect Upgraded events', async () => {
     const { Counter, counterAddress, admin, acc1 } = await loadFixture(
       deployUpgradeableCounterFixture,
     );
-    const CounterV2Factory = await ethers.getContractFactory("UpgradeableCounterV2");
+    const CounterV2Factory = await ethers.getContractFactory('UpgradeableCounterV2');
     //log(`blockNumber: ${await provider.getBlockNumber()}`);
     const CounterV2 = await upgrades.upgradeProxy(counterAddress, CounterV2Factory);
     const blockNumber2 = await provider.getBlockNumber();
@@ -156,11 +156,11 @@ describe("UpgradeableContract with deployment fixture", () => {
         data: event.data,
       };
       const parsedEvent = abi.parseLog(logData)!;
-      log("----------------------");
+      log('----------------------');
       log(`Event Name: ${parsedEvent.name}`);
       log(`Event Arguments: ${parsedEvent.args}`);
       log(`Block Number: ${event.blockNumber}`);
-      log("----------------------");
+      log('----------------------');
       newImplementationAddress = parsedEvent.args.implementation;
       //Could also have used: parsedEvent.args[0]
     });
@@ -171,28 +171,28 @@ describe("UpgradeableContract with deployment fixture", () => {
 });
 
 
-describe("UpgradeableContract with manual deployment", () => {
+describe('UpgradeableContract with manual deployment', () => {
 
   beforeEach(async function () {
     this.timeout(8000);
-    await hardhat.network.provider.send("hardhat_reset");
+    await hardhat.network.provider.send('hardhat_reset');
   });
 
-  it("should get the total gasUsed and ethSpent for the proxy deployment", async () => {
+  it('should get the total gasUsed and ethSpent for the proxy deployment', async () => {
     let logTest = true;
     let provider = ethers.provider;
     const blockNumber1 = await provider.getBlockNumber();
     //log("Current block number: " + blockNumber1);
     const [admin, acc1, acc2] = await ethers.getSigners();
-    const CounterFactory = await ethers.getContractFactory("UpgradeableCounter");
+    const CounterFactory = await ethers.getContractFactory('UpgradeableCounter');
     const balance1 = await ethereum.getBalanceEth({
       provider,
       address: admin.address,
     });
     if (logTest) log(`balance1: ${balance1}`);
     const Counter = (await upgrades.deployProxy(CounterFactory, [], {
-      initializer: "initialize",
-      kind: "uups",
+      initializer: 'initialize',
+      kind: 'uups',
     })) as unknown as UpgradeableCounter;
     //log(_.keys(upgrades));
     await Counter.waitForDeployment();

@@ -1,15 +1,15 @@
 // Imports
-import _ from "lodash";
-import { program } from "commander";
-import { ethers } from "ethers";
-import fs from "fs";
+import _ from 'lodash';
+import { program } from 'commander';
+import { ethers } from 'ethers';
+import fs from 'fs';
 
 
 // Local imports
-import config from "#root/config";
-import ethToolset from "#root/src/eth-toolset";
-import { createLogger } from "#root/lib/logging";
-import validate from "#root/lib/validate";
+import config from '#root/config';
+import ethToolset from '#root/src/eth-toolset';
+import { createLogger } from '#root/lib/logging';
+import validate from '#root/lib/validate';
 
 
 // Load environment variables
@@ -27,10 +27,10 @@ const { logger, log, deb } = createLogger();
 
 // Parse arguments
 program
-  .option("-d, --debug", "log debug information")
-  .option("--log-level <logLevel>", "Specify log level.", "error")
-  .option("--network <network>", "specify the Ethereum network to connect to", "local")
-  .option("--address-file <addressFile>", "Path to file containing contract address.");
+  .option('-d, --debug', 'log debug information')
+  .option('--log-level <logLevel>', 'Specify log level.', 'error')
+  .option('--network <network>', 'specify the Ethereum network to connect to', 'local')
+  .option('--address-file <addressFile>', 'Path to file containing contract address.');
 program.parse();
 const options = program.opts();
 if (options.debug) console.log(options);
@@ -49,7 +49,7 @@ ethToolset.validateAddressesSync({
 
 validate.logLevel({ logLevel });
 if (debug) {
-  logLevel = "debug";
+  logLevel = 'debug';
 }
 logger.setLevel({ logLevel });
 
@@ -65,21 +65,21 @@ if (fs.existsSync(addressFile)) {
 
 // Setup
 
-import contract from "#root/artifacts/contracts/HelloWorld.sol/HelloWorld.json";
+import contract from '#root/artifacts/contracts/HelloWorld.sol/HelloWorld.json';
 
 let provider: ethers.Provider;
 
-var msg: string = "Unknown error";
+var msg: string = 'Unknown error';
 let DEPLOYED_CONTRACT_ADDRESS: string | undefined;
-if (networkLabel == "local") {
+if (networkLabel == 'local') {
   msg = `Connecting to local network at ${network}...`;
   provider = new ethers.JsonRpcProvider(network);
   DEPLOYED_CONTRACT_ADDRESS = HELLO_WORLD_LOCAL_ADDRESS;
-} else if (networkLabel == "testnet") {
+} else if (networkLabel == 'testnet') {
   msg = `Connecting to Sepolia testnet...`;
   provider = new ethers.InfuraProvider(network, INFURA_API_KEY);
   DEPLOYED_CONTRACT_ADDRESS = HELLO_WORLD_TESTNET_ADDRESS;
-} else if (networkLabel == "mainnet") {
+} else if (networkLabel == 'mainnet') {
   msg = `Connecting to Ethereum mainnet...`;
   provider = new ethers.InfuraProvider(network, INFURA_API_KEY);
   DEPLOYED_CONTRACT_ADDRESS = HELLO_WORLD_MAINNET_ADDRESS;
@@ -122,6 +122,6 @@ async function main() {
 
   const message = await contractHelloWorld.message();
 
-  log("Message stored in HelloWorld contract: ");
+  log('Message stored in HelloWorld contract: ');
   logger.print(message);
 }

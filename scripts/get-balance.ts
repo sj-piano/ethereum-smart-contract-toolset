@@ -1,15 +1,15 @@
 // Imports
-import _ from "lodash";
-import Big from "big.js";
-import { program } from "commander";
-import { ethers } from "ethers";
+import _ from 'lodash';
+import Big from 'big.js';
+import { program } from 'commander';
+import { ethers } from 'ethers';
 
 
 // Local imports
-import config from "#root/config";
-import ethereum from "#root/src/eth-toolset";
-import { createLogger } from "#root/lib/logging";
-import validate from "#root/lib/validate";
+import config from '#root/config';
+import ethereum from '#root/src/eth-toolset';
+import { createLogger } from '#root/lib/logging';
+import validate from '#root/lib/validate';
 
 
 // Logging
@@ -18,17 +18,17 @@ const { logger, log, deb } = createLogger();
 
 // Parse arguments
 program
-  .option("-d, --debug", "log debug information")
-  .option("--log-level <logLevel>", "Specify log level.", "error")
+  .option('-d, --debug', 'log debug information')
+  .option('--log-level <logLevel>', 'Specify log level.', 'error')
   .option(
-    "--network <network>",
-    "specify the Ethereum network to connect to",
-    "local",
+    '--network <network>',
+    'specify the Ethereum network to connect to',
+    'local',
   )
-  .option("--address <address>", "Ethereum address.")
+  .option('--address <address>', 'Ethereum address.')
   .option(
-    "--address-file <addressFile>",
-    "Path to file containing Ethereum address.",
+    '--address-file <addressFile>',
+    'Path to file containing Ethereum address.',
   );
 program.parse();
 const options = program.opts();
@@ -40,7 +40,7 @@ let { debug, logLevel, network: networkLabel, address, addressFile } = options;
 
 validate.logLevel({ logLevel });
 if (debug) {
-  logLevel = "debug";
+  logLevel = 'debug';
 }
 logger.setLevel({ logLevel });
 
@@ -60,14 +60,14 @@ if (!ethers.isAddress(address)) {
 
 let provider: ethers.Provider;
 
-var msg: string = "Unknown error";
-if (networkLabel == "local") {
+var msg: string = 'Unknown error';
+if (networkLabel == 'local') {
   msg = `Connecting to local network at ${network}...`;
   provider = new ethers.JsonRpcProvider(network);
-} else if (networkLabel == "testnet") {
+} else if (networkLabel == 'testnet') {
   msg = `Connecting to Sepolia testnet...`;
   provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
-} else if (networkLabel == "mainnet") {
+} else if (networkLabel == 'mainnet') {
   msg = `Connecting to Ethereum mainnet...`;
   provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
 }

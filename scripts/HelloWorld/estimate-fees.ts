@@ -1,14 +1,14 @@
 // Imports
-import _ from "lodash";
-import { program } from "commander";
-import { ethers } from "ethers";
+import _ from 'lodash';
+import { program } from 'commander';
+import { ethers } from 'ethers';
 
 
 // Local imports
-import config from "#root/config";
-import ethereum from "#root/src/eth-toolset";
-import { createLogger } from "#root/lib/logging";
-import validate from "#root/lib/validate";
+import config from '#root/config';
+import ethereum from '#root/src/eth-toolset';
+import { createLogger } from '#root/lib/logging';
+import validate from '#root/lib/validate';
 
 
 // Environment variables
@@ -23,9 +23,9 @@ const { logger, log, lj, deb } = createLogger();
 
 // Parse arguments
 program
-  .option("-d, --debug", "log debug information")
-  .option("--log-level <logLevel>", "Specify log level.", "error")
-  .option("--network <network>", "specify the Ethereum network to connect to", "local");
+  .option('-d, --debug', 'log debug information')
+  .option('--log-level <logLevel>', 'Specify log level.', 'error')
+  .option('--network <network>', 'specify the Ethereum network to connect to', 'local');
 program.parse();
 const options = program.opts();
 if (options.debug) console.log(options);
@@ -36,7 +36,7 @@ let { debug, logLevel, network: networkLabel } = options;
 
 validate.logLevel({ logLevel });
 if (debug) {
-  logLevel = "debug";
+  logLevel = 'debug';
 }
 logger.setLevel({ logLevel });
 
@@ -46,18 +46,18 @@ const network = config.networkLabelToNetwork[networkLabel];
 
 // Setup
 
-import contract from "#root/artifacts/contracts/HelloWorld.sol/HelloWorld.json";
+import contract from '#root/artifacts/contracts/HelloWorld.sol/HelloWorld.json';
 
 let provider: ethers.Provider;
 
-var msg: string = "Unknown error";
-if (networkLabel == "local") {
+var msg: string = 'Unknown error';
+if (networkLabel == 'local') {
   msg = `Connecting to local network at ${network}...`;
   provider = new ethers.JsonRpcProvider(network);
-} else if (networkLabel == "testnet") {
+} else if (networkLabel == 'testnet') {
   msg = `Connecting to Sepolia testnet...`;
   provider = new ethers.InfuraProvider(network, INFURA_API_KEY);
-} else if (networkLabel == "mainnet") {
+} else if (networkLabel == 'mainnet') {
   msg = `Connecting to Ethereum mainnet...`;
   provider = new ethers.InfuraProvider(network, INFURA_API_KEY);
 }
@@ -88,7 +88,7 @@ async function main() {
   deb(`Current block number: ${blockNumber}`);
 
   // Contract deployment
-  const initialMessage = "Hello World!";
+  const initialMessage = 'Hello World!';
   const txRequest = await contractFactoryHelloWorld.getDeployTransaction(initialMessage);
   const estimatedFees = await ethereum.estimateFeesForTx({
     provider,
@@ -107,7 +107,7 @@ async function main() {
   }
 
   // Contract method call: update
-  const newMessage = "Hello World! Updated.";
+  const newMessage = 'Hello World! Updated.';
   const txRequest2 = await contractHelloWorld.update.populateTransaction(newMessage);
   const estimatedFees2 = await ethereum.estimateFeesForTx({
     provider,

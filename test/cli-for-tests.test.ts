@@ -5,13 +5,13 @@ The following code will handle any command line arguments passed to the tests e.
 
 
 // Imports
-import _ from "lodash";
-import { program } from "commander";
+import _ from 'lodash';
+import { program } from 'commander';
 
 
 // Local imports
-import { createLogger } from "#lib/logging";
-import validate from "#lib/validate";
+import { createLogger } from '#lib/logging';
+import validate from '#lib/validate';
 
 
 // Logging
@@ -21,8 +21,8 @@ const { logger, log, deb } = createLogger();
 
 // Parse arguments
 program
-  .option("-d, --debug", "log debug information")
-  .option("--log-level <logLevel>", "Specify log level.", "error")
+  .option('-d, --debug', 'log debug information')
+  .option('--log-level <logLevel>', 'Specify log level.', 'error')
   .allowUnknownOption();
 program.parse();
 const options = program.opts();
@@ -36,7 +36,7 @@ validate.logLevel({ logLevel });
 
 // Setup
 if (debug) {
-  logLevel = "debug";
+  logLevel = 'debug';
 }
 logger.setLevel({ logLevel });
 

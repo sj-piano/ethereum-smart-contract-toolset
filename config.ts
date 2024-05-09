@@ -2,16 +2,16 @@
 
 
 // Imports
-import _ from "lodash";
-import Big from "big.js";
-import dotenv from "dotenv";
-import { ethers } from "ethers";
-import path from "path";
+import _ from 'lodash';
+import Big from 'big.js';
+import dotenv from 'dotenv';
+import { ethers } from 'ethers';
+import path from 'path';
 
 
 // Local imports
-import constants from "#lib/constants";
-import { createLogger } from "#lib/logging";
+import constants from '#lib/constants';
+import { createLogger } from '#lib/logging';
 import { getEnvVars } from '#lib/env-vars';
 
 
@@ -23,7 +23,7 @@ const { logger, log, deb } = createLogger();
 // Language adjustments
 
 
-BigInt.prototype["toJSON"] = function () {
+BigInt.prototype['toJSON'] = function () {
   return this.toString();
 };
 
@@ -86,28 +86,28 @@ class Config {
   dummyAddress: string;
 
   constructor() {
-    this.envFileName = "user-config.env";
+    this.envFileName = 'user-config.env';
     // Note: maxFeePerTransactionUsd overrides the other fee limits.
-    this.maxFeePerTransactionUsd = "0";
-    this._maxFeePerGasGwei = "0";
-    this._maxPriorityFeePerGasGwei = "0";
-    this.gasLimitMultiplier = "1.0";
-    this.averagePriorityFeeMultiplier = "1.0";
-    this.ethUsdPriceUrl = "https://api.pro.coinbase.com/products/ETH-USD/ticker";
-    this.maxFeePerGasWei = "0";
-    this.maxPriorityFeePerGasWei = "0";
+    this.maxFeePerTransactionUsd = '0';
+    this._maxFeePerGasGwei = '0';
+    this._maxPriorityFeePerGasGwei = '0';
+    this.gasLimitMultiplier = '1.0';
+    this.averagePriorityFeeMultiplier = '1.0';
+    this.ethUsdPriceUrl = 'https://api.pro.coinbase.com/products/ETH-USD/ticker';
+    this.maxFeePerGasWei = '0';
+    this.maxPriorityFeePerGasWei = '0';
     this.networkLabel = '';
-    this.networkLabelList = "local testnet mainnet polygonMainnet".split(" ");
+    this.networkLabelList = 'local testnet mainnet polygonMainnet'.split(' ');
     this.networkLabelToNetwork = {
-      local: "http://127.0.0.1:8545",
-      testnet: "sepolia",
-      mainnet: "mainnet",
-      polygonMainnet: "matic",
+      local: 'http://127.0.0.1:8545',
+      testnet: 'sepolia',
+      mainnet: 'mainnet',
+      polygonMainnet: 'matic',
     };
     this.network = '';
     this.provider = null;
-    this.logLevelList = "debug info warn error".split(" ");
-    this.dummyAddress = "0x000000000000000000000000000000000000dEaD";
+    this.logLevelList = 'debug info warn error'.split(' ');
+    this.dummyAddress = '0x000000000000000000000000000000000000dEaD';
   }
 
   getEnvFilePathSync() {
@@ -156,7 +156,7 @@ class Config {
 
   set maxFeePerGasGwei(newValue: string) {
     this._maxFeePerGasGwei = newValue;
-    this.maxFeePerGasWei = ethers.parseUnits(newValue, "gwei").toString();
+    this.maxFeePerGasWei = ethers.parseUnits(newValue, 'gwei').toString();
   }
 
   get maxFeePerGasGwei(): string {
@@ -165,7 +165,7 @@ class Config {
 
   set maxPriorityFeePerGasGwei(newValue: string) {
     this._maxPriorityFeePerGasGwei = newValue;
-    this.maxPriorityFeePerGasWei = ethers.parseUnits(newValue, "gwei").toString();
+    this.maxPriorityFeePerGasWei = ethers.parseUnits(newValue, 'gwei').toString();
   }
 
   // Methods

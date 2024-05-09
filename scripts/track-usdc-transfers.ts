@@ -1,20 +1,20 @@
 // Imports
-import _ from "lodash";
-import assert from "assert";
-import { program } from "commander";
+import _ from 'lodash';
+import assert from 'assert';
+import { program } from 'commander';
 import { ethers, keccak256, toUtf8Bytes } from 'ethers';
 
 
 // Local imports
-import config from "#root/config";
-import ethToolset from "#root/src/eth-toolset";
-import { createLogger } from "#root/lib/logging";
-import validate from "#root/lib/validate";
-import utils, { jd } from "#root/lib/utils";
+import config from '#root/config';
+import ethToolset from '#root/src/eth-toolset';
+import { createLogger } from '#root/lib/logging';
+import validate from '#root/lib/validate';
+import utils, { jd } from '#root/lib/utils';
 
 
 // Constants
-import { USDC_DECIMAL_PLACES, USDC_CONTRACT_ABI, USDC_CONTRACT_ADDRESS_MAINNET, USDC_CONTRACT_ADDRESS_MAINNET_POLYGON } from "#root/lib/constants";
+import { USDC_DECIMAL_PLACES, USDC_CONTRACT_ABI, USDC_CONTRACT_ADDRESS_MAINNET, USDC_CONTRACT_ADDRESS_MAINNET_POLYGON } from '#root/lib/constants';
 
 
 // Logging
@@ -23,9 +23,9 @@ const { logger, log, deb } = createLogger();
 
 // Parse arguments
 program
-  .option("-d, --debug", "log debug information")
-  .option("--log-level <logLevel>", "Specify log level.", "error")
-  .option("--network <network>", "specify the Ethereum network to connect to", "local")
+  .option('-d, --debug', 'log debug information')
+  .option('--log-level <logLevel>', 'Specify log level.', 'error')
+  .option('--network <network>', 'specify the Ethereum network to connect to', 'local')
   .option('--start-block <startBlock>', 'block number at which to start looking for transfers', '17000000');
 program.parse();
 const options = program.opts();
@@ -37,7 +37,7 @@ let { debug, logLevel, network: networkLabel, startBlock } = options;
 
 validate.logLevel({ logLevel });
 if (debug) {
-  logLevel = "debug";
+  logLevel = 'debug';
 }
 logger.setLevel({ logLevel });
 
@@ -195,7 +195,7 @@ async function getERC20TransfersFromTransactionHistory(contractAddress: string, 
       const logs = txReceipt.logs;
       for (const [j, log_] of logs.entries()) {
         // Confirm ERC20 Transfer event by analyzing the signature.
-        const signature = "Transfer(address indexed _from, address indexed _to, uint256 _value)"
+        const signature = 'Transfer(address indexed _from, address indexed _to, uint256 _value)'
         let canonicalSig = ethToolset.getCanonicalSignature(signature)
         let hashSig = keccak256(toUtf8Bytes(canonicalSig))
         let logSig = log_.topics[0];

@@ -1,22 +1,22 @@
 // Imports
-import _ from "lodash";
-import axios from "axios";
-import Big from "big.js";
-import crypto from "crypto";
-import { ethers, Provider, TransactionRequest } from "ethers";
+import _ from 'lodash';
+import axios from 'axios';
+import Big from 'big.js';
+import crypto from 'crypto';
+import { ethers, Provider, TransactionRequest } from 'ethers';
 
 
 // Local imports
-import amounts from "#src/amounts";
-import config from "#root/config";
-import { createLogger } from "#root/lib/logging";
-import security from "#src/security";
-import utils from "#root/lib/utils";
+import amounts from '#src/amounts';
+import config from '#root/config';
+import { createLogger } from '#root/lib/logging';
+import security from '#src/security';
+import utils from '#root/lib/utils';
 
 
 // Controls
-let logLevel = "error";
-logLevel = "info";
+let logLevel = 'error';
+logLevel = 'info';
 
 
 // Logging
@@ -28,7 +28,7 @@ const { logger, log, deb } = createLogger({ filePath: __filename, logLevel });
 
 function createPrivateKeySync() {
   const randomBytes = crypto.randomBytes(32);
-  const privateKey = `0x` + randomBytes.toString("hex");
+  const privateKey = `0x` + randomBytes.toString('hex');
   return privateKey;
 }
 
@@ -40,7 +40,7 @@ function privateKeyIsValidSync({
   privateKey: string | undefined;
   name?: string;
 }): { valid: boolean; msg: string } {
-  let nameSection = !_.isUndefined(name) ? `${name} ` : "";
+  let nameSection = !_.isUndefined(name) ? `${name} ` : '';
   if (_.isUndefined(privateKey)) {
     let msg = `Private key ${nameSection}("${privateKey}") is undefined.`;
     return { valid: false, msg };
@@ -56,7 +56,7 @@ function privateKeyIsValidSync({
     )} bytes long. But: It should be 32 bytes long.`;
     return { valid: false, msg };
   }
-  return { valid: true, msg: "" };
+  return { valid: true, msg: '' };
 }
 
 
@@ -99,7 +99,7 @@ function deriveAddressSync({ privateKey }: { privateKey: string }) {
 
 
 function validateAddressSync({ address, name }: { address: string | undefined; name?: string }) {
-  let nameSection = !_.isUndefined(name) ? `${name} ` : "";
+  let nameSection = !_.isUndefined(name) ? `${name} ` : '';
   if (_.isUndefined(address)) {
     let msg = `Address ${nameSection}("${address}") is undefined.`;
     throw new Error(msg);
@@ -142,29 +142,29 @@ async function getBytecode({ provider, address }: { provider: Provider; address:
 
 async function contractExistsAt({ provider, address }: { provider: Provider; address: string }) {
   const result = await getBytecode({ provider, address });
-  if (result == "0x") return false;
+  if (result == '0x') return false;
   return true;
 }
 
 
 async function getGasPrices({ provider }: { provider: Provider }) {
-  const block = await provider.getBlock("latest");
-  const blockNumber = block?.number.toString() ?? "0";
-  const baseFeePerGasWei = block?.baseFeePerGas?.toString() ?? "0";
+  const block = await provider.getBlock('latest');
+  const blockNumber = block?.number.toString() ?? '0';
+  const baseFeePerGasWei = block?.baseFeePerGas?.toString() ?? '0';
   const feeData = await provider.getFeeData();
   const { gasPrice } = feeData;
-  const gasPriceWei = gasPrice?.toString() ?? "0";
+  const gasPriceWei = gasPrice?.toString() ?? '0';
   const averagePriorityFeePerGasWei = (BigInt(gasPriceWei) - BigInt(baseFeePerGasWei)).toString();
   // Convert values to Gwei and Ether.
-  const baseFeePerGasGwei = ethers.formatUnits(baseFeePerGasWei, "gwei");
-  const baseFeePerGasEth = ethers.formatUnits(baseFeePerGasWei, "ether");
-  const gasPriceGwei = ethers.formatUnits(gasPriceWei, "gwei");
-  const gasPriceEth = ethers.formatUnits(gasPriceWei, "ether");
-  const averagePriorityFeePerGasGwei = ethers.formatUnits(averagePriorityFeePerGasWei, "gwei");
-  const averagePriorityFeePerGasEth = ethers.formatUnits(averagePriorityFeePerGasWei, "ether");
+  const baseFeePerGasGwei = ethers.formatUnits(baseFeePerGasWei, 'gwei');
+  const baseFeePerGasEth = ethers.formatUnits(baseFeePerGasWei, 'ether');
+  const gasPriceGwei = ethers.formatUnits(gasPriceWei, 'gwei');
+  const gasPriceEth = ethers.formatUnits(gasPriceWei, 'ether');
+  const averagePriorityFeePerGasGwei = ethers.formatUnits(averagePriorityFeePerGasWei, 'gwei');
+  const averagePriorityFeePerGasEth = ethers.formatUnits(averagePriorityFeePerGasWei, 'ether');
   const basicPaymentCostEth = ethers.formatUnits(
     (BigInt(gasPriceWei) + BigInt(averagePriorityFeePerGasWei)) * 21000n,
-    "ether",
+    'ether',
   );
   return {
     blockNumber,
@@ -189,7 +189,7 @@ async function getEthereumPriceInUsd() {
     const price = response.data.price;
     return price;
   } catch (error: any) {
-    console.error("Error fetching price:", error.message);
+    console.error('Error fetching price:', error.message);
     throw error;
   }
 }
@@ -221,10 +221,10 @@ async function getGasPricesWithFiat({ provider }: { provider: Provider }) {
 
 
 function getFeeLimitChecksObjSync(): { [key: string]: any } {
-  let feeLimitKeys = "baseFeePerGasWei baseFeeUsd maxFeeUsd".split(" ");
+  let feeLimitKeys = 'baseFeePerGasWei baseFeeUsd maxFeeUsd'.split(' ');
   let feeLimitChecks: { [key: string]: any } = {};
   feeLimitKeys.forEach((key) => {
-    feeLimitChecks[key] = { exceeded: false, msg: "" };
+    feeLimitChecks[key] = { exceeded: false, msg: '' };
   });
   feeLimitChecks.limitExceededKeys = [];
   feeLimitChecks.anyLimitExceeded = false;
@@ -269,7 +269,7 @@ async function estimateFeesFromGas({
   // Check if the base fee is greater than our USD limit.
   const baseFeeWei = Big(estimatedGas).mul(Big(baseFeePerGasWei)).toFixed(config.constants.WEI_DECIMAL_PLACES);
   deb(`baseFeeWei: ${baseFeeWei} wei`);
-  const baseFeeGwei = ethers.formatUnits(baseFeeWei, "gwei");
+  const baseFeeGwei = ethers.formatUnits(baseFeeWei, 'gwei');
   const baseFeeEth = ethers.formatEther(baseFeeWei).toString();
   const baseFeeUsd = Big(baseFeeEth).mul(Big(ethToUsd)).toFixed(config.constants.USD_DECIMAL_PLACES);
   deb(`baseFeeUsd: ${baseFeeUsd} USD`);
@@ -296,8 +296,8 @@ async function estimateFeesFromGas({
     let msg = `Max priority fee per gas (${maxPriorityFeePerGasWei} wei) exceeds limit specified in config (${config.maxPriorityFeePerGasWei} wei).`;
     msg += ` Using config limit instead.`;
     let comparatorWord = Big(averagePriorityFeePerGasWei).gt(Big(config.maxPriorityFeePerGasWei))
-      ? "greater"
-      : "less";
+      ? 'greater'
+      : 'less';
     msg += ` Note: averagePriorityFeePerGasWei = ${averagePriorityFeePerGasWei} wei, which is ${comparatorWord} than config limit.`;
     deb(msg);
     maxPriorityFeePerGasWei = config.maxPriorityFeePerGasWei;
@@ -308,12 +308,12 @@ async function estimateFeesFromGas({
     .mul(Big(maxPriorityFeePerGasWei))
     .toFixed(config.constants.WEI_DECIMAL_PLACES);
   deb(`maxPriorityFeeWei: ${maxPriorityFeeWei} wei`);
-  const maxPriorityFeeGwei = ethers.formatUnits(maxPriorityFeeWei, "gwei");
+  const maxPriorityFeeGwei = ethers.formatUnits(maxPriorityFeeWei, 'gwei');
   const maxPriorityFeeEth = ethers.formatEther(maxPriorityFeeWei).toString();
   const maxPriorityFeeUsd = Big(maxPriorityFeeEth).mul(Big(ethToUsd)).toFixed(config.constants.USD_DECIMAL_PLACES);
   const maxFeeWei = Big(baseFeeWei).plus(Big(maxPriorityFeeWei)).toFixed(config.constants.WEI_DECIMAL_PLACES);
   deb(`maxFeeWei: ${maxFeeWei} wei`);
-  const maxFeeGwei = ethers.formatUnits(maxFeeWei, "gwei");
+  const maxFeeGwei = ethers.formatUnits(maxFeeWei, 'gwei');
   const maxFeeEth = ethers.formatEther(maxFeeWei).toString();
   const maxFeeUsd = Big(maxFeeEth).mul(Big(ethToUsd)).toFixed(config.constants.USD_DECIMAL_PLACES);
   deb(`maxFeeUsd: ${maxFeeUsd} USD`);
@@ -330,7 +330,7 @@ async function estimateFeesFromGas({
       .div(Big(ethToUsd))
       .toFixed(config.constants.ETH_DECIMAL_PLACES);
     let unusablePriorityFeeWei = ethers.parseEther(unusablePriorityFeeEth).toString();
-    let unusablePriorityFeeGwei = ethers.formatUnits(unusablePriorityFeeWei, "gwei");
+    let unusablePriorityFeeGwei = ethers.formatUnits(unusablePriorityFeeWei, 'gwei');
     let msg2 = ` The transaction won't be able to use its entire priority fee. Unusable amount = (${unusablePriorityFeeGwei} Gwei, ${unusablePriorityFeeUsd} USD), out of total available = (${maxPriorityFeeGwei} gwei, ${maxPriorityFeeUsd} USD).`;
     msg += msg2;
     deb(msg);
@@ -346,7 +346,7 @@ async function estimateFeesFromGas({
     feeUsd = config.maxFeePerTransactionUsd;
     feeEth = Big(feeUsd).div(Big(ethToUsd)).toFixed(config.constants.ETH_DECIMAL_PLACES);
     feeWei = ethers.parseEther(feeEth).toString();
-    feeGwei = ethers.formatUnits(feeWei, "gwei");
+    feeGwei = ethers.formatUnits(feeWei, 'gwei');
   }
   // Set the anyLimitExceeded flag.
   feeLimitChecks.limitExceededKeys = Object.keys(feeLimitChecks).filter(
@@ -395,7 +395,7 @@ async function sendEth({
   deb(
     `Sending ${amountEth} ETH from ${senderAddress} to ${receiverAddress} on network=${networkLabel} (chainId=${chainId})...`,
   );
-  let basicPaymentGasLimit = "21000";
+  let basicPaymentGasLimit = '21000';
   let txRequest = {
     type: 2,
     chainId,

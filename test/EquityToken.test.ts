@@ -1,18 +1,18 @@
 // Imports
-import _ from "lodash";
-import { assert, expect } from "chai";
+import _ from 'lodash';
+import { assert, expect } from 'chai';
 //import { program } from "commander";
-import hardhat, { ethers, upgrades } from "hardhat";
-import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
+import hardhat, { ethers, upgrades } from 'hardhat';
+import { loadFixture } from '@nomicfoundation/hardhat-toolbox/network-helpers';
 
 
 // Local imports
 //import { createLogger } from "#root/lib/logging";
-import { log } from "#test/cli-for-tests.test";
+import { log } from '#test/cli-for-tests.test';
 
 
 // Types
-import { EquityToken, EquityTokenV2 } from "../typechain-types";
+import { EquityToken, EquityTokenV2 } from '../typechain-types';
 
 
 // Logging
@@ -32,19 +32,19 @@ describe('EquityToken walkthrough', function () {
   let equityTokenV2: EquityTokenV2;
 
   before(async function () {
-    await hardhat.network.provider.send("hardhat_reset");
+    await hardhat.network.provider.send('hardhat_reset');
     [admin, acc1, acc2] = await ethers.getSigners();
   });
 
   it('deploys', async function () {
     const EquityTokenFactory = await ethers.getContractFactory('EquityToken');
     equityToken = (await upgrades.deployProxy(EquityTokenFactory, [
-      "EquityToken",
-      "ETK",
+      'EquityToken',
+      'ETK',
       initialSupply,
     ], {
-      initializer: "initialize",
-      kind: "uups",
+      initializer: 'initialize',
+      kind: 'uups',
     })) as unknown as EquityToken;
   });
 
@@ -89,11 +89,11 @@ describe('EquityToken walkthrough', function () {
   it('cannot re-initialize', async function () {
     await expect(
       equityToken.initialize(
-        "EquityToken",
-        "ETK",
+        'EquityToken',
+        'ETK',
         initialSupply,
       )
-    ).to.be.revertedWith("Initializable: contract is already initialized");
+    ).to.be.revertedWith('Initializable: contract is already initialized');
   });
 
   it('rejects Eth payments made directly to the contract address', async function () {
@@ -101,7 +101,7 @@ describe('EquityToken walkthrough', function () {
     await expect(
       acc1.sendTransaction({
         to: equityTokenAddress,
-        value: ethers.parseEther("1.0"),
+        value: ethers.parseEther('1.0'),
       })
     ).to.be.reverted;
   });
@@ -115,7 +115,7 @@ describe('EquityToken - upgrade', function () {
   let equityTokenV2: EquityTokenV2;
 
   before(async function () {
-    await hardhat.network.provider.send("hardhat_reset");
+    await hardhat.network.provider.send('hardhat_reset');
     [admin, acc1, acc2] = await ethers.getSigners();
   });
 
@@ -123,12 +123,12 @@ describe('EquityToken - upgrade', function () {
     const [admin, acc1, acc2] = await ethers.getSigners();
     const EquityTokenFactory = await ethers.getContractFactory('EquityToken');
     equityToken = (await upgrades.deployProxy(EquityTokenFactory, [
-      "EquityToken",
-      "ETK",
+      'EquityToken',
+      'ETK',
       initialSupply
     ], {
-      initializer: "initialize",
-      kind: "uups",
+      initializer: 'initialize',
+      kind: 'uups',
     })) as unknown as EquityToken;
     const equityTokenAddress = await equityToken.getAddress();
     return { equityToken, equityTokenAddress, admin, acc1, acc2 };
@@ -138,15 +138,15 @@ describe('EquityToken - upgrade', function () {
     const [admin, acc1, acc2] = await ethers.getSigners();
     const EquityTokenFactory = await ethers.getContractFactory('EquityToken');
     equityToken = (await upgrades.deployProxy(EquityTokenFactory, [
-      "EquityToken",
-      "ETK",
+      'EquityToken',
+      'ETK',
       initialSupply
     ], {
-      initializer: "initialize",
-      kind: "uups",
+      initializer: 'initialize',
+      kind: 'uups',
     })) as unknown as EquityToken;
     const equityTokenAddress = await equityToken.getAddress();
-    const equityTokenV2Factory = await ethers.getContractFactory("EquityTokenV2");
+    const equityTokenV2Factory = await ethers.getContractFactory('EquityTokenV2');
     equityTokenV2 = await upgrades.upgradeProxy(equityTokenAddress, equityTokenV2Factory) as unknown as EquityTokenV2;
     return { equityToken, equityTokenV2, equityTokenAddress, admin, acc1, acc2 };
   }
@@ -167,7 +167,7 @@ describe('EquityToken - upgrade', function () {
     await equityToken.mint(acc1.address, amount);
     const supply2 = await equityToken.totalSupply();
     //log(`supply2: ${supply2}`);
-    const equityTokenV2Factory = await ethers.getContractFactory("EquityTokenV2");
+    const equityTokenV2Factory = await ethers.getContractFactory('EquityTokenV2');
     equityTokenV2 = await upgrades.upgradeProxy(equityTokenAddress, equityTokenV2Factory) as unknown as EquityTokenV2;
     const supply3 = await equityTokenV2.totalSupply();
     //log(`supply3: ${supply3}`);
@@ -178,11 +178,11 @@ describe('EquityToken - upgrade', function () {
     const { equityToken, equityTokenV2 } = await loadFixture(deployEquityTokenV2Fixture);
     await expect(
       equityTokenV2.initialize(
-        "EquityToken",
-        "ETK",
+        'EquityToken',
+        'ETK',
         initialSupply,
       )
-    ).to.be.revertedWith("Initializable: contract is already initialized");
+    ).to.be.revertedWith('Initializable: contract is already initialized');
   });
 
 });

@@ -1,23 +1,23 @@
 // Imports
-import _ from "lodash";
-import { ethers } from "ethers";
-import hre from "hardhat";
-import { program } from "commander";
+import _ from 'lodash';
+import { ethers } from 'ethers';
+import hre from 'hardhat';
+import { program } from 'commander';
 
 // Local imports
-import config from "#root/config";
-import amounts from "#root/src/amounts";
-import ethereum from "#root/src/eth-toolset";
-import { createLogger } from "#root/lib/logging";
-import validate from "#root/lib/validate";
+import config from '#root/config';
+import amounts from '#root/src/amounts';
+import ethereum from '#root/src/eth-toolset';
+import { createLogger } from '#root/lib/logging';
+import validate from '#root/lib/validate';
 
 // Types from typechain
-import { UpgradeableCounter, UpgradeableCounterV2 } from "#root/typechain-types";
+import { UpgradeableCounter, UpgradeableCounterV2 } from '#root/typechain-types';
 
 // Environment variables
-import dotenv from "dotenv";
-import path from "path";
-let rootDir = __dirname.substring(0, __dirname.lastIndexOf("/"));
+import dotenv from 'dotenv';
+import path from 'path';
+let rootDir = __dirname.substring(0, __dirname.lastIndexOf('/'));
 let envFile = path.join(rootDir, config.envFileName);
 dotenv.config({ path: envFile });
 const {
@@ -32,9 +32,9 @@ const { logger, log, deb } = createLogger();
 
 // Parse arguments
 program
-  .option("-d, --debug", "log debug information")
-  .option("--log-level <logLevel>", "Specify log level.", "error")
-  .option("--network <network>", "specify the Ethereum network to connect to", "local");
+  .option('-d, --debug', 'log debug information')
+  .option('--log-level <logLevel>', 'Specify log level.', 'error')
+  .option('--network <network>', 'specify the Ethereum network to connect to', 'local');
 program.parse();
 const options = program.opts();
 if (options.debug) console.log(options);
@@ -50,7 +50,7 @@ config.update({
 
 validate.logLevel({ logLevel });
 if (debug) {
-  logLevel = "debug";
+  logLevel = 'debug';
 }
 logger.setLevel({ logLevel });
 ethereum.setLogLevel({ logLevel });
@@ -60,20 +60,20 @@ const network = config.networkLabelToNetwork[networkLabel];
 
 // Setup
 
-import contractJson from "#root/artifacts/contracts/UpgradeableCounter.sol/UpgradeableCounter.json";
+import contractJson from '#root/artifacts/contracts/UpgradeableCounter.sol/UpgradeableCounter.json';
 
 let providerDev = hre.ethers.provider;
 
 let provider: ethers.Provider;
-var msg: string = "Unknown error";
+var msg: string = 'Unknown error';
 let DEPLOYED_CONTRACT_ADDRESS: string | undefined;
-if (networkLabel == "local") {
+if (networkLabel == 'local') {
   msg = `Connecting to local network at ${network}...`;
   provider = new ethers.JsonRpcProvider(network);
-} else if (networkLabel == "testnet") {
+} else if (networkLabel == 'testnet') {
   msg = `Connecting to Sepolia testnet...`;
   provider = new ethers.InfuraProvider(network, INFURA_API_KEY);
-} else if (networkLabel == "mainnet") {
+} else if (networkLabel == 'mainnet') {
   msg = `Connecting to Ethereum mainnet...`;
   provider = new ethers.InfuraProvider(network, INFURA_API_KEY);
 }
@@ -98,7 +98,7 @@ async function main() {
 
   const [admin, acc1, acc2] = await hre.ethers.getSigners();
 
-  const contractFactory = await hre.ethers.getContractFactory("UpgradeableCounter");
+  const contractFactory = await hre.ethers.getContractFactory('UpgradeableCounter');
 
   // Approach: Run a dev network and deploy the contract to it.
   // Then: Measure the gas used by the contract deployment.
@@ -109,8 +109,8 @@ async function main() {
 
   // Contract deployment
   const contractCounter = (await hre.upgrades.deployProxy(contractFactory, [], {
-    initializer: "initialize",
-    kind: "uups",
+    initializer: 'initialize',
+    kind: 'uups',
   })) as unknown as UpgradeableCounter;
   await contractCounter.waitForDeployment();
 
@@ -163,7 +163,7 @@ async function main() {
   deb(`contractAddress: ${contractAddress}`);
   const implAddress = await contractCounter.connect(acc1).getImplementationAddress();
   deb(`implAddress: ${implAddress}`);
-  const contractFactoryV2 = await hre.ethers.getContractFactory("UpgradeableCounterV2");
+  const contractFactoryV2 = await hre.ethers.getContractFactory('UpgradeableCounterV2');
   const contractCounterV2 = (await hre.upgrades.upgradeProxy(
     contractAddress,
     contractFactoryV2,

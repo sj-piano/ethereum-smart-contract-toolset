@@ -1,8 +1,8 @@
 // Imports
-import fs from "fs";
+import fs from 'fs';
 
 // Local imports
-import ethToolset from "#root/src/eth-toolset";
+import ethToolset from '#root/src/eth-toolset';
 
 // Logging
 const log2 = console.log;

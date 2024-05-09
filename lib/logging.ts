@@ -1,14 +1,14 @@
 // Imports
-import winston from "winston";
-import DailyRotateFile = require("winston-daily-rotate-file");
+import winston from 'winston';
+import DailyRotateFile = require('winston-daily-rotate-file');
 
 
 // Validate log level
 enum LogLevelList {
-  "error",
-  "warn",
-  "info",
-  "debug",
+  'error',
+  'warn',
+  'info',
+  'debug',
 }
 type LogLevel = keyof typeof LogLevelList;
 
@@ -58,7 +58,7 @@ function parseStackTraceLine(stackTraceLine: string): StackTraceLine {
   */
   // Replace multiple spaces with a single space
   stackTraceLine = stackTraceLine.replace(/\s+/g, ' ');
-  let sections = stackTraceLine.trim().split(" ");
+  let sections = stackTraceLine.trim().split(' ');
   let result;
   let functionName;
   let location;
@@ -71,8 +71,8 @@ function parseStackTraceLine(stackTraceLine: string): StackTraceLine {
   } else {
     throw new Error(`Invalid stack trace line: ${stackTraceLine}`);
   }
-  let items = location.split(":");
-  let filePath = items.slice(0, -2).join(":"); // Collect all but the last two items
+  let items = location.split(':');
+  let filePath = items.slice(0, -2).join(':'); // Collect all but the last two items
   let lineNumber = items[items.length - 2];
   let columnNumber = items[items.length - 1];
   result = {
@@ -91,7 +91,7 @@ function captureFunctionAndLine(index: number = 2) {
   } catch (e) {
     let stack = (e as Error).stack!;
     //log2(stack)
-    let lines = stack.split("\n").slice(1);
+    let lines = stack.split('\n').slice(1);
     // Use index = 2 to move up through:
     // - captureFunctionAndLine
     // - Logger.info
@@ -123,7 +123,7 @@ class Logger {
     logToFile: boolean;
   }) {
     if (filePath) {
-      filePath = filePath.replace(process.cwd() + "/", "");
+      filePath = filePath.replace(process.cwd() + '/', '');
     }
     const logFormatterConsole = (metadata: any) => {
       let { level, message, stack, timestamp } = metadata;
@@ -132,7 +132,7 @@ class Logger {
       message = stack || message;
       const removeColorCodes = (text: string) => {
         /* eslint-disable no-control-regex */
-        return text.replace(/\x1B\[\d+m/g, "");
+        return text.replace(/\x1B\[\d+m/g, '');
         /* eslint-enable */
       };
       if (metadata.messageOnly) {
@@ -149,7 +149,7 @@ class Logger {
       const n = removeColorCodes(level).length;
       const m = 6;
       const spacing = n < m ? m - n : 0;
-      const spaces = " ".repeat(spacing);
+      const spaces = ' '.repeat(spacing);
       let s = `${level}${spaces}: `;
       if (filePath) {
         s += `${filePath} `;
@@ -165,7 +165,7 @@ class Logger {
         format: winston.format.combine(
           winston.format.colorize({ all: true }),
           winston.format.timestamp({
-            format: "YYYY-MM-DD HH:mm:ss.SSS",
+            format: 'YYYY-MM-DD HH:mm:ss.SSS',
           }),
           winston.format.printf(logFormatterConsole),
         ),
@@ -187,34 +187,34 @@ class Logger {
         message,
       };
       if (logTimestamp) {
-        data["timestamp"] = timestamp;
+        data['timestamp'] = timestamp;
       }
       if (filePath) {
-        data["filePath"] = filePath;
+        data['filePath'] = filePath;
       }
       if (metadata.messageOnly) {
-        data["messageOnly"] = true;
+        data['messageOnly'] = true;
       }
-      const replacer = ["timestamp", "level", "filePath", "message", "messageOnly"];
+      const replacer = ['timestamp', 'level', 'filePath', 'message', 'messageOnly'];
       return JSON.stringify(data, replacer);
     }
     if (logToFile) {
       // Note: When logging to file, the timestamp is always included.
       transports.push(
         new DailyRotateFile({
-          dirname: "logs",
-          filename: "%DATE%.log",
+          dirname: 'logs',
+          filename: '%DATE%.log',
           //datePattern: "YYYY-MM", // Use this pattern to rotate logs every month
-          datePattern: "YYYY-MM-DD", // Use this pattern to rotate logs every day
+          datePattern: 'YYYY-MM-DD', // Use this pattern to rotate logs every day
           //datePattern: "YYYY-MM-DD-HH", // Use this pattern to rotate logs every hour
           //datePattern: "YYYY-MM-DD-HH-mm", // Use this pattern to rotate logs every minute (useful for testing)
           zippedArchive: false,
-          maxSize: "20m", // Maximum log file size (optional)
-          maxFiles: "30d", // Keep logs for 30 days (optional)
+          maxSize: '20m', // Maximum log file size (optional)
+          maxFiles: '30d', // Keep logs for 30 days (optional)
           format: winston.format.combine(
             winston.format.errors({ stack: true }),
             winston.format.timestamp({
-              format: "YYYY-MM-DD HH:mm:ss.SSS",
+              format: 'YYYY-MM-DD HH:mm:ss.SSS',
             }),
             //winston.format.json(), // Use the JSON formatter to write logs in JSON format
             winston.format.printf(logFormatterFile),
@@ -242,7 +242,7 @@ class Logger {
     // At higher log levels, nothing will have been logged.
     // But: We still need console output for the user to see.
     // So: We log to the console here.
-    let higherLogLevels = "warn error".split(" ");
+    let higherLogLevels = 'warn error'.split(' ');
     if (higherLogLevels.includes(this.logger.level)) {
       console.log(arg);
     }
@@ -323,8 +323,8 @@ class Logger {
 }
 
 function createLogger({
-  filePath = "",
-  logLevel = "info",
+  filePath = '',
+  logLevel = 'info',
   logTimestamp = false,
   logToFile = false,
 } = {}) {

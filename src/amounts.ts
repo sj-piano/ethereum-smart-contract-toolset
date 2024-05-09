@@ -1,18 +1,18 @@
 // Imports
-import _ from "lodash";
-import Big from "big.js";
+import _ from 'lodash';
+import Big from 'big.js';
 
 
 // Local imports
-import config from "#root/config";
-import { createLogger } from "#root/lib/logging";
-import utils, { jd } from "#lib/utils";
-import validate from "#lib/validate";
+import config from '#root/config';
+import { createLogger } from '#root/lib/logging';
+import utils, { jd } from '#lib/utils';
+import validate from '#lib/validate';
 
 
 // Controls
-let logLevel = "error";
-logLevel = "info";
+let logLevel = 'error';
+logLevel = 'info';
 
 
 // Logging
@@ -23,8 +23,8 @@ const { logger, log, deb } = createLogger({ logLevel });
 let weiPerEth = Big(10 ** 18);
 let gweiPerEth = Big(10 ** 9);
 let weiPerGwei = Big(10 ** 9);
-let zeroWei = "0";
-let zeroEth = "0." + "0".repeat(config.constants.ETH_DECIMAL_PLACES);
+let zeroWei = '0';
+let zeroEth = '0.' + '0'.repeat(config.constants.ETH_DECIMAL_PLACES);
 
 
 // Setup
@@ -36,7 +36,7 @@ let { ETH_DECIMAL_PLACES, GWEI_DECIMAL_PLACES, USD_DECIMAL_PLACES, WEI_DECIMAL_P
 
 function validateAmountWei({ amountWei }: { amountWei: string }): boolean {
   validate.numericString({
-    name: "amountWei",
+    name: 'amountWei',
     value: amountWei,
   });
   return true;
@@ -44,12 +44,12 @@ function validateAmountWei({ amountWei }: { amountWei: string }): boolean {
 
 
 function validateAmountEth({ amountEth }: { amountEth: string }): boolean {
-  const nDP = amountEth.split(".").length - 1;
+  const nDP = amountEth.split('.').length - 1;
   if (nDP > 1) {
     throw new Error(`Too many decimal places in amountEth: ${amountEth}`);
   }
   validate.numericString({
-    name: "amountEth",
+    name: 'amountEth',
     value: amountEth,
   });
   return true;
@@ -79,7 +79,7 @@ function multiplyAmountWei({
 }) {
   const m = String(multiplier);
   validateAmountWei({ amountWei });
-  validate.string({ name: "multiplier", value: m });
+  validate.string({ name: 'multiplier', value: m });
   const amountWei2 = Big(amountWei).times(Big(m)).toFixed(WEI_DECIMAL_PLACES);
   return amountWei2;
 }
@@ -94,7 +94,7 @@ function multiplyAmountEth({
 }) {
   const m = String(multiplier);
   validateAmountEth({ amountEth });
-  validate.string({ name: "multiplier", value: m });
+  validate.string({ name: 'multiplier', value: m });
   const amountEth2 = Big(amountEth).times(Big(m)).toFixed(ETH_DECIMAL_PLACES);
   return amountEth2;
 }
@@ -102,7 +102,7 @@ function multiplyAmountEth({
 
 function addAmountsEth(amounts: string[]): string {
   if (amounts.length < 2) {
-    throw new Error("At least two amounts are required.");
+    throw new Error('At least two amounts are required.');
   }
   let totalWeiBig = Big(0);
   for (let amount of amounts) {
@@ -118,7 +118,7 @@ function addAmountsEth(amounts: string[]): string {
 // We take the first amount and subtract the rest from it.
 function subtractAmountsEth(amounts: string[]): string {
   if (amounts.length < 2) {
-    throw new Error("At least two amounts are required.");
+    throw new Error('At least two amounts are required.');
   }
   let amountEth = amounts[0];
   let amountWei = ethToWei({ amountEth });

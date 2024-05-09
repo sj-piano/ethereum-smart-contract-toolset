@@ -1,17 +1,17 @@
 // Imports
-import _ from "lodash";
-import Ajv from "ajv";
-import Big from "big.js";
-import { program } from "commander";
-import { ethers } from "ethers";
-import fs from "fs";
+import _ from 'lodash';
+import Ajv from 'ajv';
+import Big from 'big.js';
+import { program } from 'commander';
+import { ethers } from 'ethers';
+import fs from 'fs';
 
 
 // Local imports
-import config from "#root/config";
-import ethereum from "#root/src/eth-toolset";
-import { createLogger } from "#root/lib/logging";
-import validate from "#root/lib/validate";
+import config from '#root/config';
+import ethereum from '#root/src/eth-toolset';
+import { createLogger } from '#root/lib/logging';
+import validate from '#root/lib/validate';
 
 
 // Load environment variables
@@ -35,10 +35,10 @@ const { logger, log, deb } = createLogger();
 
 // Parse arguments
 program
-  .option("-d, --debug", "log debug information")
-  .option("--log-level <logLevel>", "Specify log level.", "error")
-  .option("--network <network>", "specify the Ethereum network to connect to", "local")
-  .requiredOption("--input-file-json <inputFileJson>", "Path to JSON file containing input data.");
+  .option('-d, --debug', 'log debug information')
+  .option('--log-level <logLevel>', 'Specify log level.', 'error')
+  .option('--network <network>', 'specify the Ethereum network to connect to', 'local')
+  .requiredOption('--input-file-json <inputFileJson>', 'Path to JSON file containing input data.');
 program.parse();
 const options = program.opts();
 if (options.debug) console.log(options);
@@ -68,7 +68,7 @@ ethereum.validateAddressesSync({
 
 validate.logLevel({ logLevel });
 if (debug) {
-  logLevel = "debug";
+  logLevel = 'debug';
 }
 logger.setLevel({ logLevel });
 
@@ -83,11 +83,11 @@ let inputData = JSON.parse(fs.readFileSync(inputFileJson).toString());
 
 const ajv = new Ajv();
 const inputJsonSchema = {
-  type: "object",
+  type: 'object',
   properties: {
-    newMessage: { type: "string" },
+    newMessage: { type: 'string' },
   },
-  required: ["newMessage"],
+  required: ['newMessage'],
   additionalProperties: false,
 };
 const validateInputJson = ajv.compile(inputJsonSchema);
@@ -101,24 +101,24 @@ let { newMessage }: { newMessage: string } = inputData;
 
 // Setup
 
-import contract from "#root/artifacts/contracts/HelloWorld.sol/HelloWorld.json";
+import contract from '#root/artifacts/contracts/HelloWorld.sol/HelloWorld.json';
 
 let provider: ethers.Provider;
 
-var msg: string = "Unknown error";
+var msg: string = 'Unknown error';
 let DEPLOYER_PRIVATE_KEY: string | undefined;
-let DEPLOYED_CONTRACT_ADDRESS: string = "";
-if (networkLabel == "local") {
+let DEPLOYED_CONTRACT_ADDRESS: string = '';
+if (networkLabel == 'local') {
   msg = `Connecting to local network at ${network}...`;
   provider = new ethers.JsonRpcProvider(network);
   DEPLOYER_PRIVATE_KEY = LOCAL_HARDHAT_PRIVATE_KEY;
   DEPLOYED_CONTRACT_ADDRESS = HELLO_WORLD_LOCAL_ADDRESS;
-} else if (networkLabel == "testnet") {
+} else if (networkLabel == 'testnet') {
   msg = `Connecting to Sepolia testnet...`;
   provider = new ethers.InfuraProvider(network, INFURA_API_KEY);
   DEPLOYER_PRIVATE_KEY = SEPOLIA_TESTNET_PRIVATE_KEY;
   DEPLOYED_CONTRACT_ADDRESS = HELLO_WORLD_TESTNET_ADDRESS;
-} else if (networkLabel == "mainnet") {
+} else if (networkLabel == 'mainnet') {
   msg = `Connecting to Ethereum mainnet...`;
   provider = new ethers.InfuraProvider(network, INFURA_API_KEY);
   DEPLOYER_PRIVATE_KEY = ETHEREUM_MAINNET_PRIVATE_KEY;
@@ -164,7 +164,7 @@ async function main({ newMessage, DEPLOYED_CONTRACT_ADDRESS }: { newMessage: str
 
 async function updateMessage({ newMessage }: { newMessage: string }) {
   const message = await contractHelloWorld.message();
-  log("Message stored in HelloWorld contract: " + message);
+  log('Message stored in HelloWorld contract: ' + message);
 
   // Estimate fees.
   // - Stop if any fee limit is exceeded.
@@ -204,7 +204,7 @@ async function updateMessage({ newMessage }: { newMessage: string }) {
   // Deploy contract.
   // - Use the estimated fee values.
   // - Wait for deployment to complete.
-  log("Updating the message...");
+  log('Updating the message...');
   try {
     var tx = await contractHelloWorld.update(newMessage, {
       gasLimit,
@@ -282,6 +282,6 @@ async function updateMessage({ newMessage }: { newMessage: string }) {
 
   // Report the final result.
   const message2 = await contractHelloWorld.message();
-  logger.print("The new message is: ");
+  logger.print('The new message is: ');
   logger.print(message2);
 }

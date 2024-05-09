@@ -1,20 +1,20 @@
 // Imports
-import _ from "lodash";
-import { program } from "commander";
-import { ethers } from "ethers";
+import _ from 'lodash';
+import { program } from 'commander';
+import { ethers } from 'ethers';
 
 
 // Local imports
-import config from "#root/config";
-import { createLogger } from "#root/lib/logging";
-import validate from "#root/lib/validate";
+import config from '#root/config';
+import { createLogger } from '#root/lib/logging';
+import validate from '#root/lib/validate';
 
 
 // Controls
 let networkConnectionsToCheck = [
-  "local",
-  "testnet",
-  "mainnet",
+  'local',
+  'testnet',
+  'mainnet',
 ];
 
 
@@ -25,8 +25,8 @@ const { logger, log, deb } = createLogger();
 
 // Parse arguments
 program
-  .option("-d, --debug", "log debug information")
-  .option("--log-level <logLevel>", "Specify log level.", "error");
+  .option('-d, --debug', 'log debug information')
+  .option('--log-level <logLevel>', 'Specify log level.', 'error');
 program.parse();
 const options = program.opts();
 if (options.debug) console.log(options);
@@ -36,7 +36,7 @@ let { debug, logLevel } = options;
 
 validate.logLevel({ logLevel });
 if (debug) {
-  logLevel = "debug";
+  logLevel = 'debug';
 }
 logger.setLevel({ logLevel });
 
@@ -68,21 +68,21 @@ async function checkConnection({provider, connections, networkLabel, network}) {
 async function main() {
   let connections = {
     local: {
-      description: "local Hardhat network",
+      description: 'local Hardhat network',
       connected: false,
     },
     testnet: {
-      description: "Sepolia testnet",
+      description: 'Sepolia testnet',
       connected: false,
     },
     mainnet: {
-      description: "Ethereum mainnet",
+      description: 'Ethereum mainnet',
       connected: false,
     },
   };
 
   // Check local Hardhat network connection
-  let networkLabel = "local";
+  let networkLabel = 'local';
   let network = config.networkLabelToNetwork[networkLabel];
   let provider = new ethers.JsonRpcProvider(network);
 
@@ -91,7 +91,7 @@ async function main() {
   }
 
   // Check Sepolia testnet network connection (via Infura)
-  networkLabel = "testnet";
+  networkLabel = 'testnet';
   network = config.networkLabelToNetwork[networkLabel];
   provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
   if (networkConnectionsToCheck.includes(networkLabel)) {
@@ -99,7 +99,7 @@ async function main() {
   }
 
   // Check Ethereum Mainnet network connection (via Infura)
-  networkLabel = "mainnet";
+  networkLabel = 'mainnet';
   network = config.networkLabelToNetwork[networkLabel];
   provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
   if (networkConnectionsToCheck.includes(networkLabel)) {
@@ -112,7 +112,7 @@ async function main() {
     if (networkConnectionsToCheck.includes(networkLabel)) {
       let { description, connected } = connection;
       let msg = `- ${networkLabel}: ${description} - ${
-        connected ? "connected" : "not connected"
+        connected ? 'connected' : 'not connected'
       }`;
       log2(msg);
     }

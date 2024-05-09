@@ -8,20 +8,20 @@ function getMethods(obj: any): string[] {
   do {
     Object.getOwnPropertyNames(currentObj).forEach((item) => properties.add(item));
   } while ((currentObj = Object.getPrototypeOf(currentObj)));
-  let methods = [...properties].filter((item) => typeof obj[item] === "function");
+  let methods = [...properties].filter((item) => typeof obj[item] === 'function');
   return methods.sort();
 }
 
 function isBigInt(value: any): boolean {
-  return typeof value === "bigint";
+  return typeof value === 'bigint';
 }
 
 function isString(value: any): boolean {
-  return typeof value === "string" || value instanceof String;
+  return typeof value === 'string' || value instanceof String;
 }
 
 function isNumber(value: any): boolean {
-  return typeof value === "number" && isFinite(value);
+  return typeof value === 'number' && isFinite(value);
 }
 
 function isNumericString(value: string): boolean {

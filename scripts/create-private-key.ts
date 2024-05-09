@@ -1,5 +1,5 @@
 // Local imports
-import ethToolset from "#root/src/eth-toolset";
+import ethToolset from '#root/src/eth-toolset';
 
 // Logging
 let log2 = console.log;

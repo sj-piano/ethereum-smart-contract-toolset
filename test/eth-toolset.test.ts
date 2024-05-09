@@ -1,21 +1,21 @@
 // Imports
-import _ from "lodash";
-import { assert, expect } from "chai";
-import hardhat, { ethers } from "hardhat";
+import _ from 'lodash';
+import { assert, expect } from 'chai';
+import hardhat, { ethers } from 'hardhat';
 //import helpers from "@nomicfoundation/hardhat-network-helpers"; // This doesn't work.
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const helpers = require("@nomicfoundation/hardhat-network-helpers");
+const helpers = require('@nomicfoundation/hardhat-network-helpers');
 
 
 // Local imports
-import amounts from "#src/amounts";
-import ethToolset from "#root/src/eth-toolset";
-import { createLogger } from "#root/lib/logging";
+import amounts from '#src/amounts';
+import ethToolset from '#root/src/eth-toolset';
+import { createLogger } from '#root/lib/logging';
 
 
 // Controls
-let logLevel = "error";
-logLevel = "info";
+let logLevel = 'error';
+logLevel = 'info';
 //logLevel = "debug";
 
 
@@ -24,32 +24,32 @@ const { logger, log, deb } = createLogger({ filePath: __filename, logLevel });
 
 
 // Test data
-const exampleAddress1 = "0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf";
+const exampleAddress1 = '0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf';
 
 
 // Setup
 let hre = hardhat;
 let provider = hre.ethers.provider;
 let network = hre.network;
-const networkLabel = "local";
+const networkLabel = 'local';
 
 
 // Tests
 
-describe("Ethereum private key", function () {
+describe('Ethereum private key', function () {
 
 
-  describe("Create random key", function () {
+  describe('Create random key', function () {
 
 
-    it("Should be a hex string", function () {
+    it('Should be a hex string', function () {
       const privateKey = ethToolset.createPrivateKeySync();
       const check = ethers.isHexString(privateKey);
       expect(check).to.equal(true);
     });
 
 
-    it("Should be 32 bytes long", function () {
+    it('Should be 32 bytes long', function () {
       const privateKey = ethToolset.createPrivateKeySync();
       const check = ethers.isHexString(privateKey, 32);
       expect(check).to.equal(true);
@@ -59,30 +59,30 @@ describe("Ethereum private key", function () {
   });
 
 
-  describe("Test validatePrivateKeySync", function () {
+  describe('Test validatePrivateKeySync', function () {
 
 
-    it("Should validate a new private key", function () {
+    it('Should validate a new private key', function () {
       const privateKey = ethToolset.createPrivateKeySync();
       const check = ethToolset.validatePrivateKeySync({ privateKey });
       expect(check).to.equal(true);
     });
 
 
-    it("Should throw an error if the private key is not a hex string", function () {
-      const privateKey = "0x1234567890abcdef" + "zzzz";
+    it('Should throw an error if the private key is not a hex string', function () {
+      const privateKey = '0x1234567890abcdef' + 'zzzz';
       assert.throws(() => ethToolset.validatePrivateKeySync({ privateKey }), Error);
     });
 
 
-    it("Should throw an error if the private key is less than 32 bytes long", function () {
-      const privateKey = "0x1234567890abcdef";
+    it('Should throw an error if the private key is less than 32 bytes long', function () {
+      const privateKey = '0x1234567890abcdef';
       assert.throws(() => ethToolset.validatePrivateKeySync({ privateKey }), Error);
     });
 
 
-    it("Should throw an error if the private key is more than 32 bytes long", function () {
-      const privateKey = "0x" + "1234567890abcdef".repeat(4) + "1234";
+    it('Should throw an error if the private key is more than 32 bytes long', function () {
+      const privateKey = '0x' + '1234567890abcdef'.repeat(4) + '1234';
       assert.throws(() => ethToolset.validatePrivateKeySync({ privateKey }), Error);
     });
 
@@ -90,20 +90,20 @@ describe("Ethereum private key", function () {
   });
 
 
-  describe("Test deriveAddressSync", function () {
+  describe('Test deriveAddressSync', function () {
 
-    it("Should derive the correct address from a private key", function () {
-      const privateKey = "0x" + "00".repeat(31) + "01";
+    it('Should derive the correct address from a private key', function () {
+      const privateKey = '0x' + '00'.repeat(31) + '01';
       const address = ethToolset.deriveAddressSync({ privateKey });
       expect(address).to.equal(exampleAddress1);
     });
   });
 
 
-  describe("Test validateAddressSync", function () {
+  describe('Test validateAddressSync', function () {
 
 
-    it("Should validate a valid address", function () {
+    it('Should validate a valid address', function () {
       const address = exampleAddress1;
       const check = ethToolset.validateAddressSync({ address });
       expect(check).to.equal(true);
@@ -113,15 +113,15 @@ describe("Ethereum private key", function () {
   });
 
 
-  describe("Test basic transactions", function () {
+  describe('Test basic transactions', function () {
 
 
     beforeEach(async function () {
-      await hre.network.provider.send("hardhat_reset");
+      await hre.network.provider.send('hardhat_reset');
     });
 
 
-    it("Should transfer 0 wei", async function () {
+    it('Should transfer 0 wei', async function () {
       const [addr1, addr2] = await ethers.getSigners();
       let addr1Balance = await ethToolset.getBalanceEth({
         provider,
@@ -131,7 +131,7 @@ describe("Ethereum private key", function () {
         provider,
         address: addr2.address,
       });
-      let amountWei = "0";
+      let amountWei = '0';
       let amountEth = amounts.weiToEth({ amountWei });
       let txResponse = await ethToolset.sendEth({
         networkLabel,
@@ -143,7 +143,7 @@ describe("Ethereum private key", function () {
       //log(txResponse)
       let txHash = txResponse.hash;
       let txReceipt = await provider.getTransactionReceipt(txHash);
-      let block = await provider.getBlock("latest");
+      let block = await provider.getBlock('latest');
       expect(block!.number).to.equal(1);
       let addr1Balance2 = await ethToolset.getBalanceEth({
         provider,
@@ -157,16 +157,16 @@ describe("Ethereum private key", function () {
       expect(differenceWei).to.equal(0);
     });
 
-    it("Should transfer 1 wei", async function () {
-      let result = await provider.send("hardhat_getAutomine");
+    it('Should transfer 1 wei', async function () {
+      let result = await provider.send('hardhat_getAutomine');
       deb(`result: ${result}`);
 
-      await provider.send("evm_setAutomine", [false]);
+      await provider.send('evm_setAutomine', [false]);
 
-      let automineOn = await provider.send("hardhat_getAutomine");
+      let automineOn = await provider.send('hardhat_getAutomine');
       deb(`automineOn=${automineOn}`);
 
-      let block = await provider.getBlock("latest");
+      let block = await provider.getBlock('latest');
       deb(`Current block number: ${block!.number}`);
 
       const [addr1, addr2] = await ethers.getSigners();
@@ -182,7 +182,7 @@ describe("Ethereum private key", function () {
       });
       //log("addr2Balance", addr2Balance);
 
-      let amountWei = "1";
+      let amountWei = '1';
       let amountEth = amounts.weiToEth({ amountWei });
 
       let txResponse = await ethToolset.sendEth({
@@ -245,19 +245,19 @@ describe("Ethereum private key", function () {
   });
 
 
-  describe("Test getCanonicalSignature", function () {
+  describe('Test getCanonicalSignature', function () {
 
 
-    it("Should correctly convert a complex signature to a canonical form", function () {
-        const signature = "Transfer(address indexed _from, address indexed _to, uint256 _value)";
-        const expectedCanonical = "Transfer(address,address,uint256)";
+    it('Should correctly convert a complex signature to a canonical form', function () {
+        const signature = 'Transfer(address indexed _from, address indexed _to, uint256 _value)';
+        const expectedCanonical = 'Transfer(address,address,uint256)';
         const result = ethToolset.getCanonicalSignature(signature);
         expect(result).to.equal(expectedCanonical);
     });
 
 
-    it("Should throw an error for an invalid function signature", function () {
-        const badSignature = "InvalidFunction";
+    it('Should throw an error for an invalid function signature', function () {
+        const badSignature = 'InvalidFunction';
         expect(() => ethToolset.getCanonicalSignature(badSignature)).to.throw(Error, 'Invalid function signature');
     });
 

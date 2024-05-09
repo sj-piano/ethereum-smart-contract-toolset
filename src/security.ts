@@ -5,26 +5,26 @@
 */
 
 // Imports
-import _ from "lodash";
-import { ethers, Provider, TransactionRequest } from "ethers";
+import _ from 'lodash';
+import { ethers, Provider, TransactionRequest } from 'ethers';
 
 // Local imports
-import config from "#root/config";
-import { createLogger } from "#lib/logging";
-import { getEnvVar } from "#lib/env-vars";
-import utils from "#lib/utils";
+import config from '#root/config';
+import { createLogger } from '#lib/logging';
+import { getEnvVar } from '#lib/env-vars';
+import utils from '#lib/utils';
 
 // Environment variables
-import dotenv from "dotenv";
-import path from "path";
-let rootDir = __dirname.substring(0, __dirname.lastIndexOf("/"));
+import dotenv from 'dotenv';
+import path from 'path';
+let rootDir = __dirname.substring(0, __dirname.lastIndexOf('/'));
 let envFile = path.join(rootDir, config.envFileName);
 dotenv.config({ path: envFile });
-const LOCAL_HARDHAT_MNEMONIC_PHRASE= getEnvVar("LOCAL_HARDHAT_MNEMONIC_PHRASE");
+const LOCAL_HARDHAT_MNEMONIC_PHRASE= getEnvVar('LOCAL_HARDHAT_MNEMONIC_PHRASE');
 
 // Controls
-let logLevel = "error";
-logLevel = "info";
+let logLevel = 'error';
+logLevel = 'info';
 
 // Logging
 const { logger, log, deb } = createLogger({ filePath: __filename, logLevel });
@@ -42,9 +42,9 @@ async function signTransaction({
   senderAddress: string;
   txRequest: TransactionRequest;
 }) {
-  let privateKey = "";
+  let privateKey = '';
   let found = false;
-  if (networkLabel == "local") {
+  if (networkLabel == 'local') {
     // Iterate over hardhat mnemonic to find the correct private key.
     let index = 0;
     const mnemonic = ethers.Mnemonic.fromPhrase(LOCAL_HARDHAT_MNEMONIC_PHRASE);
@@ -59,9 +59,9 @@ async function signTransaction({
         privateKey = wallet.privateKey;
       }
     }
-  } else if (networkLabel == "testnet") {
+  } else if (networkLabel == 'testnet') {
     throw new Error(`Network support not implemented yet: ${networkLabel}`);
-  } else if (networkLabel == "mainnet") {
+  } else if (networkLabel == 'mainnet') {
     throw new Error(`Network support not implemented yet: ${networkLabel}`);
   } else {
     throw new Error(`Unsupported networkLabel: ${networkLabel}`);
