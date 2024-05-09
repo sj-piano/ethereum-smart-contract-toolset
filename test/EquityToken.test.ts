@@ -20,11 +20,9 @@ import { EquityToken, EquityTokenV2 } from "../typechain-types";
 
 
 // Variables
-let initialSupply = 10**6;
+let initialSupply = 10 ** 6;
 let decimals = 6;
-let initialSupplyInteger = BigInt(initialSupply * 10**decimals);
-let initialPrice = 1500;
-let initialPriceInteger = BigInt(initialPrice * 10**decimals);
+let initialSupplyInteger = BigInt(initialSupply * 10 ** decimals);
 let admin, acc1, acc2;
 
 
@@ -44,7 +42,6 @@ describe('EquityToken walkthrough', function () {
       "EquityToken",
       "ETK",
       initialSupply,
-      initialPrice,
     ], {
       initializer: "initialize",
       kind: "uups",
@@ -95,7 +92,6 @@ describe('EquityToken walkthrough', function () {
         "EquityToken",
         "ETK",
         initialSupply,
-        initialPrice,
       )
     ).to.be.revertedWith("Initializable: contract is already initialized");
   });
@@ -108,20 +104,6 @@ describe('EquityToken walkthrough', function () {
         value: ethers.parseEther("1.0"),
       })
     ).to.be.reverted;
-  });
-
-  it('allows a user to buy tokens', async function () {
-    const amountEth = 1;
-    const amountWei = ethers.parseEther(amountEth.toString());
-    const quantity = initialPrice / amountEth;
-    const balance1 = await equityToken.balanceOf(acc1.address);
-    await equityToken.connect(acc1).buyEquityTokens(quantity, {
-      value: amountWei,
-    });
-    const balance2 = await equityToken.balanceOf(acc1.address);
-    const balanceChange = balance2 - balance1;
-    //log(`balanceChange: ${balanceChange}`);
-    expect(balanceChange).to.equal(quantity);
   });
 
 });
@@ -199,7 +181,6 @@ describe('EquityToken - upgrade', function () {
         "EquityToken",
         "ETK",
         initialSupply,
-        initialPrice,
       )
     ).to.be.revertedWith("Initializable: contract is already initialized");
   });
