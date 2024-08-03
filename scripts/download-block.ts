@@ -47,7 +47,7 @@ blockNumber = parseInt(blockNumber);
 
 // Setup
 
-let provider: ethers.Provider = config.connectToNetwork({ networkLabel });
+let provider: ethers.Provider = config.getProvider({ networkLabel });
 
 
 // Run main function

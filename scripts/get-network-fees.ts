@@ -35,25 +35,11 @@ if (debug) {
 logger.setLevel({ logLevel });
 
 validate.networkLabel({ networkLabel });
-const network = config.networkLabelToNetwork[networkLabel];
 
 
 // Setup
 
 let provider: ethers.Provider;
-
-var msg: string = 'Unknown error';
-if (networkLabel == 'local') {
-  msg = `Connecting to local network at ${network}...`;
-  provider = new ethers.JsonRpcProvider(network);
-} else if (networkLabel == 'testnet') {
-  msg = `Connecting to Sepolia testnet...`;
-  provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
-} else if (networkLabel == 'mainnet') {
-  msg = `Connecting to Ethereum mainnet...`;
-  provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
-}
-log(msg);
 
 
 // Run main function
@@ -68,6 +54,8 @@ main().catch((error) => {
 
 
 async function main() {
+  provider = config.getProvider({ networkLabel });
+  deb(`Connected to ${networkLabel} network.`);
   let blockNumber = await provider.getBlockNumber();
   deb(`Current block number: ${blockNumber}`);
   const fees = await ethToolset.getGasPricesWithFiat({ provider });

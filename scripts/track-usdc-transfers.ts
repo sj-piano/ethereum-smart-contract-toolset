@@ -50,7 +50,7 @@ startBlock = parseInt(startBlock);
 
 // Setup
 
-const provider: ethers.Provider = config.connectToNetwork({ networkLabel });
+const provider: ethers.Provider = config.getProvider({ networkLabel });
 
 // Create a ethers.Contract instance for interaction with the USDC token contract.
 const USDC_CONTRACT_ADDRESS = config.getUsdcContractAddress();

@@ -177,7 +177,7 @@ class Config {
     return this.env[name];
   }
 
-  connectToNetwork({ networkLabel }: { networkLabel: string }) {
+  getProvider({ networkLabel }: { networkLabel: string }) {
     this.networkLabel = networkLabel;
     this.network = this.networkLabelToNetwork[networkLabel];
     const network = this.network;
@@ -200,7 +200,7 @@ class Config {
     } else {
       throw new Error(`Unsupported networkLabel: ${networkLabel}`);
     }
-    log(msg);
+    deb(msg);
     return this.provider;
   }
 
