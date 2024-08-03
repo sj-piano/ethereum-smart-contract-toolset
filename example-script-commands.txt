@@ -5,66 +5,66 @@
 ### General
 
 
-pnpm exec -- ts-node scripts/check-network-connections.ts --debug
+pnpm ts-node scripts/check-network-connections.ts --debug
 
 
 [by default, the network is 'local']
-pnpm exec -- ts-node scripts/get-network-fees.ts
+pnpm ts-node scripts/get-network-fees.ts
 
-pnpm exec -- ts-node scripts/get-network-fees.ts --network local
+pnpm ts-node scripts/get-network-fees.ts --network local
 
-pnpm exec -- ts-node scripts/get-network-fees.ts --network testnet
+pnpm ts-node scripts/get-network-fees.ts --network testnet
 
-pnpm exec -- ts-node scripts/get-network-fees.ts --network mainnet
+pnpm ts-node scripts/get-network-fees.ts --network mainnet
 
 
 
-pnpm exec -- ts-node scripts/check-contract-exists.ts
+pnpm ts-node scripts/check-contract-exists.ts
 
-pnpm exec -- ts-node scripts/check-contract-exists.ts --network testnet
+pnpm ts-node scripts/check-contract-exists.ts --network testnet
 
-pnpm exec -- ts-node scripts/check-contract-exists.ts --network mainnet
+pnpm ts-node scripts/check-contract-exists.ts --network mainnet
 
 
 
 ### Hello World
 
 
-pnpm exec -- ts-node scripts/hello-world/estimate-fees.ts
+pnpm ts-node scripts/hello-world/estimate-fees.ts
 
-pnpm exec -- ts-node scripts/hello-world/estimate-fees.ts --network testnet
+pnpm ts-node scripts/hello-world/estimate-fees.ts --network testnet
 
-pnpm exec -- ts-node scripts/hello-world/estimate-fees.ts --network mainnet
-
-
-pnpm exec -- ts-node scripts/hello-world/deploy.ts
-
-pnpm exec -- ts-node scripts/hello-world/deploy.ts --network testnet
-
-pnpm exec -- ts-node scripts/hello-world/deploy.ts --network mainnet
+pnpm ts-node scripts/hello-world/estimate-fees.ts --network mainnet
 
 
-pnpm exec -- ts-node scripts/hello-world/get-message.ts
+pnpm ts-node scripts/hello-world/deploy.ts
 
-pnpm exec -- ts-node scripts/hello-world/get-message.ts --network testnet
+pnpm ts-node scripts/hello-world/deploy.ts --network testnet
 
-pnpm exec -- ts-node scripts/hello-world/get-message.ts --network mainnet
+pnpm ts-node scripts/hello-world/deploy.ts --network mainnet
 
 
-pnpm exec -- ts-node scripts/hello-world/update-message.ts --input-file-json user-data/example-update-message.json --debug
+pnpm ts-node scripts/hello-world/get-message.ts
 
-pnpm exec -- ts-node scripts/hello-world/update-message.ts --input-file-json user-data/example-update-message.json --debug --network testnet
+pnpm ts-node scripts/hello-world/get-message.ts --network testnet
 
-pnpm exec -- ts-node scripts/hello-world/update-message.ts --input-file-json user-data/example-update-message.json --debug --network mainnet
+pnpm ts-node scripts/hello-world/get-message.ts --network mainnet
+
+
+pnpm ts-node scripts/hello-world/update-message.ts --input-file-json user-data/example-update-message.json --debug
+
+pnpm ts-node scripts/hello-world/update-message.ts --input-file-json user-data/example-update-message.json --debug --network testnet
+
+pnpm ts-node scripts/hello-world/update-message.ts --input-file-json user-data/example-update-message.json --debug --network mainnet
 
 
 
 
 ### Additional variants
 
-pnpm exec -- ts-node scripts/check-contract-exists.ts --network testnet --address-file user-data/example-contract-address.txt
+pnpm ts-node scripts/check-contract-exists.ts --network testnet --address-file user-data/example-contract-address.txt
 
-pnpm exec -- ts-node scripts/check-contract-exists.ts --network mainnet --address 0x50590A974646d333A93F89a37aBd2d2708671eAA
+pnpm ts-node scripts/check-contract-exists.ts --network mainnet --address 0x50590A974646d333A93F89a37aBd2d2708671eAA
 
 
 
@@ -72,23 +72,23 @@ pnpm exec -- ts-node scripts/check-contract-exists.ts --network mainnet --addres
 ### Create a new Ethereum keypair and get its balance.
 
 
-pnpm exec -- ts-node scripts/create-private-key.ts > user-data/private-key.txt
+pnpm ts-node scripts/create-private-key.ts > user-data/private-key.txt
 
 cat user-data/private-key.txt
 
 
-cat user-data/example-private-key.txt | pnpm exec -- ts-node scripts/derive-address.ts > user-data/example-address.txt
+cat user-data/example-private-key.txt | pnpm ts-node scripts/derive-address.ts > user-data/example-address.txt
 
 cat user-data/example-address.txt
 
 
-pnpm exec -- ts-node scripts/get-balance.ts --address-file user-data/example-address.txt
+pnpm ts-node scripts/get-balance.ts --address-file user-data/example-address.txt
 
-pnpm exec -- ts-node scripts/get-balance.ts --address 0x3bEC26B3cC2a1B0b123e9044E4D0085EfE9bF526
+pnpm ts-node scripts/get-balance.ts --address 0x3bEC26B3cC2a1B0b123e9044E4D0085EfE9bF526
 
-pnpm exec -- ts-node scripts/get-balance.ts --address 0x3bEC26B3cC2a1B0b123e9044E4D0085EfE9bF526 --network testnet
+pnpm ts-node scripts/get-balance.ts --address 0x3bEC26B3cC2a1B0b123e9044E4D0085EfE9bF526 --network testnet
 
-pnpm exec -- ts-node scripts/get-balance.ts --address 0x3bEC26B3cC2a1B0b123e9044E4D0085EfE9bF526 --network mainnet
+pnpm ts-node scripts/get-balance.ts --address 0x3bEC26B3cC2a1B0b123e9044E4D0085EfE9bF526 --network mainnet
 
 
 
@@ -96,17 +96,17 @@ pnpm exec -- ts-node scripts/get-balance.ts --address 0x3bEC26B3cC2a1B0b123e9044
 
 # Payment Tracking
 
-pnpm exec -- ts-node scripts/track-usdc-transfers.ts --debug --network mainnet --start-block 17000000
+pnpm ts-node scripts/track-usdc-transfers.ts --debug --network mainnet --start-block 17000000
 
-pnpm exec -- ts-node scripts/track-usdc-transfers.ts --debug --network polygonMainnet --start-block 56352804
+pnpm ts-node scripts/track-usdc-transfers.ts --debug --network polygonMainnet --start-block 56352804
 
 
 task test -- --grep "Test getCanonicalSignature" --debug
 
 
-pnpm exec -- ts-node scripts/download-block.ts --debug --network mainnet --block-number 17000000
+pnpm ts-node scripts/download-block.ts --debug --network mainnet --block-number 17000000
 
-pnpm exec -- ts-node scripts/download-block.ts --debug --network polygonMainnet --block-number 56352804
+pnpm ts-node scripts/download-block.ts --debug --network polygonMainnet --block-number 56352804
 
 
 
