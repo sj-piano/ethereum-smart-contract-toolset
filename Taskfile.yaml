@@ -1,3 +1,10 @@
+# Notes:
+# To pass CLI_ARGS to a task, add an extra '--' before the arguments.
+# Example:
+# task check-network-connections -- --debug
+# However, the '--' is not included in `cmds` section of a task.
+
+
 version: "3"
 
 tasks:
@@ -84,10 +91,10 @@ tasks:
   check-network-connections:
     desc: "Check the connections to the various Ethereum networks"
     cmds:
-      - pnpm exec ts-node scripts/check-network-connections.ts
+      - pnpm ts-node scripts/check-network-connections.ts {{.CLI_ARGS}}
     silent: true
 
   hello-world-get-message:
     cmds:
-      - pnpm exec ts-node scripts/HelloWorld/get-message.ts -- {{.CLI_ARGS}}
+      - pnpm ts-node scripts/HelloWorld/get-message.ts {{.CLI_ARGS}}
     silent: true
