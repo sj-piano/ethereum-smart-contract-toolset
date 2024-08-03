@@ -255,7 +255,7 @@ task check-network-connections
 Note: You should see this error `Could not connect to local network`, because we haven't started a Hardhat local network yet.
 
 If `task check-network-connections` produces errors for connecting to testnet or mainnet, you can run the underlying script with the `--debug` flag:  
-`pnpm exec -- ts-node scripts/check-network-connections.ts --debug`
+`pnpm ts-node scripts/check-network-connections.ts --debug`
 
 Compile the contracts and run the tests.
 
@@ -280,14 +280,14 @@ Leave the node running in this additional terminal. Log output will be displayed
 Check the fees on the various networks.
 
 ```sh
-pnpm exec -- ts-node scripts/get-network-fees.ts --network=local
+pnpm ts-node scripts/get-network-fees.ts --network=local
 
 # Note: The network is always "local" by default, so you can also run this command:
-pnpm exec -- ts-node scripts/get-network-fees.ts
+pnpm ts-node scripts/get-network-fees.ts
 
-pnpm exec -- ts-node scripts/get-network-fees.ts --network=testnet
+pnpm ts-node scripts/get-network-fees.ts --network=testnet
 
-pnpm exec -- ts-node scripts/get-network-fees.ts --network=mainnet
+pnpm ts-node scripts/get-network-fees.ts --network=mainnet
 ```
 
 
@@ -296,7 +296,7 @@ pnpm exec -- ts-node scripts/get-network-fees.ts --network=mainnet
 You'll need some SepoliaETH to use on the Sepolia Testnet. In your Metamask wallet, create a dedicated "Test" account. Switch to "Sepolia test network". Copy the address. Go to a Sepolia testnet faucet (e.g. this [PoW faucet](https://sepolia-faucet.pk910.de)) and get some SepoliaETH. Set the destination address to be your Metamask test address.
 
 Create a new private key and store it in the `user-data` directory:  
-`pnpm exec -- ts-node scripts/create-private-key.ts > user-data/sepolia-testnet-private-key.txt`
+`pnpm ts-node scripts/create-private-key.ts > user-data/sepolia-testnet-private-key.txt`
 
 Display the private key:  
 `cat user-data/sepolia-testnet-private-key.txt`
@@ -304,7 +304,7 @@ Display the private key:
 Store it in the `user-config.env` file as `SEPOLIA_TESTNET_PRIVATE_KEY`.
 
 Derive an Ethereum address from the private key and store it in the `user-data` directory:  
-`cat user-data/sepolia-testnet-private-key.txt | pnpm exec -- ts-node scripts/derive-address.ts > user-data/sepolia-testnet-address.txt`
+`cat user-data/sepolia-testnet-private-key.txt | pnpm ts-node scripts/derive-address.ts > user-data/sepolia-testnet-address.txt`
 
 Display the address:  
 `cat user-data/sepolia-testnet-address.txt`
@@ -314,7 +314,7 @@ Store it in the `user-config.env` file as `SEPOLIA_TESTNET_ADDRESS`.
 In Metamask, transfer a reasonable amount of SepoliaETH to this new address.
 
 See the balance of the address:  
-`pnpm exec -- ts-node scripts/get-balance.ts --network=testnet --address-file user-data/sepolia-testnet-address.txt`
+`pnpm ts-node scripts/get-balance.ts --network=testnet --address-file user-data/sepolia-testnet-address.txt`
 
 If you wish to retrieve your SepoliaETH from the address created in a Sepolia testnet walkthrough (e.g. you want to transfer it back to your Metamask test account), you'll need to use a tool that can make the transfer (create, sign, broadcast, and track the transaction). Such a tool is not provided in this project.
 
@@ -339,7 +339,7 @@ Store it in the `user-config.env` file as `ETHEREUM_MAINNET_PRIVATE_KEY`.
 Store it in the `user-data` directory in a new file called `ethereum-mainnet-private-key.txt`.
 
 See the balance of the address:  
-`pnpm exec -- ts-node scripts/get-balance.ts --network=mainnet --log-level info --address-file user-data/ethereum-mainnet-address.txt`
+`pnpm ts-node scripts/get-balance.ts --network=mainnet --log-level info --address-file user-data/ethereum-mainnet-address.txt`
 
 The result should match the balance shown in Metamask for your "Test" account.
 
@@ -394,7 +394,7 @@ You can of course change the limits in the `user-config.env` file if you wish, a
 Example output, after setting `MAX_FEE_PER_TRANSACTION_USD = "0.01"`:
 
 ```bash
-stjohn@judgement:~/work/contract-template$ pnpm exec -- ts-node scripts/HelloWorld/estimate-fees.ts
+stjohn@judgement:~/work/contract-template$ pnpm ts-node scripts/HelloWorld/estimate-fees.ts
 
 Contract deployment - estimated fee:
 - baseFeeUsd limit exceeded: Base fee (1.07 USD) exceeds limit specified in config (0.01 USD). Current base fee is 570179.0 gwei (570179000000000 wei, 0.000570179 ETH). Current ETH-USD exchange rate is 1873.22 USD.
@@ -402,15 +402,15 @@ Contract deployment - estimated fee:
 Contract method call: 'update' - estimated fee:
 - baseFeeUsd limit exceeded: Base fee (0.04 USD) exceeds limit specified in config (0.01 USD). Current base fee is 21725.0 gwei (21725000000000 wei, 0.000021725 ETH). Current ETH-USD exchange rate is 1873.22 USD.
 
-stjohn@judgement:~/work/contract-template$ pnpm exec -- ts-node scripts/get-balance.ts --address-file user-data/local-hardhat-address.txt
+stjohn@judgement:~/work/contract-template$ pnpm ts-node scripts/get-balance.ts --address-file user-data/local-hardhat-address.txt
 10000.0 ETH (18732700.00 USD)
 
-stjohn@judgement:~/work/contract-template$ pnpm exec -- ts-node scripts/HelloWorld/deploy.ts --log-level info
+stjohn@judgement:~/work/contract-template$ pnpm ts-node scripts/HelloWorld/deploy.ts --log-level info
 info:   Connecting to local network at http://localhost:8545...
 info:   Estimated fee: 0.000005338173277105 ETH (0.01 USD)
 - baseFeeUsd: Base fee (1.07 USD) exceeds limit specified in config (0.01 USD). Current base fee is 570179.0 gwei (570179000000000 wei, 0.000570179 ETH). Current ETH-USD exchange rate is 1873.3 USD.
 
-stjohn@judgement:~/work/contract-toolset$ pnpm exec -- ts-node scripts/HelloWorld/update-message.ts --input-file-json user-data/hello-world/update-message-local-network.json
+stjohn@judgement:~/work/contract-toolset$ pnpm ts-node scripts/HelloWorld/update-message.ts --input-file-json user-data/hello-world/update-message-local-network.json
 - baseFeeUsd: Base fee (0.06 USD) exceeds limit specified in config (0.01 USD). Current base fee is 31925.25 gwei (31925250000000 wei, 0.00003192525 ETH). Current ETH-USD exchange rate is 1873.39 USD.
 ```
 
