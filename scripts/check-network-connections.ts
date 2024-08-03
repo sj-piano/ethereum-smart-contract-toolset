@@ -15,6 +15,7 @@ let networkConnectionsToCheck = [
   'local',
   'testnet',
   'mainnet',
+  'polygon',
 ];
 
 
@@ -32,6 +33,7 @@ const options = program.opts();
 if (options.debug) console.log(options);
 let { debug, logLevel } = options;
 
+
 // Process and validate arguments
 
 validate.logLevel({ logLevel });
@@ -39,6 +41,7 @@ if (debug) {
   logLevel = 'debug';
 }
 logger.setLevel({ logLevel });
+
 
 // Run main function
 
@@ -79,6 +82,10 @@ async function main() {
       description: 'Ethereum mainnet',
       connected: false,
     },
+    polygon: {
+      description: 'Polygon network',
+      connected: false,
+    },
   };
 
   // Check local Hardhat network connection
@@ -100,6 +107,14 @@ async function main() {
 
   // Check Ethereum Mainnet network connection (via Infura)
   networkLabel = 'mainnet';
+  network = config.networkLabelToNetwork[networkLabel];
+  provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
+  if (networkConnectionsToCheck.includes(networkLabel)) {
+    await checkConnection({provider, connections, networkLabel, network});
+  }
+
+  // Check Polygon network connection (via Infura)
+  networkLabel = 'polygon';
   network = config.networkLabelToNetwork[networkLabel];
   provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
   if (networkConnectionsToCheck.includes(networkLabel)) {
