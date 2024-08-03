@@ -70,7 +70,7 @@ class Toolset {
     deb(msg);
     return this.provider;
     }
-  
+
     getUsdcContractAddress() {
     if (config.networkLabel === 'mainnet') {
       return config.constants.USDC_CONTRACT_ADDRESS_MAINNET;
