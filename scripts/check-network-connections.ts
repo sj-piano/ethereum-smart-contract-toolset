@@ -50,23 +50,9 @@ main().catch((error) => {
   process.exit(1);
 });
 
+
 // Functions
 
-async function checkConnection({provider, connections, networkLabel, network}) {
-  let msg = `Connecting to ${networkLabel} network: ${network}...`;
-  log(msg);
-  try {
-    // _detectNetwork() will throw an error if the connection fails. It won't retry.
-    let detected = await provider._detectNetwork();
-    let blockNumber = await provider.getBlockNumber();
-    log(`- ${networkLabel} network: current block number = ${blockNumber}`);
-    connections[networkLabel].connected = true;
-  } catch (error) {
-    provider.destroy();
-    logger.error(`Could not connect to ${networkLabel} network: ${network}.`);
-    logger.error(error);
-  }
-}
 
 async function main() {
   let connections = {
@@ -134,3 +120,20 @@ async function main() {
   });
 
 }
+
+
+async function checkConnection({provider, connections, networkLabel, network}) {
+    let msg = `Connecting to ${networkLabel} network: ${network}...`;
+    log(msg);
+    try {
+      // _detectNetwork() will throw an error if the connection fails. It won't retry.
+      let detected = await provider._detectNetwork();
+      let blockNumber = await provider.getBlockNumber();
+      log(`- ${networkLabel} network: current block number = ${blockNumber}`);
+      connections[networkLabel].connected = true;
+    } catch (error) {
+      provider.destroy();
+      logger.error(`Could not connect to ${networkLabel} network: ${network}.`);
+      logger.error(error);
+    }
+  }
