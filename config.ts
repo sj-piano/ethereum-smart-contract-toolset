@@ -68,10 +68,11 @@ class Config {
   constants: typeof constants = constants;
   env: { [key: string]: string } = {};
   envFileName: string;
-  ethUsdPriceUrl: string;
+  ethUsdPriceUrl: string = 'https://api.pro.coinbase.com/products/ETH-USD/ticker';
   gasLimitMultiplier: string;
   infuraApiMainnetUrlBase: string = 'https://mainnet.infura.io/v3';
   alchemyAPIMainnetPolygonUrlBase: string = 'https://polygon-mainnet.g.alchemy.com/v2';
+  maticUsdPriceUrl: string = 'https://api.pro.coinbase.com/products/MATIC-USD/ticker';
   _maxFeePerGasGwei: string;
   _maxPriorityFeePerGasGwei: string;
   maxFeePerGasWei: string;
@@ -93,7 +94,6 @@ class Config {
     this._maxPriorityFeePerGasGwei = '0';
     this.gasLimitMultiplier = '1.0';
     this.averagePriorityFeeMultiplier = '1.0';
-    this.ethUsdPriceUrl = 'https://api.pro.coinbase.com/products/ETH-USD/ticker';
     this.maxFeePerGasWei = '0';
     this.maxPriorityFeePerGasWei = '0';
     this.networkLabel = '';
