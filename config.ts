@@ -13,6 +13,7 @@ import path from 'path';
 import constants from '#lib/constants';
 import { createLogger } from '#lib/logging';
 import { getEnvVars } from '#lib/env-vars';
+import validate from '#lib/validate';
 
 
 // Logging
@@ -68,10 +69,12 @@ class Config {
   constants: typeof constants = constants;
   env: { [key: string]: string } = {};
   envFileName: string;
+  ethNetworkLabels: string[] = 'local testnet mainnet'.split(' ');
   ethUsdPriceUrl: string = 'https://api.pro.coinbase.com/products/ETH-USD/ticker';
   gasLimitMultiplier: string;
   infuraApiMainnetUrlBase: string = 'https://mainnet.infura.io/v3';
   alchemyAPIMainnetPolygonUrlBase: string = 'https://polygon-mainnet.g.alchemy.com/v2';
+  maticNetworkLabels: string[] = 'polygonMainnet'.split(' ');
   maticUsdPriceUrl: string = 'https://api.pro.coinbase.com/products/MATIC-USD/ticker';
   _maxFeePerGasGwei: string;
   _maxPriorityFeePerGasGwei: string;
@@ -82,7 +85,6 @@ class Config {
   networkLabelList: string[];
   networkLabelToNetwork: { [key: string]: string };
   network: string;
-  provider: ethers.Provider | null;
   logLevelList: string[];
   dummyAddress: string;
 
@@ -105,7 +107,6 @@ class Config {
       polygonMainnet: 'matic',
     };
     this.network = '';
-    this.provider = null;
     this.logLevelList = 'debug info warn error'.split(' ');
     this.dummyAddress = '0x000000000000000000000000000000000000dEaD';
   }
@@ -138,6 +139,10 @@ class Config {
       'UPGRADEABLE_CONTRACT_TESTNET_ADDRESS',
       'UPGRADEABLE_CONTRACT_MAINNET_ADDRESS',
     ], this.envFileName);
+    // Validate the numeric env vars.
+    validate.numericString({ name: 'MAX_FEE_PER_TRANSACTION_USD', value: this.env.MAX_FEE_PER_TRANSACTION_USD });
+    validate.numericString({ name: 'MAX_FEE_PER_GAS_GWEI', value: this.env.MAX_FEE_PER_GAS_GWEI });
+    validate.numericString({ name: 'MAX_PRIORITY_FEE_PER_GAS_GWEI', value: this.env.MAX_PRIORITY_FEE_PER_GAS_GWEI });
     // Derive additional env vars from existing ones.
     this.env.MAX_FEE_PER_GAS_WEI = Big(this.env.MAX_FEE_PER_GAS_GWEI).mul(10**9).toFixed(0);
     this.env.MAX_PRIORITY_FEE_PER_GAS_WEI = Big(this.env.MAX_PRIORITY_FEE_PER_GAS_GWEI).mul(10**9).toFixed(0);
@@ -175,43 +180,6 @@ class Config {
       throw new Error(`Environment variable '${name}' not found in ${this.envFileName}.`);
     }
     return this.env[name];
-  }
-
-  getProvider({ networkLabel }: { networkLabel: string }) {
-    this.networkLabel = networkLabel;
-    this.network = this.networkLabelToNetwork[networkLabel];
-    const network = this.network;
-    var msg: string;
-    if (networkLabel == 'local') {
-      msg = `Connecting to local network at ${network}...`;
-      this.provider = new ethers.JsonRpcProvider(network);
-    } else if (networkLabel == 'testnet') {
-      msg = `Connecting to Sepolia testnet...`;
-      this.provider = new ethers.InfuraProvider(network, this.getEnvVarInConfig('INFURA_API_KEY'));
-    } else if (networkLabel == 'mainnet') {
-      msg = `Connecting to Ethereum mainnet...`;
-      this.provider = new ethers.InfuraProvider(network, this.getEnvVarInConfig('INFURA_API_KEY'));
-    } else if (networkLabel == 'polygonMainnet') {
-      msg = `Connecting to Polygon mainnet...`;
-      //this.provider = new ethers.AlchemyProvider(network, config.env.ALCHEMY_API_KEY_POLYGON_POS);
-      this.provider = new ethers.JsonRpcProvider(
-        `https://polygon-mainnet.g.alchemy.com/v2/${this.getEnvVarInConfig('ALCHEMY_API_KEY_POLYGON_POS')}`
-      );
-    } else {
-      throw new Error(`Unsupported networkLabel: ${networkLabel}`);
-    }
-    deb(msg);
-    return this.provider;
-  }
-
-  getUsdcContractAddress() {
-    if (this.networkLabel === 'mainnet') {
-      return this.constants.USDC_CONTRACT_ADDRESS_MAINNET;
-    } else if (this.networkLabel === 'polygonMainnet') {
-      return this.constants.USDC_CONTRACT_ADDRESS_MAINNET_POLYGON;
-    } else {
-      throw new Error(`Unsupported networkLabel: ${this.networkLabel}`);
-    }
   }
 
 }

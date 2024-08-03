@@ -6,7 +6,7 @@ import { ethers } from 'ethers';
 
 // Local imports
 import config from '#root/config';
-import ethToolset from '#root/src/eth-toolset';
+import toolset from '#root/src/toolset';
 import { createLogger } from '#root/lib/logging';
 import validate from '#root/lib/validate';
 
@@ -54,10 +54,11 @@ main().catch((error) => {
 
 
 async function main() {
-  provider = config.getProvider({ networkLabel });
+  provider = toolset.getProvider({ networkLabel });
   deb(`Connected to ${networkLabel} network.`);
   let blockNumber = await provider.getBlockNumber();
   deb(`Current block number: ${blockNumber}`);
-  const fees = await ethToolset.getGasPricesWithFiat({ provider });
+  const fees = await toolset.getGasPricesWithFiat({ provider });
+  //const fees = await toolset.getGasPrices({ provider });
   console.log(fees);
 }

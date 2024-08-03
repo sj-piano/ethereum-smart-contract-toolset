@@ -47,7 +47,7 @@ function numericString(options: { name: string; value: string }): string {
   if (trimmedValue.length === 0) {
     throw new Error(`Received empty or whitespace-only string for ${name}`);
   }
-  if (!utils.isNumericString(trimmedValue)) {
+  if (! utils.isNumericString(trimmedValue)) {
     let msg = `Received non-numeric string for ${name}: ${trimmedValue}`;
     msg +=
       `, !isNaN(value)=${!isNaN(trimmedValue as any)}, ` +

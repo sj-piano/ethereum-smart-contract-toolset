@@ -149,11 +149,14 @@ async function contractExistsAt({ provider, address }: { provider: Provider; add
 
 async function getGasPrices({ provider }: { provider: Provider }) {
   const block = await provider.getBlock('latest');
-  const blockNumber = block?.number.toString() ?? '0';
-  const baseFeePerGasWei = block?.baseFeePerGas?.toString() ?? '0';
+  const blockNumber = block?.number.toString() ?? null;
+  const baseFeePerGasWei = block?.baseFeePerGas?.toString() ?? null;
   const feeData = await provider.getFeeData();
   const { gasPrice } = feeData;
-  const gasPriceWei = gasPrice?.toString() ?? '0';
+  const gasPriceWei = gasPrice?.toString() ?? null;
+  if (_.isNull(baseFeePerGasWei) || _.isNull(gasPriceWei)) {
+    throw new Error('Error fetching gas prices.');
+  }
   const averagePriorityFeePerGasWei = (BigInt(gasPriceWei) - BigInt(baseFeePerGasWei)).toString();
   // Convert values to Gwei and Ether.
   const baseFeePerGasGwei = ethers.formatUnits(baseFeePerGasWei, 'gwei');
@@ -164,6 +167,10 @@ async function getGasPrices({ provider }: { provider: Provider }) {
   const averagePriorityFeePerGasEth = ethers.formatUnits(averagePriorityFeePerGasWei, 'ether');
   const basicPaymentCostEth = ethers.formatUnits(
     (BigInt(gasPriceWei) + BigInt(averagePriorityFeePerGasWei)) * 21000n,
+    'ether',
+  );
+  const usdcTransferCostEth = ethers.formatUnits(
+    (BigInt(gasPriceWei) + BigInt(averagePriorityFeePerGasWei)) * 50000n,
     'ether',
   );
   return {
@@ -179,6 +186,7 @@ async function getGasPrices({ provider }: { provider: Provider }) {
     averagePriorityFeePerGasGwei,
     averagePriorityFeePerGasEth,
     basicPaymentCostEth,
+    usdcTransferCostEth,
   };
 }
 
@@ -209,6 +217,9 @@ async function getGasPricesWithFiat({ provider }: { provider: Provider }) {
   const basicPaymentCostUsd = Big(gasPrices.basicPaymentCostEth)
     .mul(Big(ethToUsd))
     .toFixed(config.constants.USD_DECIMAL_PLACES);
+    const usdcTransferCostUsd = Big(gasPrices.usdcTransferCostEth)
+    .mul(Big(ethToUsd))
+    .toFixed(config.constants.USD_DECIMAL_PLACES);
   return {
     ...gasPrices,
     ethToUsd,
@@ -216,6 +227,7 @@ async function getGasPricesWithFiat({ provider }: { provider: Provider }) {
     gasPriceUsd,
     averagePriorityFeePerGasUsd,
     basicPaymentCostUsd,
+    usdcTransferCostUsd,
   };
 }
 
@@ -508,6 +520,7 @@ function getCanonicalSignature(signature: string): string {
   // Reconstruct the canonical function signature
   return `${functionName}(${canonicalParams})`;
 }
+
 
 
 
