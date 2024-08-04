@@ -6,8 +6,9 @@ import { ethers } from 'ethers';
 
 // Local imports
 import config from '#root/config';
-import ethToolset from '#root/src/eth-toolset';
+import toolset from '#root/src/toolset';
 import { createLogger } from '#root/lib/logging';
+import utils from '#root/lib/utils';
 import validate from '#root/lib/validate';
 
 
@@ -56,12 +57,11 @@ if (debug) {
 logger.setLevel({ logLevel });
 
 validate.networkLabel({ networkLabel });
-const network = config.networkLabelToNetwork[networkLabel];
 
 let contractAddress: string;
 
 if (addressName) {
-  address = config.getEnvVarInConfig(addressName);
+  address = utils.getValueOrThrow(config.env, addressName, 'config');
   deb(`Address ${addressName} found in .env file: ${address}`);
 } else {
   address = validate.loadArgumentFromOneSource('address', address, addressFile);
@@ -78,19 +78,6 @@ contractAddress = address;
 
 let provider: ethers.Provider;
 
-var msg: string = 'Unknown error';
-if (networkLabel == 'local') {
-  msg = `Connecting to local network at ${network}...`;
-  provider = new ethers.JsonRpcProvider(network);
-} else if (networkLabel == 'testnet') {
-  msg = `Connecting to Sepolia testnet...`;
-  provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
-} else if (networkLabel == 'mainnet') {
-  msg = `Connecting to Ethereum mainnet...`;
-  provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
-}
-log(msg);
-
 
 // Run main function
 
@@ -105,12 +92,13 @@ main({ contractAddress }).catch((error) => {
 
 
 async function main({ contractAddress }: { contractAddress: string }) {
+  provider = toolset.getProvider({ networkLabel });
   let blockNumber = await provider.getBlockNumber();
   deb(`Current block number: ${blockNumber}`);
 
   let address = contractAddress;
 
-  let check = await ethToolset.contractExistsAt({ provider, address });
+  let check = await toolset.contractExistsAt({ provider, address });
   if (!check) {
     console.error(`No contract found at address: ${address}`);
     process.exit(1);

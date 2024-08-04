@@ -173,15 +173,6 @@ class Config {
     this.maxPriorityFeePerGasWei = ethers.parseUnits(newValue, 'gwei').toString();
   }
 
-  // Methods
-
-  getEnvVarInConfig(name): string {
-    if (!_.has(this.env, name)) {
-      throw new Error(`Environment variable '${name}' not found in ${this.envFileName}.`);
-    }
-    return this.env[name];
-  }
-
 }
 
 

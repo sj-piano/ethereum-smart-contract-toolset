@@ -36,7 +36,21 @@ function jd(obj: any): string {
   return JSON.stringify(obj, null, 2);
 }
 
+
+// Can optionally provide the object name for better error messages.
+function getValueOrThrow<T, K extends keyof T>(obj: T, key: K, varName?: string): T[K] {
+  const value = obj[key];
+  const location = varName ? ` in object "${varName}"` : '';
+  let msg = `Value for key "${String(key)}"${location} is undefined`;
+  if (value === undefined) {
+      throw new Error(msg);
+  }
+  return value;
+}
+
+
 export { getMethods, isNumericString, sleep, jd };
+
 
 export default {
   getMethods,
@@ -46,4 +60,5 @@ export default {
   isNumericString,
   sleep,
   jd,
+  getValueOrThrow,
 };
