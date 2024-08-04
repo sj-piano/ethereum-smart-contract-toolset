@@ -29,6 +29,36 @@ pnpm ts-node scripts/check-contract-exists.ts --network mainnet --address-file c
 
 pnpm ts-node scripts/check-contract-exists.ts --network mainnetPolygon --address-file chain-data/usdc-contract-address-mainnet-polygon.txt
 
+pnpm ts-node scripts/check-contract-exists.ts --network mainnet --address 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+
+
+
+
+
+### Create a new Ethereum keypair and get its balance.
+
+
+pnpm ts-node scripts/create-private-key.ts
+
+pnpm ts-node scripts/create-private-key.ts > user-data/private-key.txt
+
+cat user-data/private-key.txt
+
+
+cat user-data/example-private-key.txt | pnpm ts-node scripts/derive-address.ts > user-data/example-address.txt
+
+cat user-data/example-address.txt
+
+
+pnpm ts-node scripts/get-balance.ts --address-file user-data/example-address.txt
+
+pnpm ts-node scripts/get-balance.ts --address 0x3bEC26B3cC2a1B0b123e9044E4D0085EfE9bF526
+
+pnpm ts-node scripts/get-balance.ts --address 0x3bEC26B3cC2a1B0b123e9044E4D0085EfE9bF526 --network testnet
+
+pnpm ts-node scripts/get-balance.ts --address 0x3bEC26B3cC2a1B0b123e9044E4D0085EfE9bF526 --network mainnet
+
+
 
 
 ### Hello World
@@ -64,35 +94,7 @@ pnpm ts-node scripts/hello-world/update-message.ts --input-file-json user-data/e
 
 
 
-### Additional variants
 
-pnpm ts-node scripts/check-contract-exists.ts --network testnet --address-file user-data/example-contract-address.txt
-
-pnpm ts-node scripts/check-contract-exists.ts --network mainnet --address 0x50590A974646d333A93F89a37aBd2d2708671eAA
-
-
-
-
-### Create a new Ethereum keypair and get its balance.
-
-
-pnpm ts-node scripts/create-private-key.ts > user-data/private-key.txt
-
-cat user-data/private-key.txt
-
-
-cat user-data/example-private-key.txt | pnpm ts-node scripts/derive-address.ts > user-data/example-address.txt
-
-cat user-data/example-address.txt
-
-
-pnpm ts-node scripts/get-balance.ts --address-file user-data/example-address.txt
-
-pnpm ts-node scripts/get-balance.ts --address 0x3bEC26B3cC2a1B0b123e9044E4D0085EfE9bF526
-
-pnpm ts-node scripts/get-balance.ts --address 0x3bEC26B3cC2a1B0b123e9044E4D0085EfE9bF526 --network testnet
-
-pnpm ts-node scripts/get-balance.ts --address 0x3bEC26B3cC2a1B0b123e9044E4D0085EfE9bF526 --network mainnet
 
 
 

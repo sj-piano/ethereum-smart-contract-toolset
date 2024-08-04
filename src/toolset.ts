@@ -115,6 +115,12 @@ const toolsetHandler = {
         return maticToolset[prop].bind(maticToolset);
       }
     }
+    // Some methods are local and do not require a network connection.
+    // Example: createPrivateKeySync
+    // These methods exist in ethToolset by default.
+    if (typeof ethToolset[prop] === 'function') {
+      return ethToolset[prop].bind(ethToolset);
+    }
     throw new NotImplementedError(`Method '${prop}' is not implemented in toolset for network='${config.networkLabel}'.`);
   }
 };

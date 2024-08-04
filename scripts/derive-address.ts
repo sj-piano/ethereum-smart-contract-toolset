@@ -2,7 +2,7 @@
 import fs from 'fs';
 
 // Local imports
-import ethToolset from '#root/src/eth-toolset';
+import toolset from '#root/src/toolset';
 
 // Logging
 const log2 = console.log;
@@ -14,6 +14,6 @@ const pipedString = fs.readFileSync(process.stdin.fd).toString().trim();
 const privateKey = pipedString;
 
 // Run
-const address = ethToolset.deriveAddressSync({ privateKey });
-ethToolset.validateAddressSync({ address });
+const address = toolset.deriveAddressSync({ privateKey });
+toolset.validateAddressSync({ address });
 log2(address);

@@ -1,10 +1,10 @@
 // Local imports
-import ethToolset from '#root/src/eth-toolset';
+import toolset from '#root/src/toolset';
 
 // Logging
 let log2 = console.log;
 
 // Run
-const privateKey = ethToolset.createPrivateKeySync();
-ethToolset.validatePrivateKeySync({ privateKey });
+const privateKey = toolset.createPrivateKeySync();
+toolset.validatePrivateKeySync({ privateKey });
 log2(privateKey);
