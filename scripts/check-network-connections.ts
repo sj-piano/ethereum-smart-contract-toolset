@@ -77,11 +77,12 @@ async function main() {
 
   let networkLabel: string;
   let network: string;
+  let provider: ethers.Provider;
 
   // Check local Hardhat network connection
   networkLabel = 'local';
   network = utils.getValueOrThrow(config.networkLabelToNetwork, networkLabel, 'networkLabelToNetwork');
-  let provider = new ethers.JsonRpcProvider(network);
+  provider = new ethers.JsonRpcProvider(network);
 
   if (networkConnectionsToCheck.includes(networkLabel)) {
     await checkConnection({provider, connections, networkLabel, network});
