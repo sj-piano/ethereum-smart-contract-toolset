@@ -61,7 +61,7 @@ validate.networkLabel({ networkLabel });
 let contractAddress: string;
 
 if (addressName) {
-  address = utils.getValueOrThrow(config.env, addressName, 'config');
+  address = utils.getValueOrThrow(config.env, addressName, 'config.env');
   deb(`Address ${addressName} found in .env file: ${address}`);
 } else {
   address = validate.loadArgumentFromOneSource('address', address, addressFile);

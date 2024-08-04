@@ -58,7 +58,7 @@ class Toolset {
     } else if (networkLabel == 'mainnet') {
       msg = `Connecting to Ethereum mainnet...`;
       this.provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
-    } else if (networkLabel == 'polygonMainnet') {
+    } else if (networkLabel == 'mainnetPolygon') {
       msg = `Connecting to Polygon mainnet...`;
       //this.provider = new ethers.AlchemyProvider(network, config.env.ALCHEMY_API_KEY_POLYGON_POS);
       this.provider = new ethers.JsonRpcProvider(
@@ -74,7 +74,7 @@ class Toolset {
     getUsdcContractAddress() {
     if (config.networkLabel === 'mainnet') {
       return config.constants.USDC_CONTRACT_ADDRESS_MAINNET;
-    } else if (config.networkLabel === 'polygonMainnet') {
+    } else if (config.networkLabel === 'mainnetPolygon') {
       return config.constants.USDC_CONTRACT_ADDRESS_MAINNET_POLYGON;
     } else {
       throw new Error(`Unsupported networkLabel: ${config.networkLabel}`);

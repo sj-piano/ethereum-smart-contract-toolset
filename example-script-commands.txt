@@ -17,6 +17,8 @@ pnpm ts-node scripts/get-network-fees.ts --network testnet
 
 pnpm ts-node scripts/get-network-fees.ts --network mainnet
 
+pnpm ts-node scripts/get-network-fees.ts --network mainnetPolygon
+
 
 
 pnpm ts-node scripts/check-contract-exists.ts --address-name LOCAL_HARDHAT_ADDRESS
@@ -24,6 +26,8 @@ pnpm ts-node scripts/check-contract-exists.ts --address-name LOCAL_HARDHAT_ADDRE
 pnpm ts-node scripts/check-contract-exists.ts --network testnet --address-file user-data/example-contract-address.txt
 
 pnpm ts-node scripts/check-contract-exists.ts --network mainnet --address-file chain-data/usdc-contract-address-mainnet.txt
+
+pnpm ts-node scripts/check-contract-exists.ts --network mainnetPolygon --address-file chain-data/usdc-contract-address-mainnet-polygon.txt
 
 
 

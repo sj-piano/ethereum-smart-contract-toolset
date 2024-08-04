@@ -74,7 +74,7 @@ class Config {
   gasLimitMultiplier: string;
   infuraApiMainnetUrlBase: string = 'https://mainnet.infura.io/v3';
   alchemyAPIMainnetPolygonUrlBase: string = 'https://polygon-mainnet.g.alchemy.com/v2';
-  maticNetworkLabels: string[] = 'polygonMainnet'.split(' ');
+  maticNetworkLabels: string[] = 'mainnetPolygon'.split(' ');
   maticUsdPriceUrl: string = 'https://api.pro.coinbase.com/products/MATIC-USD/ticker';
   _maxFeePerGasGwei: string;
   _maxPriorityFeePerGasGwei: string;
@@ -99,12 +99,12 @@ class Config {
     this.maxFeePerGasWei = '0';
     this.maxPriorityFeePerGasWei = '0';
     this.networkLabel = '';
-    this.networkLabelList = 'local testnet mainnet polygonMainnet'.split(' ');
+    this.networkLabelList = 'local testnet mainnet mainnetPolygon'.split(' ');
     this.networkLabelToNetwork = {
       local: 'http://127.0.0.1:8545',
       testnet: 'sepolia',
       mainnet: 'mainnet',
-      polygonMainnet: 'matic',
+      mainnetPolygon: 'matic',
     };
     this.network = '';
     this.logLevelList = 'debug info warn error'.split(' ');
