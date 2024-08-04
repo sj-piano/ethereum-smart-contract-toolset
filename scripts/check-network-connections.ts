@@ -7,6 +7,7 @@ import { ethers } from 'ethers';
 // Local imports
 import config from '#root/config';
 import { createLogger } from '#root/lib/logging';
+import utils from '#root/lib/utils';
 import validate from '#root/lib/validate';
 
 
@@ -15,7 +16,7 @@ let networkConnectionsToCheck = [
   'local',
   'testnet',
   'mainnet',
-  'polygon',
+  'mainnetPolygon',
 ];
 
 
@@ -68,15 +69,18 @@ async function main() {
       description: 'Ethereum mainnet',
       connected: false,
     },
-    polygon: {
-      description: 'Polygon network',
+    mainnetPolygon: {
+      description: 'Polygon mainnet',
       connected: false,
     },
   };
 
+  let networkLabel: string;
+  let network: string;
+
   // Check local Hardhat network connection
-  let networkLabel = 'local';
-  let network = config.networkLabelToNetwork[networkLabel];
+  networkLabel = 'local';
+  network = utils.getValueOrThrow(config.networkLabelToNetwork, networkLabel, 'networkLabelToNetwork');
   let provider = new ethers.JsonRpcProvider(network);
 
   if (networkConnectionsToCheck.includes(networkLabel)) {
@@ -85,7 +89,7 @@ async function main() {
 
   // Check Sepolia testnet network connection (via Infura)
   networkLabel = 'testnet';
-  network = config.networkLabelToNetwork[networkLabel];
+  network = utils.getValueOrThrow(config.networkLabelToNetwork, networkLabel, 'networkLabelToNetwork');
   provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
   if (networkConnectionsToCheck.includes(networkLabel)) {
     await checkConnection({provider, connections, networkLabel, network});
@@ -93,16 +97,18 @@ async function main() {
 
   // Check Ethereum Mainnet network connection (via Infura)
   networkLabel = 'mainnet';
-  network = config.networkLabelToNetwork[networkLabel];
+  network = utils.getValueOrThrow(config.networkLabelToNetwork, networkLabel, 'networkLabelToNetwork');
   provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
   if (networkConnectionsToCheck.includes(networkLabel)) {
     await checkConnection({provider, connections, networkLabel, network});
   }
 
   // Check Polygon network connection (via Infura)
-  networkLabel = 'polygon';
-  network = config.networkLabelToNetwork[networkLabel];
-  provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
+  networkLabel = 'mainnetPolygon';
+  network = utils.getValueOrThrow(config.networkLabelToNetwork, networkLabel, 'networkLabelToNetwork');
+  provider = new ethers.JsonRpcProvider(
+    `${config.alchemyAPIMainnetPolygonUrlBase}/${config.env.ALCHEMY_API_KEY_POLYGON_POS}`
+    );
   if (networkConnectionsToCheck.includes(networkLabel)) {
     await checkConnection({provider, connections, networkLabel, network});
   }
@@ -123,7 +129,7 @@ async function main() {
 
 
 async function checkConnection({provider, connections, networkLabel, network}) {
-    let msg = `Connecting to ${networkLabel} network: ${network}...`;
+    let msg = `Connecting to ${networkLabel} network: ${network} ...`;
     log(msg);
     try {
       // _detectNetwork() will throw an error if the connection fails. It won't retry.
