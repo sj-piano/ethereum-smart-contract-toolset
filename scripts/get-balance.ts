@@ -7,7 +7,7 @@ import { ethers } from 'ethers';
 
 // Local imports
 import config from '#root/config';
-import ethereum from '#root/src/eth-toolset';
+import toolset from '#root/src/toolset';
 import { createLogger } from '#root/lib/logging';
 import validate from '#root/lib/validate';
 
@@ -45,7 +45,6 @@ if (debug) {
 logger.setLevel({ logLevel });
 
 validate.networkLabel({ networkLabel });
-const network = config.networkLabelToNetwork[networkLabel];
 
 address = validate.loadArgumentFromOneSource('address', address, addressFile);
 
@@ -60,19 +59,6 @@ if (!ethers.isAddress(address)) {
 
 let provider: ethers.Provider;
 
-var msg: string = 'Unknown error';
-if (networkLabel == 'local') {
-  msg = `Connecting to local network at ${network}...`;
-  provider = new ethers.JsonRpcProvider(network);
-} else if (networkLabel == 'testnet') {
-  msg = `Connecting to Sepolia testnet...`;
-  provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
-} else if (networkLabel == 'mainnet') {
-  msg = `Connecting to Ethereum mainnet...`;
-  provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
-}
-log(msg);
-
 
 // Run main function
 
@@ -86,16 +72,24 @@ main().catch((error) => {
 
 
 async function main() {
-  let blockNumber = await provider.getBlockNumber();
+  await toolset.setupAsync({ networkLabel });
+  let blockNumber = await toolset.provider.getBlockNumber();
   deb(`Current block number: ${blockNumber}`);
 
   log(`Getting balance for address ${address}...`);
 
-  let balanceWei = await provider.getBalance(address);
-  let balanceEth = ethers.formatEther(balanceWei);
-  let ethToUsd = await ethereum.getEthereumPriceInUsd();
-  let balanceUsd = Big(balanceEth).mul(Big(ethToUsd)).toFixed(config.constants.USD_DECIMAL_PLACES);
+  let balanceUsd = await toolset.getBalanceUsdAsync(address);
 
-  let msg = `${balanceEth} ETH (${balanceUsd} USD)`;
+  let balance;
+  let symbol;
+  if (config.ethereumNetworkLabels.includes(networkLabel)) {
+    balance = await toolset.getBalanceEthAsync(address);
+    symbol = 'ETH';
+  } else {
+    balance = await toolset.getBalanceMaticAsync(address);
+    symbol = 'MATIC';
+  }
+
+  msg = `${balance} ${symbol} (${balanceUsd} USD)`;
   console.log(msg);
 }

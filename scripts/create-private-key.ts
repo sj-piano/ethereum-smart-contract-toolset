@@ -5,6 +5,6 @@ import toolset from '#root/src/toolset';
 let log2 = console.log;
 
 // Run
-const privateKey = toolset.createPrivateKeySync();
-toolset.validatePrivateKeySync({ privateKey });
+const privateKey = toolset.createPrivateKey();
+toolset.validatePrivateKey({ privateKey });
 log2(privateKey);

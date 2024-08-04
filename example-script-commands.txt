@@ -45,6 +45,8 @@ pnpm ts-node scripts/create-private-key.ts > user-data/private-key.txt
 cat user-data/private-key.txt
 
 
+cat user-data/example-private-key.txt | pnpm ts-node scripts/derive-address.ts
+
 cat user-data/example-private-key.txt | pnpm ts-node scripts/derive-address.ts > user-data/example-address.txt
 
 cat user-data/example-address.txt
@@ -57,6 +59,8 @@ pnpm ts-node scripts/get-balance.ts --address 0x3bEC26B3cC2a1B0b123e9044E4D0085E
 pnpm ts-node scripts/get-balance.ts --address 0x3bEC26B3cC2a1B0b123e9044E4D0085EfE9bF526 --network testnet
 
 pnpm ts-node scripts/get-balance.ts --address 0x3bEC26B3cC2a1B0b123e9044E4D0085EfE9bF526 --network mainnet
+
+pnpm ts-node scripts/get-balance.ts --address 0xd10D833F8baEE344D8CB901831DDbdaEe92dA156 --network mainnetPolygon
 
 
 

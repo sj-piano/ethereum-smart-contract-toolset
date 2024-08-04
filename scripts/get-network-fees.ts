@@ -54,11 +54,11 @@ main().catch((error) => {
 
 
 async function main() {
-  provider = toolset.getProvider({ networkLabel });
+  await toolset.setupAsync({ networkLabel });
   deb(`Connected to ${networkLabel} network.`);
-  let blockNumber = await provider.getBlockNumber();
+  let blockNumber = await toolset.provider.getBlockNumber();
   deb(`Current block number: ${blockNumber}`);
-  const fees = await toolset.getGasPricesWithFiat({ provider });
-  //const fees = await toolset.getGasPrices({ provider });
+  //const fees = await toolset.getGasPricesAsync();
+  const fees = await toolset.getGasPricesWithFiatAsync();
   console.log(fees);
 }

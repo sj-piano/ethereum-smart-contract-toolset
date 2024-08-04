@@ -14,6 +14,6 @@ const pipedString = fs.readFileSync(process.stdin.fd).toString().trim();
 const privateKey = pipedString;
 
 // Run
-const address = toolset.deriveAddressSync({ privateKey });
-toolset.validateAddressSync({ address });
+const address = toolset.deriveAddress({ privateKey });
+toolset.validateAddress({ address });
 log2(address);

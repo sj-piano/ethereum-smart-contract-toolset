@@ -65,17 +65,18 @@ String.prototype.toBigInt = function(): bigint {
 
 
 class Config {
+
+
+  alchemyAPIMainnetPolygonUrlBase: string = 'https://polygon-mainnet.g.alchemy.com/v2';
   averagePriorityFeeMultiplier: string;
   constants: typeof constants = constants;
+  dummyAddress: string;
   env: { [key: string]: string } = {};
   envFileName: string;
-  ethNetworkLabels: string[] = 'local testnet mainnet'.split(' ');
-  ethUsdPriceUrl: string = 'https://api.pro.coinbase.com/products/ETH-USD/ticker';
+  ethereumNetworkLabels: string[] = 'local testnet mainnet'.split(' ');
   gasLimitMultiplier: string;
   infuraApiMainnetUrlBase: string = 'https://mainnet.infura.io/v3';
-  alchemyAPIMainnetPolygonUrlBase: string = 'https://polygon-mainnet.g.alchemy.com/v2';
-  maticNetworkLabels: string[] = 'mainnetPolygon'.split(' ');
-  maticUsdPriceUrl: string = 'https://api.pro.coinbase.com/products/MATIC-USD/ticker';
+  logLevelList: string[];
   _maxFeePerGasGwei: string;
   _maxPriorityFeePerGasGwei: string;
   maxFeePerGasWei: string;
@@ -85,11 +86,15 @@ class Config {
   networkLabelList: string[];
   networkLabelToNetwork: { [key: string]: string };
   network: string;
-  logLevelList: string[];
-  dummyAddress: string;
+  polygonNetworkLabels: string[] = 'mainnetPolygon'.split(' ');
+  priceEthInUsdUrl: string = 'https://api.pro.coinbase.com/products/ETH-USD/ticker';
+  priceMaticInUsdUrl: string = 'https://api.pro.coinbase.com/products/MATIC-USD/ticker';
+
 
   constructor() {
     this.envFileName = 'user-config.env';
+    this.dummyAddress = '0x000000000000000000000000000000000000dEaD';
+    this.logLevelList = 'debug info warn error'.split(' ');
     // Note: maxFeePerTransactionUsd overrides the other fee limits.
     this.maxFeePerTransactionUsd = '0';
     this._maxFeePerGasGwei = '0';
@@ -107,8 +112,6 @@ class Config {
       mainnetPolygon: 'matic',
     };
     this.network = '';
-    this.logLevelList = 'debug info warn error'.split(' ');
-    this.dummyAddress = '0x000000000000000000000000000000000000dEaD';
   }
 
   getEnvFilePathSync() {

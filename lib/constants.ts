@@ -1,5 +1,6 @@
 export const ETH_DECIMAL_PLACES = 18;
 export const GWEI_DECIMAL_PLACES = 9;
+export const MATIC_DECIMAL_PLACES = 18;
 export const USD_DECIMAL_PLACES = 2;
 export const WEI_DECIMAL_PLACES = 0;
 
@@ -20,6 +21,7 @@ export default {
 
   ETH_DECIMAL_PLACES,
   GWEI_DECIMAL_PLACES,
+  MATIC_DECIMAL_PLACES,
   USD_DECIMAL_PLACES,
   WEI_DECIMAL_PLACES,
 

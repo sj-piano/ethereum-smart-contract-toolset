@@ -92,13 +92,13 @@ main({ contractAddress }).catch((error) => {
 
 
 async function main({ contractAddress }: { contractAddress: string }) {
-  provider = toolset.getProvider({ networkLabel });
-  let blockNumber = await provider.getBlockNumber();
+  toolset.setupAsync({ networkLabel });
+  let blockNumber = await toolset.provider.getBlockNumber();
   deb(`Current block number: ${blockNumber}`);
 
   let address = contractAddress;
 
-  let check = await toolset.contractExistsAt({ provider, address });
+  let check = await toolset.contractExistsAtAsync(address);
   if (!check) {
     console.error(`No contract found at address: ${address}`);
     process.exit(1);
