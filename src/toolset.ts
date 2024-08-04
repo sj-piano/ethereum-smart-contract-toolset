@@ -35,6 +35,7 @@ class Toolset {
     this.provider = provider;
     ethToolset.parent = this;
     maticToolset.parent = this;
+    return provider;
   }
 
 

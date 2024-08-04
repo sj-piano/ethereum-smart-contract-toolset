@@ -108,15 +108,18 @@ pnpm ts-node scripts/hello-world/update-message.ts --input-file-json user-data/e
 
 pnpm ts-node scripts/track-usdc-transfers.ts --debug --network mainnet --start-block 17000000
 
-pnpm ts-node scripts/track-usdc-transfers.ts --debug --network polygonMainnet --start-block 56352804
+pnpm ts-node scripts/track-usdc-transfers.ts --debug --network mainnetPolygon --start-block 56352804
 
 
 task test -- --grep "Test getCanonicalSignature" --debug
 
 
+
+pnpm ts-node scripts/download-block.ts --debug --network testnet --block-number 2000000
+
 pnpm ts-node scripts/download-block.ts --debug --network mainnet --block-number 17000000
 
-pnpm ts-node scripts/download-block.ts --debug --network polygonMainnet --block-number 56352804
+pnpm ts-node scripts/download-block.ts --debug --network mainnetPolygon --block-number 56352804
 
 
 

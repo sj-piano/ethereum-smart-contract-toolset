@@ -7,7 +7,7 @@ import { ethers } from 'ethers';
 
 // Local imports
 import config from '#root/config';
-import ethToolset from '#root/src/eth-toolset';
+import toolset from '#root/src/toolset';
 import { createLogger } from '#root/lib/logging';
 import validate from '#root/lib/validate';
 import utils from '#root/lib/utils';
@@ -39,7 +39,6 @@ if (debug) {
 logger.setLevel({ logLevel });
 
 validate.networkLabel({ networkLabel });
-const network = config.networkLabelToNetwork[networkLabel];
 
 validate.numericString({ name: 'blockNumber', value: blockNumber });
 blockNumber = parseInt(blockNumber);
@@ -47,7 +46,7 @@ blockNumber = parseInt(blockNumber);
 
 // Setup
 
-let provider: ethers.Provider = config.getProvider({ networkLabel });
+let provider: ethers.Provider;
 
 
 // Run main function
@@ -62,12 +61,13 @@ main().catch((error) => {
 
 
 async function main() {
-  await validateBlockNumber({ blockNumber });
-  await downloadBlock({ blockNumber });
+  provider = await toolset.setupAsync({ networkLabel });
+  await validateBlockNumberAsync({ blockNumber });
+  await downloadBlockAsync({ blockNumber });
 }
 
 
-async function validateBlockNumber({ blockNumber }: { blockNumber: number }) {
+async function validateBlockNumberAsync({ blockNumber }: { blockNumber: number }) {
   let currentBlockNumber = await provider.getBlockNumber();
   log(`Current block number: ${currentBlockNumber}`);
   if (blockNumber > currentBlockNumber) {
@@ -76,7 +76,7 @@ async function validateBlockNumber({ blockNumber }: { blockNumber: number }) {
 }
 
 
-async function downloadBlock({ blockNumber }: { blockNumber: number } ) {
+async function downloadBlockAsync({ blockNumber }: { blockNumber: number } ) {
   log(`Downloading block ${blockNumber}...`);
   let block = await provider.getBlock(blockNumber, true);
   assert(block, 'Block not found');
