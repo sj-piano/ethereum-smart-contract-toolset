@@ -1,18 +1,26 @@
 /* Description:
+- This module contains high-security functions.
+*/
+
+
+/* Notes: signTransaction procedure
 - Receive address, networkLabel, and txRequest.
 - Use address and networkLabel to look up the correct private key.
 - Sign txRequest with private key to produce tx.
 */
 
+
 // Imports
 import _ from 'lodash';
 import { ethers, Provider, TransactionRequest } from 'ethers';
+
 
 // Local imports
 import config from '#root/config';
 import { createLogger } from '#lib/logging';
 import { getEnvVar } from '#lib/env-vars';
 import utils from '#lib/utils';
+
 
 // Environment variables
 import dotenv from 'dotenv';
@@ -22,14 +30,18 @@ let envFile = path.join(rootDir, config.envFileName);
 dotenv.config({ path: envFile });
 const LOCAL_HARDHAT_MNEMONIC_PHRASE= getEnvVar('LOCAL_HARDHAT_MNEMONIC_PHRASE');
 
+
 // Controls
 let logLevel = 'error';
 logLevel = 'info';
 
+
 // Logging
 const { logger, log, deb } = createLogger({ filePath: __filename, logLevel });
 
+
 // Functions
+
 
 async function signTransaction({
   networkLabel,
@@ -73,6 +85,7 @@ async function signTransaction({
   const tx = await signer.signTransaction(txRequest);
   return tx;
 }
+
 
 export default {
   signTransaction,
