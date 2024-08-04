@@ -1,0 +1,15 @@
+
+
+admin@horizon contract-toolset % pnpm ts-node scripts/track-usdc-transfers.ts --debug --network mainnet --start-block 17000000
+{
+  logLevel: 'error',
+  network: 'mainnet',
+  startBlock: '17000000',
+  debug: true
+}
+info  : [main : 74] Current block number: 20455811
+info  : [main : 79] Start block: 17000000
+info  : [getERC20TransfersFromTransactionHistory : 213] - Transaction 35: Log 0 of 1: Transfer event detected. From: 0x000000000000000000000000fcba0693fc16dcb2a4e8fa7ed3da31f5296993e4, To: 0x000000000000000000000000c45143c530e9dc0c3895c458c160144a3129955b, Value: 0x000000000000000000000000000000000000000000000000000000000112a880
+info  : [main : 88] - USDC Transfers: 1
+info  : [main : 93] - From: 0xFCba0693FC16DCb2a4E8FA7eD3DA31f5296993E4, To: 0xc45143c530E9dc0C3895c458C160144A3129955b, Value: 18.0
+

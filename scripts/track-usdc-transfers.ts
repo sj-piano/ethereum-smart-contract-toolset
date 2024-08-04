@@ -7,14 +7,14 @@ import { ethers, keccak256, toUtf8Bytes } from 'ethers';
 
 // Local imports
 import config from '#root/config';
-import ethToolset from '#root/src/eth-toolset';
+import toolset from '#root/src/toolset';
 import { createLogger } from '#root/lib/logging';
 import validate from '#root/lib/validate';
 import utils, { jd } from '#root/lib/utils';
 
 
 // Constants
-import { USDC_DECIMAL_PLACES, USDC_CONTRACT_ABI, USDC_CONTRACT_ADDRESS_MAINNET, USDC_CONTRACT_ADDRESS_MAINNET_POLYGON } from '#root/lib/constants';
+import { USDC_DECIMAL_PLACES, USDC_CONTRACT_ABI } from '#root/lib/constants';
 
 
 // Logging
@@ -42,7 +42,6 @@ if (debug) {
 logger.setLevel({ logLevel });
 
 validate.networkLabel({ networkLabel });
-const network = config.networkLabelToNetwork[networkLabel];
 
 validate.numericString({ name: 'blockNumber', value: startBlock });
 startBlock = parseInt(startBlock);
@@ -50,11 +49,9 @@ startBlock = parseInt(startBlock);
 
 // Setup
 
-const provider: ethers.Provider = config.getProvider({ networkLabel });
-
-// Create a ethers.Contract instance for interaction with the USDC token contract.
-const USDC_CONTRACT_ADDRESS = config.getUsdcContractAddress();
-const usdcContract = new ethers.Contract(USDC_CONTRACT_ADDRESS, USDC_CONTRACT_ABI, provider);
+let provider: ethers.Provider;
+let USDC_CONTRACT_ADDRESS;
+let usdcContract: ethers.Contract;
 
 
 // Run main function
@@ -70,9 +67,14 @@ main().catch((error) => {
 
 async function main() {
 
+  await toolset.setupAsync({ networkLabel });
+
   // Test connection to the network.
-  let currentBlockNumber = await provider.getBlockNumber();
+  let currentBlockNumber = await toolset.provider.getBlockNumber();
   log(`Current block number: ${currentBlockNumber}`);
+
+  USDC_CONTRACT_ADDRESS = toolset.getUsdcContractAddress();
+  usdcContract = new ethers.Contract(USDC_CONTRACT_ADDRESS, USDC_CONTRACT_ABI, toolset.provider);
 
   log(`Start block: ${startBlock}`);
 
@@ -97,7 +99,7 @@ async function main() {
 
 async function getUsdcTransfers(blockNumber: number): Promise<Array<Transfer>> {
   // We retrieve USDC transfers from two sources: event history and transaction history.
-  const block = await provider.getBlock(blockNumber);
+  const block = await toolset.provider.getBlock(blockNumber);
   assert(block, 'Block not found');
   const t1 = await getTransfersFromEventHistory(blockNumber, usdcContract);
   const t2 = await getERC20TransfersFromTransactionHistory(USDC_CONTRACT_ADDRESS, blockNumber);
@@ -179,6 +181,7 @@ async function getEventHistory(
 async function getERC20TransfersFromTransactionHistory(contractAddress: string, blockNumber: number): Promise<Array<Transfer>> {
   const logHere = false;
   const log3 = (msg: string) => { if (logHere) { log(msg) } }
+  const provider = toolset.provider;
   const block = await provider.getBlock(blockNumber, true);
   assert(block, 'Block not found');
   //log3(`- Block ${blockNumber}: hash = ${block.hash}`)
@@ -196,7 +199,7 @@ async function getERC20TransfersFromTransactionHistory(contractAddress: string, 
       for (const [j, log_] of logs.entries()) {
         // Confirm ERC20 Transfer event by analyzing the signature.
         const signature = 'Transfer(address indexed _from, address indexed _to, uint256 _value)'
-        let canonicalSig = ethToolset.getCanonicalSignature(signature)
+        let canonicalSig = toolset.getCanonicalSignature(signature)
         let hashSig = keccak256(toUtf8Bytes(canonicalSig))
         let logSig = log_.topics[0];
         let isTransferEvent = logSig.toLowerCase() === hashSig.toLowerCase();
