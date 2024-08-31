@@ -31,6 +31,7 @@ class MaticToolset {
 
 
   // Reuse methods from ethToolset where possible.
+  getBlockNumberAsync = ethToolset.getBlockNumberAsync.bind(this);
   getBalanceWeiAsync = ethToolset.getBalanceWeiAsync.bind(this);
 
 

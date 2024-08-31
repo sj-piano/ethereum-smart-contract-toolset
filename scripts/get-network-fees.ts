@@ -6,9 +6,14 @@ import { ethers } from 'ethers';
 
 // Local imports
 import config from '#root/config';
-import toolset from '#root/src/toolset';
+import lib from '#root/lib';
 import { createLogger } from '#root/lib/logging';
-import validate from '#root/lib/validate';
+import toolset from '#root/src/toolset';
+
+
+// Components
+const networkLabelList = config.networkLabelList;
+const { utils, validate } = lib;
 
 
 // Logging
@@ -34,7 +39,7 @@ if (debug) {
 }
 logger.setLevel({ logLevel });
 
-validate.networkLabel({ networkLabel });
+validate.networkLabel({ networkLabel, networkLabelList });
 
 
 // Setup
@@ -56,9 +61,10 @@ main().catch((error) => {
 async function main() {
   await toolset.setupAsync({ networkLabel });
   deb(`Connected to ${networkLabel} network.`);
-  let blockNumber = await toolset.provider.getBlockNumber();
+  let blockNumber = await toolset.getBlockNumberAsync();
   deb(`Current block number: ${blockNumber}`);
   //const fees = await toolset.getGasPricesAsync();
   const fees = await toolset.getGasPricesWithFiatAsync();
   console.log(fees);
 }
+

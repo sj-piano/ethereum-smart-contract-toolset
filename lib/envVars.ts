@@ -1,7 +1,6 @@
 // Utilities for working with shell variables.
 
 import { createLogger } from '#lib/logging';
-import { env } from 'process';
 
 // Logging
 const log2 = console.log;
@@ -51,4 +50,14 @@ function stop(msg) {
   process.exit();
 }
 
-export { getEnvVar, getEnvVars };
+
+export {
+  getEnvVar,
+  getEnvVars,
+}
+
+
+export default {
+  getEnvVar,
+  getEnvVars,
+}

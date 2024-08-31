@@ -12,6 +12,7 @@ import toolset from '#root/src/toolset';
 
 
 // Components
+const networkLabelList = config.networkLabelList;
 const { filesystem, utils, validate } = lib;
 
 
@@ -53,7 +54,7 @@ let {
 // Validate arguments
 
 validate.logLevel({ logLevel });
-validate.networkLabel({ networkLabel });
+validate.networkLabel({ networkLabel, networkLabelList });
 if (! addressName) {
   let optionNames = 'address, addressFile'.split(', ');
   validate.exactlyOneOfTwoOptions({optionNames, address, addressFile});

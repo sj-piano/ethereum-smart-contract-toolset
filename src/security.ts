@@ -12,23 +12,26 @@
 
 // Imports
 import _ from 'lodash';
+import dotenv from 'dotenv';
 import { ethers, Provider, TransactionRequest } from 'ethers';
+import path from 'path';
 
 
 // Local imports
 import config from '#root/config';
+import lib from '#root/lib';
 import { createLogger } from '#lib/logging';
-import { getEnvVar } from '#lib/env-vars';
-import utils from '#lib/utils';
+
+
+// Components
+const { envVars, utils, validate } = lib;
 
 
 // Environment variables
-import dotenv from 'dotenv';
-import path from 'path';
 let rootDir = __dirname.substring(0, __dirname.lastIndexOf('/'));
 let envFile = path.join(rootDir, config.envFileName);
 dotenv.config({ path: envFile });
-const LOCAL_HARDHAT_MNEMONIC_PHRASE= getEnvVar('LOCAL_HARDHAT_MNEMONIC_PHRASE');
+const LOCAL_HARDHAT_MNEMONIC_PHRASE = envVars.getEnvVar('LOCAL_HARDHAT_MNEMONIC_PHRASE');
 
 
 // Controls

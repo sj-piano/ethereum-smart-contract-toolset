@@ -1,11 +1,9 @@
 // Imports
 import _ from 'lodash';
-import fs from 'fs';
 import Joi from 'joi';
 
 
 // Local imports
-import config from '#root/config';
 import { createLogger } from '#root/lib/logging';
 import utils from '#lib/utils';
 
@@ -26,11 +24,11 @@ function logLevel({ logLevel }: { logLevel: string }) {
 }
 
 
-function networkLabel({ networkLabel }: { networkLabel: string }) {
-  const networkLabelSchema = Joi.string().valid(...config.networkLabelList);
-  let networkLabelResult = networkLabelSchema.validate(networkLabel);
-  if (networkLabelResult.error) {
-    let msg = `Invalid network "${networkLabel}". Valid options are: [${config.networkLabelList.join(
+function networkLabel({ networkLabel, networkLabelList }: { networkLabel: string, networkLabelList: string[] }) {
+  const networkLabelSchema = Joi.string().valid(...networkLabelList);
+  let result = networkLabelSchema.validate(networkLabel);
+  if (result.error) {
+    let msg = `Invalid network "${networkLabel}". Valid options are: [${networkLabelList.join(
       ', ',
     )}]`;
     console.error(msg);

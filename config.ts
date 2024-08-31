@@ -12,7 +12,7 @@ import path from 'path';
 // Local imports
 import constants from '#lib/constants';
 import { createLogger } from '#lib/logging';
-import { getEnvVars } from '#lib/env-vars';
+import { getEnvVars } from '#lib/envVars';
 import validate from '#lib/validate';
 
 
@@ -185,3 +185,4 @@ let config = new Config();
 config.loadEnvVarsSync();
 
 export default config;
+
