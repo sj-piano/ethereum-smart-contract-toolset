@@ -6,9 +6,12 @@ import { ethers } from 'ethers';
 
 // Local imports
 import config from '#root/config';
+import lib from '#root/lib';
 import { createLogger } from '#root/lib/logging';
-import utils from '#root/lib/utils';
-import validate from '#root/lib/validate';
+
+
+// Components
+const { utils, validate } = lib;
 
 
 // Controls
