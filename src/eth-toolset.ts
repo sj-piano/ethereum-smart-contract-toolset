@@ -131,6 +131,12 @@ class EthToolset {
   }
 
 
+  async getBlockNumberAsync() {
+    const provider = this.parent.provider;
+    return await provider.getBlockNumber();
+  }
+
+
   async getBalanceWeiAsync(address: string) {
     let balanceWei = await this.parent.provider.getBalance(address);
     return balanceWei;

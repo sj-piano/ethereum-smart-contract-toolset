@@ -4,17 +4,17 @@ import DailyRotateFile = require('winston-daily-rotate-file');
 
 
 // Validate log level
-enum LogLevelList {
+enum LogLevelEnum {
   'error',
   'warn',
   'info',
   'debug',
 }
-type LogLevel = keyof typeof LogLevelList;
+type LogLevel = keyof typeof LogLevelEnum;
 
 
 function getLogLevel(logLevel: string): LogLevel {
-  if (logLevel in LogLevelList) {
+  if (logLevel in LogLevelEnum) {
     return logLevel as LogLevel;
   }
   throw new Error(`Invalid log level: ${logLevel}`);
@@ -320,7 +320,17 @@ class Logger {
     this.log(jd(message), meta);
   }
 
+  get logLevels() {
+    // Return an array.
+    return Object.values(LogLevelEnum).filter(value => typeof value === 'string')
+  }
+
+  get logLevelsString() {
+    return this.logLevels.join(', ');
+  }
+
 }
+
 
 function createLogger({
   filePath = '',
@@ -340,5 +350,6 @@ function createLogger({
   const lj = logger.lj.bind(logger);
   return { logger, warn, deb, log, lj };
 }
+
 
 export { Logger, createLogger };

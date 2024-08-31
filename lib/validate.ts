@@ -9,25 +9,22 @@ import config from '#root/config';
 import { createLogger } from '#root/lib/logging';
 import utils from '#lib/utils';
 
+
 // Logging
 const log2 = console.log;
 const { logger, log, deb } = createLogger();
 
 
-// Functions
-
-
 function logLevel({ logLevel }: { logLevel: string }) {
-  const logLevelSchema = Joi.string().valid(...config.logLevelList);
+  const logLevelSchema = Joi.string().valid(...logger.logLevels);
   let logLevelResult = logLevelSchema.validate(logLevel);
   if (logLevelResult.error) {
-    let msg = `Invalid log level "${logLevel}". Valid options are: [${config.logLevelList.join(
-      ', ',
-    )}]`;
+    let msg = `Invalid log level "${logLevel}". Valid options are: [${logger.logLevelsString}]`;
     console.error(msg);
     process.exit(1);
   }
 }
+
 
 function networkLabel({ networkLabel }: { networkLabel: string }) {
   const networkLabelSchema = Joi.string().valid(...config.networkLabelList);
@@ -40,6 +37,7 @@ function networkLabel({ networkLabel }: { networkLabel: string }) {
     process.exit(1);
   }
 }
+
 
 function numericString(options: { name: string; value: string }): string {
   const { name, value } = options;
@@ -57,6 +55,7 @@ function numericString(options: { name: string; value: string }): string {
   return trimmedValue;
 }
 
+
 function number(options: { name: string; value: number }): number {
   const { name, value } = options;
   if (isNaN(value)) {
@@ -64,6 +63,7 @@ function number(options: { name: string; value: number }): number {
   }
   return value;
 }
+
 
 function string(options: { name: string; value: string }): string {
   const { name, value } = options;
@@ -73,25 +73,32 @@ function string(options: { name: string; value: string }): string {
   return value;
 }
 
-function loadArgumentFromOneSource(valueName: string, value: string, valueFile: string) {
-  let msg = `Exactly one of the arguments '--${valueName}' or '--${valueName}-file' must be provided.`;
-  if ((value && valueFile) || (!value && !valueFile)) {
-    console.error(msg);
-    process.exit(1);
+
+function exactlyOneOfTwoOptions(args) {
+  let {optionNames, ...options} = args;
+  let msg = `Exactly one of the arguments [${optionNames.join(', ')}] is required.`;
+  let n = optionNames.length;
+  if (n !== 2) {
+      throw Error('This function supports exactly two option names.');
   }
-  if (value) {
-    return value;
-  }
-  if (valueFile && !fs.existsSync(valueFile)) {
-    console.error(`${valueName} file not found: ${valueFile}`);
-    process.exit(1);
-  }
-  if (valueFile && fs.existsSync(valueFile)) {
-    let value2 = fs.readFileSync(valueFile).toString().trim();
-    deb(`${valueName} found in ${valueFile}: ${value2}`);
-    return value2;
+  let name1 = options[optionNames[0]];
+  let name2 = options[optionNames[1]];
+  if ( (name1 && name2) ||
+       (! name1 && ! name2) ) {
+      throw Error(msg);
   }
 }
+
+
+export {
+  logLevel,
+  networkLabel,
+  numericString,
+  number,
+  string,
+  exactlyOneOfTwoOptions,
+}
+
 
 export default {
   logLevel,
@@ -99,5 +106,5 @@ export default {
   numericString,
   number,
   string,
-  loadArgumentFromOneSource,
-};
+  exactlyOneOfTwoOptions,
+}

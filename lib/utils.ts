@@ -49,7 +49,16 @@ function getValueOrThrow<T, K extends keyof T>(obj: T, key: K, varName?: string)
 }
 
 
-export { getMethods, isNumericString, sleep, jd };
+export {
+  getMethods,
+  isBigInt,
+  isString,
+  isNumber,
+  isNumericString,
+  sleep,
+  jd,
+  getValueOrThrow,
+};
 
 
 export default {

@@ -6,10 +6,13 @@ import { ethers } from 'ethers';
 
 // Local imports
 import config from '#root/config';
-import toolset from '#root/src/toolset';
+import lib from '#root/lib';
 import { createLogger } from '#root/lib/logging';
-import utils from '#root/lib/utils';
-import validate from '#root/lib/validate';
+import toolset from '#root/src/toolset';
+
+
+// Components
+const { filesystem, utils, validate } = lib;
 
 
 // Logging
@@ -19,12 +22,9 @@ const { logger, log, deb } = createLogger();
 
 // Parse arguments
 program
-  .option('-d, --debug', 'log debug information')
-  .option('--log-level <logLevel>', 'Specify log level.', 'error')
   .option(
     '--network <network>',
-    'specify the Ethereum network to connect to',
-    'local',
+    'specify the Ethereum network to connect to', 'local',
   )
   .option(
     '--address-name <addressName>',
@@ -34,7 +34,9 @@ program
   .option(
     '--address-file <addressFile>',
     'Path to file containing contract address.',
-  );
+  )
+  .option('-l, --logLevel <logLevel>', `logging level: [${logger.logLevelsString}]`, 'error')
+  .option('-d, --debug', 'set logging level to debug')
 program.parse();
 const options = program.opts();
 if (options.debug) console.log(options);
@@ -48,60 +50,65 @@ let {
 } = options;
 
 
-// Process and validate arguments
+// Validate arguments
 
 validate.logLevel({ logLevel });
-if (debug) {
-  logLevel = 'debug';
-}
-logger.setLevel({ logLevel });
-
 validate.networkLabel({ networkLabel });
-
-let contractAddress: string;
-
-if (addressName) {
-  address = utils.getValueOrThrow(config.env, addressName, 'config.env');
-  deb(`Address ${addressName} found in .env file: ${address}`);
-} else {
-  address = validate.loadArgumentFromOneSource('address', address, addressFile);
+if (! addressName) {
+  let optionNames = 'address, addressFile'.split(', ');
+  validate.exactlyOneOfTwoOptions({optionNames, address, addressFile});
 }
-if (!ethers.isAddress(address)) {
-  var msg = `Invalid Ethereum address: ${address}`;
-  console.error(msg);
-  process.exit(1);
-}
-contractAddress = address;
 
 
 // Setup
-
+if (debug) logLevel = 'debug';
+logger.setLevel({ logLevel });
 let provider: ethers.Provider;
+let contractAddress: string;
+
+
+// Load data
+
+if (addressName) {
+  contractAddress = utils.getValueOrThrow(config.env, addressName, 'config.env');
+  deb(`Address ${addressName} found in .env file: ${address}`);
+} else if (address) {
+  contractAddress = address;
+} else {
+  contractAddress = filesystem.readFile(addressFile);
+}
 
 
 // Run main function
 
 
-main({ contractAddress }).catch((error) => {
-  console.error(error);
-  process.exit(1);
+mainAsync({ contractAddress }).catch((error) => {
+  stop(error)
 });
 
 
-// Functions
+function stop(msg) {
+  if (msg) console.error(msg);
+  process.exit(1);
+}
 
 
-async function main({ contractAddress }: { contractAddress: string }) {
+async function mainAsync({ contractAddress }: { contractAddress: string }) {
   toolset.setupAsync({ networkLabel });
-  let blockNumber = await toolset.provider.getBlockNumber();
+  let blockNumber = await toolset.getBlockNumberAsync();
   deb(`Current block number: ${blockNumber}`);
 
   let address = contractAddress;
 
+  if (! ethers.isAddress(contractAddress)) {
+    let msg = `Invalid Ethereum address: ${address}`;
+    stop(msg);
+  }
+
   let check = await toolset.contractExistsAtAsync(address);
   if (!check) {
-    console.error(`No contract found at address: ${address}`);
-    process.exit(1);
+    let msg = `No contract found at address: ${address}`;
+    stop(msg);
   }
   console.log(`Contract found at address: ${address}`);
 }
