@@ -7,9 +7,14 @@ import { ethers } from 'ethers';
 
 // Local imports
 import config from '#root/config';
+import lib from '#root/lib';
 import toolset from '#root/src/toolset';
 import { createLogger } from '#root/lib/logging';
-import validate from '#root/lib/validate';
+
+
+// Components
+const networkLabelList = config.networkLabelList;
+const { filesystem, validate } = lib;
 
 
 // Logging
@@ -44,20 +49,20 @@ if (debug) {
 }
 logger.setLevel({ logLevel });
 
-validate.networkLabel({ networkLabel });
+validate.networkLabel({ networkLabel, networkLabelList });
 
-address = validate.loadArgumentFromOneSource('address', address, addressFile);
+let optionNames = 'address, addressFile'.split(', ');
+validate.exactlyOneOfTwoOptions({optionNames, address, addressFile});
 
-if (!ethers.isAddress(address)) {
-  var msg = `Invalid Ethereum address: ${address}`;
-  console.error(msg);
-  process.exit(1);
+
+// Load data
+
+let contractAddress;
+if (address) {
+  contractAddress = address;
+} else {
+  contractAddress = filesystem.readFile(addressFile);
 }
-
-
-// Setup
-
-let provider: ethers.Provider;
 
 
 // Run main function
@@ -72,6 +77,13 @@ main().catch((error) => {
 
 
 async function main() {
+
+  if (! ethers.isAddress(address)) {
+    var msg = `Invalid Ethereum address: ${address}`;
+    console.error(msg);
+    process.exit(1);
+  }
+
   await toolset.setupAsync({ networkLabel });
   let blockNumber = await toolset.provider.getBlockNumber();
   deb(`Current block number: ${blockNumber}`);

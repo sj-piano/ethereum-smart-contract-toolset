@@ -64,7 +64,6 @@ if (! addressName) {
 // Setup
 if (debug) logLevel = 'debug';
 logger.setLevel({ logLevel });
-let provider: ethers.Provider;
 let contractAddress: string;
 
 

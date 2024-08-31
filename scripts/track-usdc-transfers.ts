@@ -17,6 +17,10 @@ import utils, { jd } from '#root/lib/utils';
 import { USDC_DECIMAL_PLACES, USDC_CONTRACT_ABI } from '#root/lib/constants';
 
 
+// Components
+const networkLabelList = config.networkLabelList;
+
+
 // Logging
 const { logger, log, deb } = createLogger();
 
@@ -41,7 +45,7 @@ if (debug) {
 }
 logger.setLevel({ logLevel });
 
-validate.networkLabel({ networkLabel });
+validate.networkLabel({ networkLabel, networkLabelList });
 
 validate.numericString({ name: 'blockNumber', value: startBlock });
 startBlock = parseInt(startBlock);

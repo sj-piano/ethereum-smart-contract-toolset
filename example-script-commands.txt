@@ -68,7 +68,7 @@ pnpm ts-node scripts/get-balance.ts --address 0xd10D833F8baEE344D8CB901831DDbdaE
 ### Hello World
 
 
-pnpm ts-node scripts/hello-world/estimate-fees.ts
+pnpm ts-node scripts/HelloWorld/estimate-fees.ts
 
 pnpm ts-node scripts/hello-world/estimate-fees.ts --network testnet
 

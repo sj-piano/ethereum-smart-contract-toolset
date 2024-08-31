@@ -13,6 +13,10 @@ import validate from '#root/lib/validate';
 import utils from '#root/lib/utils';
 
 
+// Components
+const networkLabelList = config.networkLabelList;
+
+
 // Logging
 const log2 = console.log;
 const { logger, log, deb } = createLogger();
@@ -38,7 +42,7 @@ if (debug) {
 }
 logger.setLevel({ logLevel });
 
-validate.networkLabel({ networkLabel });
+validate.networkLabel({ networkLabel, networkLabelList });
 
 validate.numericString({ name: 'blockNumber', value: blockNumber });
 blockNumber = parseInt(blockNumber);
