@@ -13,7 +13,7 @@ enum LogLevelEnum {
 type LogLevel = keyof typeof LogLevelEnum;
 
 
-function getLogLevel(logLevel: string): LogLevel {
+function validateLogLevel(logLevel: string): LogLevel {
   if (logLevel in LogLevelEnum) {
     return logLevel as LogLevel;
   }
@@ -230,7 +230,7 @@ class Logger {
   }
 
   setLevel({ logLevel }: { logLevel: string }) {
-    getLogLevel(logLevel);
+    validateLogLevel(logLevel);
     this.logger.transports.forEach((t) => (t.level = logLevel));
     this.logger.level = logLevel;
   }
@@ -340,7 +340,7 @@ function createLogger({
 } = {}) {
   const logger = new Logger({
     filePath,
-    logLevel: getLogLevel(logLevel),
+    logLevel: validateLogLevel(logLevel),
     logTimestamp,
     logToFile,
   });

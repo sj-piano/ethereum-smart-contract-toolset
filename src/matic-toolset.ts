@@ -33,6 +33,16 @@ class MaticToolset {
   // Reuse methods from ethToolset where possible.
   getBlockNumberAsync = ethToolset.getBlockNumberAsync.bind(this);
   getBalanceWeiAsync = ethToolset.getBalanceWeiAsync.bind(this);
+  getCanonicalSignature = ethToolset.getCanonicalSignature.bind(this);
+
+  // Reuse ERC20 methods.
+  getERC20TransfersFromTransactionsAsync = ethToolset.getERC20TransfersFromTransactionsAsync.bind(this);
+  sortTransfers = ethToolset.sortTransfers.bind(this);
+  getERC20TransfersFromEventsAsync = ethToolset.getERC20TransfersFromEventsAsync.bind(this);
+  getEvents
+  getEventsAsync = ethToolset.getEventsAsync.bind(this);
+  isEventLog = ethToolset.isEventLog.bind(this);
+
 
 
   async getBalanceMaticAsync(address: string) {

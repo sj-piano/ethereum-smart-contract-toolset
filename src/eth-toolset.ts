@@ -3,15 +3,20 @@ import _ from 'lodash';
 import axios from 'axios';
 import Big from 'big.js';
 import crypto from 'crypto';
-import { ethers, Provider, TransactionRequest } from 'ethers';
+import { ethers, Provider, TransactionRequest, keccak256, toUtf8Bytes } from 'ethers';
 
 
 // Local imports
 import amounts from '#src/amounts';
 import config from '#root/config';
+import lib from '#root/lib';
 import { createLogger } from '#root/lib/logging';
 import security from '#src/security';
-import utils from '#root/lib/utils';
+
+
+// Components
+const { utils, validate } = lib;
+const jd = utils.jd;
 
 
 // Controls
@@ -544,6 +549,173 @@ class EthToolset {
 
     // Reconstruct the canonical function signature
     return `${functionName}(${canonicalParams})`;
+  }
+
+
+
+
+  /* ERC20 functions */
+
+
+  async getERC20TransfersFromTransactionsAsync(contractAddress: string, blockNumber: number): Promise<Array<Transfer>> {
+    /* Notes
+    - This function analyzes the transactions in a block to find ERC20 Transfers for the specified contract address.
+    - However, it cannot detect transfers that were made within a smart contract.
+    -- For these transfers, we need to look at the event history instead.
+    */
+    const logHere = false;
+    const log3 = (msg: string) => { if (logHere) { log(msg) } }
+    let provider = this.parent.provider;
+    const block = await provider.getBlock(blockNumber, true);
+    if (! block) {
+      throw new Error(`Block ${blockNumber} not found.`);
+    }
+    //log3(`- Block ${blockNumber}: hash = ${block.hash}`)
+    const nTransactions = block.length;
+    log3(`Block ${blockNumber} has ${nTransactions} transactions`);
+    let transfers: Transfer[] = [];
+    for (const [i, txHash] of block.transactions.entries()) {
+      const tx = await provider.getTransaction(txHash);
+      if (! tx) {
+        throw new Error(`Transaction ${i} not found.`);
+      }
+      //log(`Transaction ${i}: hash = ${txHash}`);
+      if (tx.to && tx.to.toLowerCase() === contractAddress.toLowerCase()) {
+        const txReceipt = await provider.getTransactionReceipt(txHash);
+        if (! txReceipt) {
+          throw new Error(`Transaction receipt not found for transaction ${i} (txHash = ${txHash})`);
+        }
+        const logs = txReceipt.logs;
+        for (const [j, log_] of logs.entries()) {
+          // Confirm ERC20 Transfer event by analyzing the signature.
+          const signature = 'Transfer(address indexed _from, address indexed _to, uint256 _value)'
+          let canonicalSig = this.getCanonicalSignature(signature)
+          let hashSig = keccak256(toUtf8Bytes(canonicalSig))
+          let logSig = log_.topics[0];
+          let isTransferEvent = logSig.toLowerCase() === hashSig.toLowerCase();
+          let arg1 = log_.topics[1];
+          let arg2 = log_.topics[2];
+          let from = ethers.getAddress(arg1.substring(26));
+          let to = ethers.getAddress(arg2.substring(26));
+          let data = log_.data;
+          const dataLength = log_.data.length;
+          const dataItems = (dataLength - 2) / 64;
+          log3(`Transaction ${i} (txHash = ${txHash}):\n-- Log ${j} of ${logs.length}: Transfer event detected.\n-- From: ${arg1}, To: ${arg2}, Value: ${data}`);
+          if (isTransferEvent) {
+            if (dataItems !== 1) {
+              let msg = `Unexpected number of data items: ${dataItems}`;
+              msg += `\n - from: ${from}`;
+              msg += `\n - to: ${to}`;
+              msg += `\n - data: ${data}`;
+              throw new Error(msg);
+            }
+            const value = BigInt(parseInt(data, 16));
+            //log3(`- Transaction ${i} (txHash = ${txHash}): Log ${j} of ${logs.length}: Transfer event detected. From: ${arg1}, To: ${arg2}, Value: ${value}`);
+            transfers.push({ blockNumber, txHash, from, to, value });
+          }
+        }
+      }
+    }
+    return this.sortTransfers(transfers);
+  }
+
+
+  sortTransfers(transfers: Transfer[]): Transfer[] {
+    return transfers.sort((a, b) => {
+        if (a.blockNumber !== b.blockNumber) {
+            return a.blockNumber - b.blockNumber;
+        }
+        if (a.txHash !== b.txHash) {
+            return a.txHash.localeCompare(b.txHash);
+        }
+        if (a.from !== b.from) {
+            return a.from.localeCompare(b.from);
+        }
+        if (a.to !== b.to) {
+            return a.to.localeCompare(b.to);
+        }
+        return a.value > b.value ? 1 : a.value < b.value ? -1 : 0;
+    });
+  }
+
+
+  validateTransferListsAreEqual(list1: Transfer[], list2: Transfer[]): void {
+    // Helper function to find different items in two lists of Transfers.
+    const difference = (a: Transfer[], b: Transfer[]) => {
+      return a.filter(itemA =>
+        !b.some(itemB =>
+          itemA.blockNumber === itemB.blockNumber &&
+          itemA.txHash === itemB.txHash &&
+          itemA.from === itemB.from &&
+          itemA.to === itemB.to &&
+          itemA.value === itemB.value
+        )
+      );
+    };
+    // Find items in list1 that are not in list2
+    const notInList2 = difference(list1, list2);
+    if (notInList2.length > 0) {
+      throw new Error(`The following items are in list1 but not in list2:\n${jd(notInList2)}`);
+    }
+    // Find items in list2 that are not in list1
+    const notInList1 = difference(list2, list1);
+    if (notInList1.length > 0) {
+      throw new Error(`The following items are in list2 but not in list1:\n${jd(notInList1)}`);
+    }
+    log("Both lists contain matching items.");
+  }
+
+
+  logTransferList(transfers: Transfer[], title: string): void {
+    let msg = `\nTransfer List: ${title}:`
+    if (transfers.length === 0) {
+      msg += ' No transfers found.';
+    } else {
+      transfers.forEach((transfer, index) => {
+        msg += `\n- Transfer ${index + 1}:`;
+        msg += `\n    Block Number: ${transfer.blockNumber}`;
+        msg += `\n    Transaction Hash: ${transfer.txHash}`;
+        msg += `\n    From: ${transfer.from}`;
+        msg += `\n    To: ${transfer.to}`;
+        msg += `\n    Value: ${transfer.value.toString()} wei`;
+      });
+    }
+    log(msg);
+  }
+
+
+  async getERC20TransfersFromEventsAsync(blockNumber: number, contract: ethers.Contract): Promise<Array<Transfer>> {
+    const eventName = 'Transfer';
+    const transfers = await this.getEventsAsync(contract, eventName, blockNumber);
+    return transfers;
+  }
+
+
+  async getEventsAsync(
+    contract: ethers.Contract,
+    eventName: string,
+    blockNumber: number,
+  ): Promise<Array<Transfer>> {
+    const endBlockNumber = blockNumber;
+    const events = await contract.queryFilter(eventName, blockNumber, endBlockNumber);
+    let transfers: Transfer[] = [];
+    for (const event_ of events) {
+      // event_: ethers.EventLog | ethers.Log
+      if (! this.isEventLog(event_)) {
+        const logData = JSON.stringify(event_);
+        const errorMessage = `Unexpected log type encountered. Log data: ${logData}`;
+        throw new Error(errorMessage);
+      }
+      const { from, to, value } = event_.args;
+      const transfer: Transfer = { blockNumber, txHash: event_.transactionHash, from, to, value };
+      transfers.push(transfer);
+    }
+    return this.sortTransfers(transfers);
+  }
+
+
+  isEventLog(pet: ethers.EventLog | ethers.Log): pet is ethers.EventLog {
+    return (pet as ethers.EventLog).args !== undefined;
   }
 
 
