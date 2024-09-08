@@ -11,7 +11,7 @@ import path from 'path';
 
 // Local imports
 import constants from '#lib/constants';
-import { getEnvVars } from '#lib/envVars';
+import envVars from '#lib/envVars';
 import lib from '#root/lib';
 import { createLogger } from '#lib/logging';
 
@@ -155,7 +155,7 @@ class Config {
   loadEnvVarsSync() {
     dotenv.config({ path: this.getEnvFilePathSync() });
     // Load env vars and throw an error if any are missing.
-    this.env = getEnvVars([
+    this.env = envVars.getEnvVars([
       'MAX_FEE_PER_TRANSACTION_USD',
       'MAX_FEE_PER_GAS_GWEI',
       'MAX_PRIORITY_FEE_PER_GAS_GWEI',

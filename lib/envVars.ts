@@ -51,13 +51,10 @@ function stop(msg) {
 }
 
 
-export {
+export const envVars = {
   getEnvVar,
   getEnvVars,
 }
 
 
-export default {
-  getEnvVar,
-  getEnvVars,
-}
+export default envVars;
