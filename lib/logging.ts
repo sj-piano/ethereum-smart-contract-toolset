@@ -320,6 +320,16 @@ class Logger {
     this.log(jd(message), meta);
   }
 
+  dj(message: any, meta?: { isMeta: boolean, index: number}) {
+    if (meta && ! meta.isMeta) {
+      throw new Error(`Invalid meta: ${meta}`);
+    }
+    if (! meta) {
+      meta = { isMeta: true, index: 4 };
+    }
+    this.debug(jd(message), meta);
+  }
+
   get logLevels() {
     // Return an array.
     return Object.values(LogLevelEnum).filter(value => typeof value === 'string')
@@ -348,7 +358,8 @@ function createLogger({
   const deb = logger.deb.bind(logger);
   const log = logger.log.bind(logger);
   const lj = logger.lj.bind(logger);
-  return { logger, warn, deb, log, lj };
+  const dj = logger.dj.bind(logger);
+  return { logger, warn, deb, log, lj, dj };
 }
 
 
