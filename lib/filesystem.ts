@@ -59,8 +59,7 @@ function writeFileJson(filePath: string, data: any): void {
 }
 
 
-// Export the functions
-export default {
+export const filesystem = {
   fileExists,
   readFile,
   writeFile,
@@ -70,3 +69,6 @@ export default {
   readFileJson,
   writeFileJson,
 };
+
+
+export default filesystem;

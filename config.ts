@@ -11,9 +11,13 @@ import path from 'path';
 
 // Local imports
 import constants from '#lib/constants';
-import { createLogger } from '#lib/logging';
 import { getEnvVars } from '#lib/envVars';
-import validate from '#lib/validate';
+import lib from '#root/lib';
+import { createLogger } from '#lib/logging';
+
+
+// Components
+const { misc, utils, text, validate } = lib;
 
 
 // Logging
@@ -58,6 +62,41 @@ String.prototype.toBigInt = function(): bigint {
 }
 
 
+// Smaller config objects
+
+const networkLabelList = text.textToWords(`
+  local
+  testnet
+  mainnet
+  testnetPolygon
+  mainnetPolygon
+`);
+
+const ethereumNetworkLabels = text.textToWords(`
+  local
+  testnet
+  mainnet
+`);
+
+const polygonNetworkLabels = text.textToWords(`
+  testnetPolygon
+  mainnetPolygon
+`);
+
+
+function networkLabelToNetwork (networkLabel: string): string {
+  const convert = {
+    local: 'http://127.0.0.1:8545',
+    testnet: 'sepolia',
+    mainnet: 'mainnet',
+    testnetPolygon: 'amoy',
+    mainnetPolygon: 'matic',
+  }
+  return convert[networkLabel];
+}
+
+
+
 /* Notes:
 - The main application or script will load the config, apply changes from cmdline arguments and environment variables if required, and pass it to the other modules or functions as an object.
 - When we create a transaction, we find the current averagePriorityFeePerGas, and multiply it by averagePriorityFeeMultiplier to get our transaction-specific value for maxPriorityFeePerGas. However, we don't permit it to be greater than maxPriorityFeePerGasGwei.
@@ -74,7 +113,7 @@ class Config {
   dummyAddress: string;
   env: { [key: string]: string } = {};
   envFileName: string;
-  ethereumNetworkLabels: string[] = 'local testnet mainnet'.split(' ');
+  ethereumNetworkLabels: string[] = ethereumNetworkLabels;
   gasLimitMultiplier: string;
   infuraApiMainnetUrlBase: string = 'https://mainnet.infura.io/v3';
   logLevelList: string[];
@@ -84,10 +123,10 @@ class Config {
   maxFeePerTransactionUsd: string;
   maxPriorityFeePerGasWei: string;
   networkLabel: string;
-  networkLabelList: string[];
-  networkLabelToNetwork: { [key: string]: string };
+  networkLabelList: string[] = networkLabelList;
+  networkLabelToNetwork: (networkLabel: string) => string;
   network: string;
-  polygonNetworkLabels: string[] = 'mainnetPolygon'.split(' ');
+  polygonNetworkLabels: string[] = polygonNetworkLabels;
   priceEthInUsdUrl: string = 'https://api.pro.coinbase.com/products/ETH-USD/ticker';
   priceMaticInUsdUrl: string = 'https://api.pro.coinbase.com/products/MATIC-USD/ticker';
 
@@ -105,14 +144,7 @@ class Config {
     this.maxFeePerGasWei = '0';
     this.maxPriorityFeePerGasWei = '0';
     this.networkLabel = '';
-    this.networkLabelList = 'local testnet mainnet testnetPolygon mainnetPolygon'.split(' ');
-    this.networkLabelToNetwork = {
-      local: 'http://127.0.0.1:8545',
-      testnet: 'sepolia',
-      mainnet: 'mainnet',
-      testnetPolygon: 'amoy',
-      mainnetPolygon: 'matic',
-    };
+    this.networkLabelToNetwork = networkLabelToNetwork;
     this.network = '';
   }
 

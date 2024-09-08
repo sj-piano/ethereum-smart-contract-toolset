@@ -14,7 +14,6 @@ import { createLogger } from '#root/lib/logging';
 // Components
 const { misc, utils, validate } = lib;
 const jd = utils.jd;
-const networkLabelList = config.networkLabelList;
 const uniswapToolset = toolset.uniswapToolset;
 const WETH_DECIMAL_PLACES = config.constants.WETH_DECIMAL_PLACES;
 const USDC_DECIMAL_PLACES = config.constants.USDC_DECIMAL_PLACES;
@@ -42,7 +41,7 @@ let { debug, logLevel, network: networkLabel } = options;
 
 
 // Validate arguments
-networkLabel = networkLabel as NetworkLabel;
+validate.itemInList({ item: networkLabel, name: 'networkLabel', list: config.networkLabelList });
 
 
 // Setup

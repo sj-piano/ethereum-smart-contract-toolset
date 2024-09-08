@@ -4,6 +4,9 @@ function stop({ error }) {
 }
 
 
-export default {
+export const misc = {
   stop,
 };
+
+
+export default misc;

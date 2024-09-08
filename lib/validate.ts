@@ -1,3 +1,8 @@
+/* Important:
+- This file cannot import config.ts, because config.ts imports utils.ts.
+*/
+
+
 // Imports
 import _ from 'lodash';
 import Joi from 'joi';
@@ -13,6 +18,7 @@ const log2 = console.log;
 const { logger, log, deb } = createLogger();
 
 
+// Delete ?
 function logLevel({ logLevel }: { logLevel: string }) {
   const logLevelSchema = Joi.string().valid(...logger.logLevels);
   let logLevelResult = logLevelSchema.validate(logLevel);
@@ -24,6 +30,16 @@ function logLevel({ logLevel }: { logLevel: string }) {
 }
 
 
+function itemInList({ item, name, list }: { item: any, name: string, list: any[] }) {
+  if (! list.includes(item)) {
+    let msg = `Invalid ${name} '${item}'. Valid options are: [${list.join(', ')}]`;
+    console.error(msg);
+    process.exit(1);
+  }
+}
+
+
+// Delete
 function networkLabel({ networkLabel, networkLabelList }: { networkLabel: string, networkLabelList: string[] }) {
   const networkLabelSchema = Joi.string().valid(...networkLabelList);
   let result = networkLabelSchema.validate(networkLabel);
@@ -65,7 +81,7 @@ function number(options: { name: string; value: number }): number {
 
 function string(options: { name: string; value: string }): string {
   const { name, value } = options;
-  if (!utils.isString(value)) {
+  if (! utils.isString(value)) {
     throw new Error(`Received non-string for ${name}: ${value}`);
   }
   return value;
@@ -88,8 +104,9 @@ function exactlyOneOfTwoOptions(args) {
 }
 
 
-export {
+export const validate ={
   logLevel,
+  itemInList,
   networkLabel,
   numericString,
   number,
@@ -98,11 +115,4 @@ export {
 }
 
 
-export default {
-  logLevel,
-  networkLabel,
-  numericString,
-  number,
-  string,
-  exactlyOneOfTwoOptions,
-}
+export default validate;

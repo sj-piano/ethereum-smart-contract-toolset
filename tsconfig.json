@@ -32,7 +32,6 @@
   ],
   "files": [
     // ts-node does not load these via the include property.
-    "types/config.d.ts",
     "types/erc20.d.ts",
 
   ],

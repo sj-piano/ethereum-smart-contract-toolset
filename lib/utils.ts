@@ -2,6 +2,7 @@
 - This file cannot import config.ts, because config.ts imports utils.ts.
 */
 
+
 function getMethods(obj: any): string[] {
   const properties = new Set<string>();
   let currentObj = obj;
@@ -12,25 +13,33 @@ function getMethods(obj: any): string[] {
   return methods.sort();
 }
 
+
 function isBigInt(value: any): boolean {
   return typeof value === 'bigint';
 }
 
+
+// Move to string.ts
 function isString(value: any): boolean {
   return typeof value === 'string' || value instanceof String;
 }
+
 
 function isNumber(value: any): boolean {
   return typeof value === 'number' && isFinite(value);
 }
 
+
+// Move to string.ts
 function isNumericString(value: string): boolean {
   value = value.trim();
   return !isNaN(value as any) && !isNaN(parseFloat(value));
 }
 
+
 const sleep = ({ seconds }: { seconds: number }) =>
   new Promise((r) => setTimeout(r, seconds * 1000));
+
 
 function jd(obj: any): string {
   return JSON.stringify(obj, null, 2);
@@ -49,7 +58,7 @@ function getValueOrThrow<T, K extends keyof T>(obj: T, key: K, varName?: string)
 }
 
 
-export {
+export const utils = {
   getMethods,
   isBigInt,
   isString,
@@ -61,13 +70,5 @@ export {
 };
 
 
-export default {
-  getMethods,
-  isBigInt,
-  isString,
-  isNumber,
-  isNumericString,
-  sleep,
-  jd,
-  getValueOrThrow,
-};
+export default utils;
+
