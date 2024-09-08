@@ -67,7 +67,8 @@ String.prototype.toBigInt = function(): bigint {
 class Config {
 
 
-  alchemyAPIMainnetPolygonUrlBase: string = 'https://polygon-mainnet.g.alchemy.com/v2';
+  alchemyAPIPolygonMainnetUrlBase: string = 'https://polygon-mainnet.g.alchemy.com/v2';
+  alchemyAPIPolygonTestnetUrlBase: string = 'https://polygon-amoy.g.alchemy.com/v2';
   averagePriorityFeeMultiplier: string;
   constants: typeof constants = constants;
   dummyAddress: string;
@@ -104,11 +105,12 @@ class Config {
     this.maxFeePerGasWei = '0';
     this.maxPriorityFeePerGasWei = '0';
     this.networkLabel = '';
-    this.networkLabelList = 'local testnet mainnet mainnetPolygon'.split(' ');
+    this.networkLabelList = 'local testnet mainnet testnetPolygon mainnetPolygon'.split(' ');
     this.networkLabelToNetwork = {
       local: 'http://127.0.0.1:8545',
       testnet: 'sepolia',
       mainnet: 'mainnet',
+      testnetPolygon: 'amoy',
       mainnetPolygon: 'matic',
     };
     this.network = '';
@@ -175,6 +177,7 @@ class Config {
     this._maxPriorityFeePerGasGwei = newValue;
     this.maxPriorityFeePerGasWei = ethers.parseUnits(newValue, 'gwei').toString();
   }
+
 
 }
 

@@ -3,6 +3,8 @@
 /* eslint-disable */
 import type * as openzeppelin from "./@openzeppelin";
 export type { openzeppelin };
+import type * as uniswap from "./@uniswap";
+export type { uniswap };
 import type * as contracts from "./contracts";
 export type { contracts };
 export * as factories from "./factories";
@@ -28,6 +30,20 @@ export type { IERC20Upgradeable } from "./@openzeppelin/contracts-upgradeable/to
 export { IERC20Upgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable__factory";
 export type { ContextUpgradeable } from "./@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable";
 export { ContextUpgradeable__factory } from "./factories/@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable__factory";
+export type { IUniswapV3Pool } from "./@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool";
+export { IUniswapV3Pool__factory } from "./factories/@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool__factory";
+export type { IUniswapV3PoolActions } from "./@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolActions";
+export { IUniswapV3PoolActions__factory } from "./factories/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolActions__factory";
+export type { IUniswapV3PoolDerivedState } from "./@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolDerivedState";
+export { IUniswapV3PoolDerivedState__factory } from "./factories/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolDerivedState__factory";
+export type { IUniswapV3PoolEvents } from "./@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolEvents";
+export { IUniswapV3PoolEvents__factory } from "./factories/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolEvents__factory";
+export type { IUniswapV3PoolImmutables } from "./@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolImmutables";
+export { IUniswapV3PoolImmutables__factory } from "./factories/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolImmutables__factory";
+export type { IUniswapV3PoolOwnerActions } from "./@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolOwnerActions";
+export { IUniswapV3PoolOwnerActions__factory } from "./factories/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolOwnerActions__factory";
+export type { IUniswapV3PoolState } from "./@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolState";
+export { IUniswapV3PoolState__factory } from "./factories/@uniswap/v3-core/contracts/interfaces/pool/IUniswapV3PoolState__factory";
 export type { EquityToken } from "./contracts/EquityToken.sol/EquityToken";
 export { EquityToken__factory } from "./factories/contracts/EquityToken.sol/EquityToken__factory";
 export type { EquityTokenV2 } from "./contracts/EquityToken.sol/EquityTokenV2";

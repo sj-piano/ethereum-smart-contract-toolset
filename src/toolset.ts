@@ -8,6 +8,7 @@ import config from '#root/config';
 import ethToolset from '#root/src/eth-toolset';
 import { createLogger } from '#root/lib/logging';
 import maticToolset from '#root/src/matic-toolset';
+import uniswapToolset from '#root/src/uniswap-toolset';
 
 
 // Controls
@@ -23,10 +24,19 @@ class Toolset {
 
 
   provider: ethers.Provider | null;
+  uniswapToolset = uniswapToolset;
+  addresses: {
+    USDC_CONTRACT_ADDRESS: string;
+    WETH_CONTRACT_ADDRESS: string;
+  }
 
 
   constructor() {
     this.provider = null;
+    this.addresses = {
+      USDC_CONTRACT_ADDRESS: '',
+      WETH_CONTRACT_ADDRESS: '',
+    };
   }
 
 
@@ -35,6 +45,11 @@ class Toolset {
     this.provider = provider;
     ethToolset.parent = this;
     maticToolset.parent = this;
+    uniswapToolset.parent = this;
+    this.addresses = {
+      USDC_CONTRACT_ADDRESS: this.getUsdcContractAddress(),
+      WETH_CONTRACT_ADDRESS: this.getWethContractAddress(),
+    };
     return provider;
   }
 
@@ -58,7 +73,7 @@ class Toolset {
       msg = `Connecting to Polygon mainnet...`;
       //this.provider = new ethers.AlchemyProvider(network, config.env.ALCHEMY_API_KEY_POLYGON_POS);
       provider = new ethers.JsonRpcProvider(
-      `${config.alchemyAPIMainnetPolygonUrlBase}/${config.env.ALCHEMY_API_KEY_POLYGON_POS}`
+      `${config.alchemyAPIPolygonMainnetUrlBase}/${config.env.ALCHEMY_API_KEY_POLYGON_POS}`
       );
     } else {
       throw new Error(`Unsupported networkLabel: '${networkLabel}'`);
@@ -94,7 +109,19 @@ class Toolset {
     } else {
       throw new Error(`Unsupported networkLabel: ${config.networkLabel}`);
     }
+  }
+
+
+  getWethContractAddress() {
+    if (config.networkLabel === 'mainnet') {
+      return config.constants.WETH_CONTRACT_ADDRESS_MAINNET;
+    } else if (config.networkLabel === 'mainnetPolygon') {
+      return config.constants.WETH_CONTRACT_ADDRESS_MAINNET_POLYGON;
+    } else {
+      throw new Error(`Unsupported networkLabel: '${config.networkLabel}'`);
     }
+  }
+
 
 }
 

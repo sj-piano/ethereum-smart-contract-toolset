@@ -1,6 +1,5 @@
 // Imports
 import _ from 'lodash';
-import assert from 'assert';
 import { program } from 'commander';
 import { ethers } from 'ethers';
 
@@ -56,6 +55,7 @@ startBlock = parseInt(startBlock);
 
 // Run
 
+
 main().catch((error) => {
   console.error(error);
   process.exit(1);
@@ -73,7 +73,7 @@ async function main() {
   let currentBlockNumber = await toolset.getBlockNumberAsync();
   log(`Current block number: ${currentBlockNumber}`);
 
-  USDC_CONTRACT_ADDRESS = toolset.getUsdcContractAddress();
+  USDC_CONTRACT_ADDRESS = config.getUsdcContractAddress();
   usdcContract = new ethers.Contract(USDC_CONTRACT_ADDRESS, USDC_CONTRACT_ABI, toolset.provider);
 
   log(`Start block: ${startBlock}`);

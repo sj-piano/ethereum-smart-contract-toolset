@@ -19,6 +19,7 @@ let networkConnectionsToCheck = [
   'local',
   'testnet',
   'mainnet',
+  'testnetPolygon',
   'mainnetPolygon',
 ];
 
@@ -72,6 +73,10 @@ async function main() {
       description: 'Ethereum mainnet',
       connected: false,
     },
+    testnetPolygon: {
+      description: 'Polygon testnet',
+      connected: false,
+    },
     mainnetPolygon: {
       description: 'Polygon mainnet',
       connected: false,
@@ -107,12 +112,22 @@ async function main() {
     await checkConnection({provider, connections, networkLabel, network});
   }
 
-  // Check Polygon network connection (via Infura)
+  // Check Polygon testnet network connection
+  networkLabel = 'testnetPolygon';
+  network = utils.getValueOrThrow(config.networkLabelToNetwork, networkLabel, 'networkLabelToNetwork');
+  provider = new ethers.JsonRpcProvider(
+    `${config.alchemyAPIPolygonTestnetUrlBase}/${config.env.ALCHEMY_API_KEY_POLYGON_POS}`
+  );
+  if (networkConnectionsToCheck.includes(networkLabel)) {
+    await checkConnection({provider, connections, networkLabel, network});
+  }
+
+  // Check Polygon network connection
   networkLabel = 'mainnetPolygon';
   network = utils.getValueOrThrow(config.networkLabelToNetwork, networkLabel, 'networkLabelToNetwork');
   provider = new ethers.JsonRpcProvider(
-    `${config.alchemyAPIMainnetPolygonUrlBase}/${config.env.ALCHEMY_API_KEY_POLYGON_POS}`
-    );
+    `${config.alchemyAPIPolygonMainnetUrlBase}/${config.env.ALCHEMY_API_KEY_POLYGON_POS}`
+  );
   if (networkConnectionsToCheck.includes(networkLabel)) {
     await checkConnection({provider, connections, networkLabel, network});
   }
@@ -133,17 +148,21 @@ async function main() {
 
 
 async function checkConnection({provider, connections, networkLabel, network}) {
-    let msg = `Connecting to ${networkLabel} network: ${network} ...`;
-    log(msg);
-    try {
-      // _detectNetwork() will throw an error if the connection fails. It won't retry.
-      let detected = await provider._detectNetwork();
-      let blockNumber = await provider.getBlockNumber();
-      log(`- ${networkLabel} network: current block number = ${blockNumber}`);
-      connections[networkLabel].connected = true;
-    } catch (error) {
-      provider.destroy();
-      logger.error(`Could not connect to ${networkLabel} network: ${network}.`);
-      logger.error(error);
+  let msg = `Connecting to ${networkLabel} network: ${network} ...`;
+  log(msg);
+  try {
+    // _detectNetwork() will throw an error if the connection fails. It won't retry.
+    let detected = await provider._detectNetwork();
+    let blockNumber = await provider.getBlockNumber();
+    log(`- ${networkLabel} network: current block number = ${blockNumber}`);
+    if (! _.keys(connections).includes(networkLabel)) {
+      throw new Error(`Unexpected networkLabel: ${networkLabel}`);
     }
+    connections[networkLabel].connected = true;
+  } catch (error) {
+    provider.destroy();
+    logger.error(`Could not connect to ${networkLabel} network: ${network}.`);
+    logger.error(error);
   }
+}
+
