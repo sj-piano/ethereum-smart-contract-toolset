@@ -7,13 +7,18 @@ import { ethers } from 'ethers';
 
 // Local imports
 import config from '#root/config';
-import ethToolset from '#root/src/eth-toolset';
+import lib from '#root/lib';
 import { createLogger } from '#root/lib/logging';
-import validate from '#root/lib/validate';
+import toolset from '#root/src/toolset';
 
 
-// Controls
-const initialMessage = 'Hello World!';
+// Contracts
+import contract from '#root/artifacts/contracts/HelloWorld.sol/HelloWorld.json';
+
+
+// Components
+const networkLabelList = config.networkLabelList;
+const { misc, utils, validate } = lib;
 
 
 // Load environment variables
@@ -28,24 +33,30 @@ const {
 } = config.env;
 
 
+// Console.log
+const log2 = console.log;
+const jd2 = function (foo) { return JSON.stringify(foo, null, 2) }
+const lj2 = function (foo) { log2(jd2(foo)); }
+
+
 // Logging
-const { logger, log, deb } = createLogger();
+const { logger, log, deb, dj } = createLogger();
 
 
-// Parse arguments
+// Arguments
 program
-  .option('-d, --debug', 'log debug information')
-  .option('--log-level <logLevel>', 'Specify log level.', 'error')
-  .option('--network <network>', 'specify the Ethereum network to connect to', 'local');
+  .option('-n, --network <network>', `network to connect to: [${config.networkLabelList}]`, 'local')
+  .option('-l, --log-level <logLevel>', `logging level: [${logger.logLevelsString}]`, 'error')
+  .option('-d, --debug', 'set logging level to debug')
 program.parse();
 const options = program.opts();
 if (options.debug) console.log(options);
 let { debug, logLevel, network: networkLabel } = options;
 
 
-// Process and validate arguments
+// Validate arguments
 
-ethToolset.validatePrivateKeysSync({
+toolset.validatePrivateKeys({
   privateKeys: {
     LOCAL_HARDHAT_PRIVATE_KEY,
     SEPOLIA_TESTNET_PRIVATE_KEY,
@@ -53,7 +64,7 @@ ethToolset.validatePrivateKeysSync({
   },
 });
 
-ethToolset.validateAddressesSync({
+toolset.validateAddresses({
   addresses: {
     LOCAL_HARDHAT_ADDRESS,
     SEPOLIA_TESTNET_ADDRESS,
@@ -62,47 +73,30 @@ ethToolset.validateAddressesSync({
 });
 
 validate.logLevel({ logLevel });
-if (debug) {
-  logLevel = 'debug';
-}
-logger.setLevel({ logLevel });
+validate.itemInList({ item: networkLabel, name: 'networkLabel', list: networkLabelList });
 
-validate.networkLabel({ networkLabel });
-const network = config.networkLabelToNetwork[networkLabel];
+
+// Controls
+const initialMessage = 'Hello World!';
 
 
 // Setup
-
-import contract from '#root/artifacts/contracts/HelloWorld.sol/HelloWorld.json';
-
-let provider: ethers.Provider;
-
-var msg: string = 'Unknown error';
-let DEPLOYER_PRIVATE_KEY: string | undefined;
+if (debug) logLevel = 'debug';
+logger.setLevel({ logLevel });
+let DEPLOYER_PRIVATE_KEY;
 if (networkLabel == 'local') {
-  msg = `Connecting to local network at ${network}...`;
-  provider = new ethers.JsonRpcProvider(network);
   DEPLOYER_PRIVATE_KEY = LOCAL_HARDHAT_PRIVATE_KEY;
 } else if (networkLabel == 'testnet') {
-  msg = `Connecting to Sepolia testnet...`;
-  provider = new ethers.InfuraProvider(network, INFURA_API_KEY);
   DEPLOYER_PRIVATE_KEY = SEPOLIA_TESTNET_PRIVATE_KEY;
 } else if (networkLabel == 'mainnet') {
-  msg = `Connecting to Ethereum mainnet...`;
-  provider = new ethers.InfuraProvider(network, INFURA_API_KEY);
   DEPLOYER_PRIVATE_KEY = ETHEREUM_MAINNET_PRIVATE_KEY;
 }
-log(msg);
-DEPLOYER_PRIVATE_KEY = DEPLOYER_PRIVATE_KEY!;
-let signer = new ethers.Wallet(DEPLOYER_PRIVATE_KEY, provider!);
-let contractFactoryHelloWorld = new ethers.ContractFactory(contract.abi, contract.bytecode, signer);
 
 
-// Run main function
+// Run
 
 main().catch((error) => {
-  console.error(error);
-  process.exit(1);
+  misc.stop(error);
 });
 
 
@@ -110,13 +104,18 @@ main().catch((error) => {
 
 
 async function main() {
+
+  await toolset.setupAsync({ networkLabel, logLevel });
+  let provider = toolset.provider;
+
+  let signer = new ethers.Wallet(DEPLOYER_PRIVATE_KEY, provider!);
+  let contractFactoryHelloWorld = new ethers.ContractFactory(contract.abi, contract.bytecode, signer);
+
+
   // Estimate fees.
   // - Stop if any fee limit is exceeded.
   let txRequest = await contractFactoryHelloWorld.getDeployTransaction(initialMessage);
-  const estimatedFees = await ethToolset.estimateFeesForTx({
-    provider,
-    txRequest,
-  });
+  const estimatedFees = await toolset.estimateFeesForTxAsync(txRequest);
   deb(estimatedFees);
   const { gasLimit, maxFeePerGasWei, maxPriorityFeePerGasWei, feeEth, feeUsd, feeLimitChecks } =
     estimatedFees;
@@ -129,14 +128,15 @@ async function main() {
     process.exit(1);
   }
   const gasPrices = estimatedFees.gasPrices;
-  const { ethToUsd } = gasPrices;
+  const { priceEthInUsd } = gasPrices;
+  dj({priceEthInUsd});
 
   // Get ETH balance of signer.
   // - Stop if balance is too low.
   const signerAddress = await signer.getAddress();
   const signerBalanceWei = await provider.getBalance(signerAddress);
   const signerBalanceEth = ethers.formatEther(signerBalanceWei);
-  const signerBalanceUsd = Big(ethToUsd).mul(Big(signerBalanceEth)).toFixed(config.constants.USD_DECIMAL_PLACES);
+  const signerBalanceUsd = Big(priceEthInUsd).mul(Big(signerBalanceEth)).toFixed(config.constants.USD_DECIMAL_PLACES);
   log(`Signer balance: ${signerBalanceEth} ETH (${signerBalanceUsd} USD)`);
   if (Big(signerBalanceEth).lt(Big(feeEth))) {
     console.error(
@@ -177,7 +177,7 @@ async function main() {
   const txFeeWei = txReceipt.fee;
   deb(`txFeeWei: ${txFeeWei}`);
   const txFeeEth = ethers.formatEther(txFeeWei).toString();
-  const txFeeUsd = Big(ethToUsd).mul(Big(txFeeEth)).toFixed(config.constants.USD_DECIMAL_PLACES);
+  const txFeeUsd = Big(priceEthInUsd).mul(Big(txFeeEth)).toFixed(config.constants.USD_DECIMAL_PLACES);
   log(`Final fee: ${txFeeEth} ETH (${txFeeUsd} USD)`);
 
   // Report the final result.

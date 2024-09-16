@@ -27,7 +27,7 @@ const lj2 = function (foo) { log2(jd2(foo)); }
 const { logger, log, deb } = createLogger();
 
 
-// Parse arguments
+// Arguments
 program
   .requiredOption('--block-number <blockNumber>', 'block number to download', '17000000')
   .option('-n, --network <network>', `network to connect to: [${config.networkLabelList}]`, 'local')

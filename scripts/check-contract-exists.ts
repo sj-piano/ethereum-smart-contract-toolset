@@ -26,7 +26,7 @@ const lj2 = function (foo) { log2(jd2(foo)); }
 const { logger, log, deb } = createLogger();
 
 
-// Parse arguments
+// Arguments
 program
   .option(
     '--address-name <addressName>',

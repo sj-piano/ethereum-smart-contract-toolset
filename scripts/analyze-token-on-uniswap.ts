@@ -29,7 +29,7 @@ const lj2 = function (x) { log2(jd2(x)) }
 const { logger, log, lj, deb, dj } = createLogger({ filePath: __filename });
 
 
-// Parse arguments
+// Arguments
 program
   .option('-n, --network <network>', `network to connect to: [${config.networkLabelList}]`, 'local')
   .option('-l, --logLevel <logLevel>', `logging level: [${logger.logLevelsString}]`, 'error')

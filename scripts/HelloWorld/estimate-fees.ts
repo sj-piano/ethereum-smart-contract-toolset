@@ -74,7 +74,6 @@ main().catch((error) => {
 async function main() {
 
   await toolset.setupAsync({ networkLabel, logLevel });
-
   let provider = toolset.provider;
 
   const contractFactoryHelloWorld = new ethers.ContractFactory(

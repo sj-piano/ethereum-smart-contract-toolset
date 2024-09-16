@@ -27,7 +27,7 @@ const lj2 = function (foo) { log2(jd2(foo)); }
 const { logger, log, deb } = createLogger();
 
 
-// Parse arguments
+// Arguments
 program
   .option('--address <address>', 'Ethereum address.')
   .option('--address-file <addressFile>', 'Path to file containing Ethereum address.')

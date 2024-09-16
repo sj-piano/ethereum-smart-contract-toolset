@@ -34,7 +34,7 @@ const lj2 = function (foo) { log2(jd2(foo)); }
 const { logger, log, lj, deb } = createLogger({ filePath: __filename });
 
 
-// Parse arguments
+// Arguments
 program
   .option('--start-block <startBlock>', 'block number at which to start looking for transfers', '17000000')
   .option('-n, --network <network>', `network to connect to: [${config.networkLabelList}]`, 'local')
