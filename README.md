@@ -268,6 +268,8 @@ task test
 task test -- --grep "should deploy" --debug
 ```
 
+Note: Task uses an extra double hyphen `--` to indicate that everything that follows is a command-line option.
+
 Hardhat runs the tests on a temporary local blockchain.
 
 We will use Hardhat to start a more persistent local blockchain instance. We can then deploy a smart contract on this local blockchain and interact with it.
@@ -275,7 +277,7 @@ We will use Hardhat to start a more persistent local blockchain instance. We can
 Open another terminal and run:  
 `task start-local-node`
 
-Leave the node running in this additional terminal. Log output will be displayed (the initial set of pre-loaded keypairs will be shown). Press Ctrl-C to stop the local node. Switch back to the original terminal and continue.
+Leave the node running in this additional terminal. Log output will be displayed (the initial set of pre-loaded keypairs will be shown). When you want to stop the local node, you can press Ctrl-C. For now, switch back to the original terminal and continue.
 
 Check the fees on the various networks.
 

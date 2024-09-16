@@ -13,7 +13,6 @@ import uniswapToolset from '#root/src/uniswap-toolset';
 
 // Controls
 let logLevel = 'error';
-logLevel = 'info';
 
 
 // Logging
@@ -40,7 +39,9 @@ class Toolset {
   }
 
 
-  async setupAsync ({ networkLabel }: { networkLabel: string }) {
+  async setupAsync ({ networkLabel, logLevel }: { networkLabel: string, logLevel: string }) {
+    logger.setLevel({ logLevel });
+    config.logger.setLevel({ logLevel });
     const provider = this.getProvider({ networkLabel });
     this.provider = provider;
     ethToolset.parent = this;
@@ -56,21 +57,25 @@ class Toolset {
 
   getProvider({ networkLabel }: { networkLabel: string }) {
     config.networkLabel = networkLabel;
-    config.network = config.networkLabelToNetwork[networkLabel];
+    config.network = config.networkLabelToNetwork(networkLabel);
     const network = config.network;
     var msg: string;
     let provider: ethers.Provider;
     if (networkLabel == 'local') {
       msg = `Connecting to local network at ${network}...`;
+      deb(msg);
       provider = new ethers.JsonRpcProvider(network);
     } else if (networkLabel == 'testnet') {
       msg = `Connecting to Sepolia testnet...`;
+      deb(msg);
       provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
     } else if (networkLabel == 'mainnet') {
       msg = `Connecting to Ethereum mainnet...`;
+      deb(msg);
       provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
     } else if (networkLabel == 'mainnetPolygon') {
       msg = `Connecting to Polygon mainnet...`;
+      deb(msg);
       //this.provider = new ethers.AlchemyProvider(network, config.env.ALCHEMY_API_KEY_POLYGON_POS);
       provider = new ethers.JsonRpcProvider(
       `${config.alchemyAPIPolygonMainnetUrlBase}/${config.env.ALCHEMY_API_KEY_POLYGON_POS}`
@@ -78,7 +83,6 @@ class Toolset {
     } else {
       throw new Error(`Unsupported networkLabel: '${networkLabel}'`);
     }
-    deb(msg);
     return provider;
   }
 
@@ -107,7 +111,9 @@ class Toolset {
     } else if (config.networkLabel === 'mainnetPolygon') {
       return config.constants.USDC_CONTRACT_ADDRESS_MAINNET_POLYGON;
     } else {
-      throw new Error(`Unsupported networkLabel: ${config.networkLabel}`);
+      let msg = `No USDC contract address in config for network '${config.networkLabel}'`;
+      logger.warn(msg);
+      return '';
     }
   }
 
@@ -118,7 +124,9 @@ class Toolset {
     } else if (config.networkLabel === 'mainnetPolygon') {
       return config.constants.WETH_CONTRACT_ADDRESS_MAINNET_POLYGON;
     } else {
-      throw new Error(`Unsupported networkLabel: '${config.networkLabel}'`);
+      let msg = `No WETH contract address in config for network '${config.networkLabel}'`;
+      logger.warn(msg);
+      return '';
     }
   }
 

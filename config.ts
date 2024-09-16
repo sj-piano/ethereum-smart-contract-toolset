@@ -97,6 +97,7 @@ function networkLabelToNetwork (networkLabel: string): string {
 
 
 
+
 /* Notes:
 - The main application or script will load the config, apply changes from cmdline arguments and environment variables if required, and pass it to the other modules or functions as an object.
 - When we create a transaction, we find the current averagePriorityFeePerGas, and multiply it by averagePriorityFeeMultiplier to get our transaction-specific value for maxPriorityFeePerGas. However, we don't permit it to be greater than maxPriorityFeePerGasGwei.
@@ -116,6 +117,7 @@ class Config {
   ethereumNetworkLabels: string[] = ethereumNetworkLabels;
   gasLimitMultiplier: string;
   infuraApiMainnetUrlBase: string = 'https://mainnet.infura.io/v3';
+  logger: any;
   logLevelList: string[];
   _maxFeePerGasGwei: string;
   _maxPriorityFeePerGasGwei: string;
@@ -135,6 +137,7 @@ class Config {
     this.envFileName = 'user-config.env';
     this.dummyAddress = '0x000000000000000000000000000000000000dEaD';
     this.logLevelList = 'debug info warn error'.split(' ');
+    this.logger = logger;
     // Note: maxFeePerTransactionUsd overrides the other fee limits.
     this.maxFeePerTransactionUsd = '0';
     this._maxFeePerGasGwei = '0';

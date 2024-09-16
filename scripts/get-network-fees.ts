@@ -13,7 +13,13 @@ import toolset from '#root/src/toolset';
 
 // Components
 const networkLabelList = config.networkLabelList;
-const { utils, validate } = lib;
+const { misc, utils, validate } = lib;
+
+
+// Console.log
+const log2 = console.log;
+const jd2 = function (foo) { return JSON.stringify(foo, null, 2) }
+const lj2 = function (foo) { log2(jd2(foo)); }
 
 
 // Logging
@@ -23,35 +29,31 @@ const { logger, log, deb } = createLogger();
 // Parse arguments
 program
   .option('-d, --debug', 'log debug information')
-  .option('--log-level <logLevel>', 'Specify log level.', 'error')
-  .option('--network <network>', 'specify the Ethereum network to connect to', 'local')
+  .option('--log-level <logLevel>', 'specify log level', 'error')
+  .option('-n, --network <network>', `Ethereum network [${config.networkLabelList}]`, 'local')
+  .option('-l, --logLevel <logLevel>', `logging level: [${logger.logLevelsString}]`, 'error')
+  .option('-d, --debug', 'set logging level to debug')
 program.parse();
 const options = program.opts();
 if (options.debug) console.log(options);
 let { debug, logLevel, network: networkLabel } = options;
 
 
-// Process and validate arguments
-
+// Validate arguments
 validate.logLevel({ logLevel });
-if (debug) {
-  logLevel = 'debug';
-}
-logger.setLevel({ logLevel });
-
-validate.networkLabel({ networkLabel, networkLabelList });
+validate.itemInList({ item: networkLabel, name: 'networkLabel', list: networkLabelList });
 
 
 // Setup
+if (debug) logLevel = 'debug';
+logger.setLevel({ logLevel });
 
-let provider: ethers.Provider;
 
+// Run
 
-// Run main function
 
 main().catch((error) => {
-  console.error(error);
-  process.exit(1);
+  misc.stop({ error });
 });
 
 
@@ -59,7 +61,7 @@ main().catch((error) => {
 
 
 async function main() {
-  await toolset.setupAsync({ networkLabel });
+  await toolset.setupAsync({ networkLabel, logLevel });
   deb(`Connected to ${networkLabel} network.`);
   let blockNumber = await toolset.getBlockNumberAsync();
   deb(`Current block number: ${blockNumber}`);

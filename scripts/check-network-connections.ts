@@ -14,6 +14,30 @@ import { createLogger } from '#root/lib/logging';
 const { utils, validate } = lib;
 
 
+// Console.log
+const log2 = console.log;
+const jd2 = function (foo) { return JSON.stringify(foo, null, 2) }
+const lj2 = function (foo) { log2(jd2(foo)); }
+
+
+// Logger
+const { logger, log, deb } = createLogger();
+
+
+// Arguments
+program
+  .option('-d, --debug', 'log debug information')
+  .option('--log-level <logLevel>', 'specify log level', 'error');
+program.parse();
+const options = program.opts();
+if (options.debug) console.log(options);
+let { debug, logLevel } = options;
+
+
+// Validate arguments
+validate.logLevel({ logLevel });
+
+
 // Controls
 let networkConnectionsToCheck = [
   'local',
@@ -24,31 +48,13 @@ let networkConnectionsToCheck = [
 ];
 
 
-// Logging
-const log2 = console.log;
-const { logger, log, deb } = createLogger();
-
-
-// Parse arguments
-program
-  .option('-d, --debug', 'log debug information')
-  .option('--log-level <logLevel>', 'Specify log level.', 'error');
-program.parse();
-const options = program.opts();
-if (options.debug) console.log(options);
-let { debug, logLevel } = options;
-
-
-// Process and validate arguments
-
-validate.logLevel({ logLevel });
-if (debug) {
-  logLevel = 'debug';
-}
+// Setup
+if (debug) logLevel = 'debug';
 logger.setLevel({ logLevel });
 
 
-// Run main function
+// Run
+
 
 main().catch((error) => {
   console.error(error);
@@ -89,7 +95,7 @@ async function main() {
 
   // Check local Hardhat network connection
   networkLabel = 'local';
-  network = utils.getValueOrThrow(config.networkLabelToNetwork, networkLabel, 'networkLabelToNetwork');
+  network = config.networkLabelToNetwork[networkLabel];
   provider = new ethers.JsonRpcProvider(network);
 
   if (networkConnectionsToCheck.includes(networkLabel)) {
@@ -98,7 +104,7 @@ async function main() {
 
   // Check Sepolia testnet network connection (via Infura)
   networkLabel = 'testnet';
-  network = utils.getValueOrThrow(config.networkLabelToNetwork, networkLabel, 'networkLabelToNetwork');
+  network = config.networkLabelToNetwork[networkLabel];
   provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
   if (networkConnectionsToCheck.includes(networkLabel)) {
     await checkConnection({provider, connections, networkLabel, network});
@@ -106,7 +112,7 @@ async function main() {
 
   // Check Ethereum Mainnet network connection (via Infura)
   networkLabel = 'mainnet';
-  network = utils.getValueOrThrow(config.networkLabelToNetwork, networkLabel, 'networkLabelToNetwork');
+  network = config.networkLabelToNetwork[networkLabel];
   provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
   if (networkConnectionsToCheck.includes(networkLabel)) {
     await checkConnection({provider, connections, networkLabel, network});
@@ -114,7 +120,7 @@ async function main() {
 
   // Check Polygon testnet network connection
   networkLabel = 'testnetPolygon';
-  network = utils.getValueOrThrow(config.networkLabelToNetwork, networkLabel, 'networkLabelToNetwork');
+  network = config.networkLabelToNetwork[networkLabel];
   provider = new ethers.JsonRpcProvider(
     `${config.alchemyAPIPolygonTestnetUrlBase}/${config.env.ALCHEMY_API_KEY_POLYGON_POS}`
   );
@@ -124,7 +130,7 @@ async function main() {
 
   // Check Polygon network connection
   networkLabel = 'mainnetPolygon';
-  network = utils.getValueOrThrow(config.networkLabelToNetwork, networkLabel, 'networkLabelToNetwork');
+  network = config.networkLabelToNetwork[networkLabel];
   provider = new ethers.JsonRpcProvider(
     `${config.alchemyAPIPolygonMainnetUrlBase}/${config.env.ALCHEMY_API_KEY_POLYGON_POS}`
   );

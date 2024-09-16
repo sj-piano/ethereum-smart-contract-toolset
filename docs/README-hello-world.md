@@ -67,7 +67,7 @@ This a basic storage smart contract. It stores a message, which can be updated.
 * make a complaint
 * hire me
 
-Then [please contact me on Tela](https://www.tela.app/magic/stjohn_piano/a852c8). Thank you.
+Then [please contact me on Tela](https://www.tela.app/stjohn_piano/a852c8). Thank you.
 
 [![Tela][tela-shield]][tela-url]
 
@@ -448,4 +448,4 @@ You can read the contract's stored data at:
 [linkedin-shield]: https://img.shields.io/badge/LinkedIn-StJohn_Piano-blue.svg?style=for-the-badge&logo=linkedin
 [linkedin-url]: https://linkedin.com/in/stjohnpiano
 [tela-shield]: https://img.shields.io/badge/Tela-StJohn_Piano-blue?style=for-the-badge
-[tela-url]: https://www.tela.app/magic/stjohn_piano/a852c8
+[tela-url]: https://www.tela.app/stjohn_piano/a852c8
