@@ -7,9 +7,18 @@ import fs from 'fs';
 
 // Local imports
 import config from '#root/config';
-import ethToolset from '#root/src/eth-toolset';
+import lib from '#root/lib';
 import { createLogger } from '#root/lib/logging';
-import validate from '#root/lib/validate';
+import toolset from '#root/src/toolset';
+
+
+// Contracts
+import contract from '#root/artifacts/contracts/HelloWorld.sol/HelloWorld.json';
+
+
+// Components
+const networkLabelList = config.networkLabelList;
+const { filesystem, misc, utils, validate } = lib;
 
 
 // Load environment variables
@@ -21,11 +30,17 @@ const {
 } = process.env;
 
 
+// Console.log
+const log2 = console.log;
+const jd2 = function (foo) { return JSON.stringify(foo, null, 2) }
+const lj2 = function (foo) { log2(jd2(foo)); }
+
+
 // Logging
 const { logger, log, deb } = createLogger();
 
 
-// Parse arguments
+// Arguments
 program
   .option('-d, --debug', 'log debug information')
   .option('--log-level <logLevel>', 'Specify log level.', 'error')
@@ -34,12 +49,12 @@ program
 program.parse();
 const options = program.opts();
 if (options.debug) console.log(options);
-let { debug, logLevel, network: networkLabel, addressFile } = options;
+let { network: networkLabel, addressFile, logLevel, debug } = options;
 
 
-// Process and validate arguments
+// Validate arguments
 
-ethToolset.validateAddressesSync({
+toolset.validateAddresses({
   addresses: {
     HELLO_WORLD_LOCAL_ADDRESS,
     HELLO_WORLD_TESTNET_ADDRESS,
@@ -48,60 +63,40 @@ ethToolset.validateAddressesSync({
 });
 
 validate.logLevel({ logLevel });
-if (debug) {
-  logLevel = 'debug';
-}
-logger.setLevel({ logLevel });
+validate.itemInList({ item: networkLabel, name: 'networkLabel', list: networkLabelList });
 
-validate.networkLabel({ networkLabel });
-const network = config.networkLabelToNetwork[networkLabel];
 
-let contractAddress;
-if (fs.existsSync(addressFile)) {
-  let contractAddress = fs.readFileSync(addressFile).toString().trim();
-  deb(`Address found in ${addressFile}: ${contractAddress}`);
-}
+// Load data
+let address = addressFile ? filesystem.readFile(addressFile) : null;
 
 
 // Setup
-
-import contract from '#root/artifacts/contracts/HelloWorld.sol/HelloWorld.json';
-
-let provider: ethers.Provider;
-
-var msg: string = 'Unknown error';
-let DEPLOYED_CONTRACT_ADDRESS: string | undefined;
+if (debug) logLevel = 'debug';
+logger.setLevel({ logLevel });
+let DEPLOYED_CONTRACT_ADDRESS;
 if (networkLabel == 'local') {
-  msg = `Connecting to local network at ${network}...`;
-  provider = new ethers.JsonRpcProvider(network);
   DEPLOYED_CONTRACT_ADDRESS = HELLO_WORLD_LOCAL_ADDRESS;
 } else if (networkLabel == 'testnet') {
-  msg = `Connecting to Sepolia testnet...`;
-  provider = new ethers.InfuraProvider(network, INFURA_API_KEY);
   DEPLOYED_CONTRACT_ADDRESS = HELLO_WORLD_TESTNET_ADDRESS;
 } else if (networkLabel == 'mainnet') {
-  msg = `Connecting to Ethereum mainnet...`;
-  provider = new ethers.InfuraProvider(network, INFURA_API_KEY);
   DEPLOYED_CONTRACT_ADDRESS = HELLO_WORLD_MAINNET_ADDRESS;
 }
-log(msg);
-provider = provider!;
-// Supplied contract file takes precedence over shell environment variable.
-if (contractAddress) {
-  DEPLOYED_CONTRACT_ADDRESS = contractAddress;
+
+// A supplied contract file takes precedence over shell environment variable.
+if (addressFile) {
+  DEPLOYED_CONTRACT_ADDRESS = address;
 }
-if (!ethers.isAddress(DEPLOYED_CONTRACT_ADDRESS)) {
+if (! ethers.isAddress(DEPLOYED_CONTRACT_ADDRESS)) {
   logger.error(`Invalid contract address: ${DEPLOYED_CONTRACT_ADDRESS}`);
   process.exit(1);
 }
-const contractHelloWorld = new ethers.Contract(DEPLOYED_CONTRACT_ADDRESS, contract.abi, provider);
 
 
-// Run main function
+// Run
+
 
 main().catch((error) => {
-  console.error(error);
-  process.exit(1);
+  misc.stop(error);
 });
 
 
@@ -109,12 +104,18 @@ main().catch((error) => {
 
 
 async function main() {
-  let blockNumber = await provider.getBlockNumber();
+
+  await toolset.setupAsync({ networkLabel, logLevel });
+  let provider = toolset.provider;
+
+  const contractHelloWorld = new ethers.Contract(DEPLOYED_CONTRACT_ADDRESS, contract.abi, provider);
+
+  let blockNumber = await toolset.getBlockNumberAsync();
   deb(`Current block number: ${blockNumber}`);
 
   let address = await contractHelloWorld.getAddress();
-  let check = await ethToolset.contractExistsAt({ provider, address });
-  if (!check) {
+  let check = await toolset.contractExistsAtAsync(address);
+  if (! check) {
     logger.error(`No contract found at address ${address}.`);
     process.exit(1);
   }

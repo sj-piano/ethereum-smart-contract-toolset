@@ -60,6 +60,7 @@ logger.setLevel({ logLevel });
 
 // Run
 
+
 main().catch((error) => {
   misc.stop(error);
 });
