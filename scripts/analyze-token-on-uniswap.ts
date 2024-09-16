@@ -31,13 +31,13 @@ const { logger, log, lj, deb, dj } = createLogger({ filePath: __filename });
 
 // Parse arguments
 program
-  .option('--network <network>', 'specify the Ethereum network to connect to', 'local')
+  .option('-n, --network <network>', `network to connect to: [${config.networkLabelList}]`, 'local')
   .option('-l, --logLevel <logLevel>', `logging level: [${logger.logLevelsString}]`, 'error')
   .option('-d, --debug', 'set logging level to debug')
 program.parse();
 const options = program.opts();
 if (options.debug) console.log(options);
-let { debug, logLevel, network: networkLabel } = options;
+let { network: networkLabel, logLevel, debug } = options;
 
 
 // Validate arguments
@@ -53,13 +53,13 @@ logger.setLevel({ logLevel });
 
 
 mainAsync().catch((error) => {
-  misc.stop({ error });
+  misc.stop(error);
 });
 
 
 async function mainAsync() {
 
-  await toolset.setupAsync({ networkLabel });
+  await toolset.setupAsync({ networkLabel, logLevel });
 
   let poolAddress = config.constants.USDC_WETH_POOL_0_05_ADDRESS;
   let poolContract = uniswapToolset.poolAddressToContract({ poolAddress });

@@ -372,7 +372,7 @@ Now, please browse to the [Toolset section](#toolset), choose a tool, and open i
 Most scripts accept a `network` argument, which specifies whether the script should connect to the local development blockchain (`local`), the Sepolia testnet (`testnet`), or the Ethereum mainnet (`mainnet`). It is `local` by default.
 
 Most scripts have `--help` functionality. E.g. you can run:  
-`pnpm exec --silent -- ts-node scripts/get-network-fees.ts --help`
+`pnpm ts-node scripts/get-network-fees.ts --help`
 
 Most scripts can log at different levels of output. You can use `--log-level info` or `--debug` arguments.
 

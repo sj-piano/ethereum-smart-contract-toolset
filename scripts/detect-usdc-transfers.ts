@@ -11,11 +11,6 @@ import toolset from '#root/src/toolset';
 import { createLogger } from '#root/lib/logging';
 
 
-// Components
-const { utils, validate } = lib;
-const jd = utils.jd;
-const networkLabelList = config.networkLabelList;
-
 
 // Constants
 import {
@@ -23,25 +18,37 @@ import {
 } from '#root/lib/constants';
 
 
-// Logging
+// Components
+const { misc, utils, validate } = lib;
+const jd = utils.jd;
+const networkLabelList = config.networkLabelList;
+
+
+// Console.log
 const log2 = console.log;
+const jd2 = function (foo) { return JSON.stringify(foo, null, 2) }
+const lj2 = function (foo) { log2(jd2(foo)); }
+
+
+// Logging
 const { logger, log, lj, deb } = createLogger({ filePath: __filename });
 
 
 // Parse arguments
 program
-  .option('--network <network>', 'specify the Ethereum network to connect to', 'local')
   .option('--start-block <startBlock>', 'block number at which to start looking for transfers', '17000000')
+  .option('-n, --network <network>', `network to connect to: [${config.networkLabelList}]`, 'local')
   .option('-l, --logLevel <logLevel>', `logging level: [${logger.logLevelsString}]`, 'error')
   .option('-d, --debug', 'set logging level to debug')
 program.parse();
 const options = program.opts();
 if (options.debug) console.log(options);
-let { debug, logLevel, network: networkLabel, startBlock } = options;
+let { startBlock, network: networkLabel, logLevel, debug, } = options;
 
 
 // Validate arguments
-validate.networkLabel({ networkLabel, networkLabelList });
+validate.logLevel({ logLevel });
+validate.itemInList({ item: networkLabel, name: 'networkLabel', list: networkLabelList });
 validate.numericString({ name: 'blockNumber', value: startBlock });
 
 
@@ -57,8 +64,7 @@ startBlock = parseInt(startBlock);
 
 
 main().catch((error) => {
-  console.error(error);
-  process.exit(1);
+  misc.stop(error);
 });
 
 
@@ -67,13 +73,13 @@ main().catch((error) => {
 
 async function main() {
 
-  await toolset.setupAsync({ networkLabel });
+  await toolset.setupAsync({ networkLabel, logLevel });
 
   // Test connection to the network.
   let currentBlockNumber = await toolset.getBlockNumberAsync();
   log(`Current block number: ${currentBlockNumber}`);
 
-  USDC_CONTRACT_ADDRESS = config.getUsdcContractAddress();
+  USDC_CONTRACT_ADDRESS = toolset.getUsdcContractAddress();
   usdcContract = new ethers.Contract(USDC_CONTRACT_ADDRESS, USDC_CONTRACT_ABI, toolset.provider);
 
   log(`Start block: ${startBlock}`);

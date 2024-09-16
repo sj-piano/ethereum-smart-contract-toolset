@@ -1,5 +1,5 @@
-function stop({ error }) {
-  if (error) console.error(error);
+function stop(msg) {
+  if (msg) console.error(msg);
   process.exit(1);
 }
 

@@ -58,7 +58,7 @@ logger.setLevel({ logLevel });
 
 
 main().catch((error) => {
-  misc.stop({ error });
+  misc.stop(error);
 });
 
 

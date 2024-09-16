@@ -13,20 +13,21 @@ import toolset from '#root/src/toolset';
 
 // Components
 const networkLabelList = config.networkLabelList;
-const { filesystem, utils, validate } = lib;
+const { filesystem, misc, utils, validate } = lib;
+
+
+// Console.log
+const log2 = console.log;
+const jd2 = function (foo) { return JSON.stringify(foo, null, 2) }
+const lj2 = function (foo) { log2(jd2(foo)); }
 
 
 // Logging
-const log2 = console.log;
 const { logger, log, deb } = createLogger();
 
 
 // Parse arguments
 program
-  .option(
-    '--network <network>',
-    'specify the Ethereum network to connect to', 'local',
-  )
   .option(
     '--address-name <addressName>',
     'Name of address in .env file. Overrides address or address-file.',
@@ -36,7 +37,8 @@ program
     '--address-file <addressFile>',
     'Path to file containing contract address.',
   )
-  .option('-l, --logLevel <logLevel>', `logging level: [${logger.logLevelsString}]`, 'error')
+  .option('-n, --network <network>', `network to connect to: [${config.networkLabelList}]`, 'local')
+  .option('-l, --log-level <logLevel>', `logging level: [${logger.logLevelsString}]`, 'error')
   .option('-d, --debug', 'set logging level to debug')
 program.parse();
 const options = program.opts();
@@ -68,7 +70,6 @@ let contractAddress: string;
 
 
 // Load data
-
 if (addressName) {
   contractAddress = utils.getValueOrThrow(config.env, addressName, 'config.env');
   deb(`Address ${addressName} found in .env file: ${address}`);
@@ -79,22 +80,19 @@ if (addressName) {
 }
 
 
-// Run main function
+// Run
 
 
 mainAsync({ contractAddress }).catch((error) => {
-  stop(error)
+  misc.stop(error)
 });
 
 
-function stop(msg) {
-  if (msg) console.error(msg);
-  process.exit(1);
-}
+// Functions
 
 
 async function mainAsync({ contractAddress }: { contractAddress: string }) {
-  toolset.setupAsync({ networkLabel });
+  await toolset.setupAsync({ networkLabel, logLevel });
   let blockNumber = await toolset.getBlockNumberAsync();
   deb(`Current block number: ${blockNumber}`);
 
@@ -102,13 +100,13 @@ async function mainAsync({ contractAddress }: { contractAddress: string }) {
 
   if (! ethers.isAddress(contractAddress)) {
     let msg = `Invalid Ethereum address: ${address}`;
-    stop(msg);
+    misc.stop(msg);
   }
 
   let check = await toolset.contractExistsAtAsync(address);
   if (!check) {
     let msg = `No contract found at address: ${address}`;
-    stop(msg);
+    misc.stop(msg);
   }
   console.log(`Contract found at address: ${address}`);
 }
