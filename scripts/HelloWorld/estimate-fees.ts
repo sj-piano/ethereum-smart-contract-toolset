@@ -6,9 +6,18 @@ import { ethers } from 'ethers';
 
 // Local imports
 import config from '#root/config';
-import ethereum from '#root/src/eth-toolset';
+import lib from '#root/lib';
 import { createLogger } from '#root/lib/logging';
-import validate from '#root/lib/validate';
+import toolset from '#root/src/toolset';
+
+
+// Components
+const networkLabelList = config.networkLabelList;
+const { misc, utils, validate } = lib;
+
+
+// Contracts
+import contract from '#root/artifacts/contracts/HelloWorld.sol/HelloWorld.json';
 
 
 // Environment variables
@@ -17,66 +26,45 @@ const {
 } = config.env;
 
 
+// Console.log
+const log2 = console.log;
+const jd2 = function (foo) { return JSON.stringify(foo, null, 2) }
+const lj2 = function (foo) { log2(jd2(foo)); }
+
+
 // Logging
 const { logger, log, lj, deb } = createLogger();
 
 
-// Parse arguments
+// Arguments
 program
-  .option('-d, --debug', 'log debug information')
-  .option('--log-level <logLevel>', 'Specify log level.', 'error')
-  .option('--network <network>', 'specify the Ethereum network to connect to', 'local');
+  .option('-n, --network <network>', `network to connect to: [${config.networkLabelList}]`, 'local')
+  .option('-l, --log-level <logLevel>', `logging level: [${logger.logLevelsString}]`, 'error')
+  .option('-d, --debug', 'set logging level to debug')
 program.parse();
 const options = program.opts();
 if (options.debug) console.log(options);
 let { debug, logLevel, network: networkLabel } = options;
 
 
-// Process and validate arguments
-
+// Validate arguments
 validate.logLevel({ logLevel });
-if (debug) {
-  logLevel = 'debug';
-}
-logger.setLevel({ logLevel });
+validate.itemInList({ item: networkLabel, name: 'networkLabel', list: networkLabelList });
 
-validate.networkLabel({ networkLabel });
+
 const network = config.networkLabelToNetwork[networkLabel];
 
 
 // Setup
-
-import contract from '#root/artifacts/contracts/HelloWorld.sol/HelloWorld.json';
-
-let provider: ethers.Provider;
-
-var msg: string = 'Unknown error';
-if (networkLabel == 'local') {
-  msg = `Connecting to local network at ${network}...`;
-  provider = new ethers.JsonRpcProvider(network);
-} else if (networkLabel == 'testnet') {
-  msg = `Connecting to Sepolia testnet...`;
-  provider = new ethers.InfuraProvider(network, INFURA_API_KEY);
-} else if (networkLabel == 'mainnet') {
-  msg = `Connecting to Ethereum mainnet...`;
-  provider = new ethers.InfuraProvider(network, INFURA_API_KEY);
-}
-log(msg);
-provider = provider!;
-const contractFactoryHelloWorld = new ethers.ContractFactory(
-  contract.abi,
-  contract.bytecode,
-  provider,
-);
-// We're able to use a dummy address because we're not actually calling any methods on the contract.
-const contractHelloWorld = new ethers.Contract(config.dummyAddress, contract.abi, provider);
+if (debug) logLevel = 'debug';
+logger.setLevel({ logLevel });
 
 
-// Run main function
+// Run
+
 
 main().catch((error) => {
-  console.error(error);
-  process.exit(1);
+  misc.stop(error);
 });
 
 
@@ -84,13 +72,26 @@ main().catch((error) => {
 
 
 async function main() {
-  let blockNumber = await provider.getBlockNumber();
+
+  await toolset.setupAsync({ networkLabel, logLevel });
+
+  let provider = toolset.provider;
+
+  const contractFactoryHelloWorld = new ethers.ContractFactory(
+    contract.abi,
+    contract.bytecode,
+    provider,
+  );
+  // We're able to use a dummy address because we're not actually calling any methods on the contract.
+  const contractHelloWorld = new ethers.Contract(config.dummyAddress, contract.abi, provider);
+
+  let blockNumber = await toolset.getBlockNumberAsync();
   deb(`Current block number: ${blockNumber}`);
 
   // Contract deployment
   const initialMessage = 'Hello World!';
   const txRequest = await contractFactoryHelloWorld.getDeployTransaction(initialMessage);
-  const estimatedFees = await ethereum.estimateFeesForTx({
+  const estimatedFees = await toolset.estimateFeesForTxAsync({
     provider,
     txRequest,
   });
@@ -109,7 +110,7 @@ async function main() {
   // Contract method call: update
   const newMessage = 'Hello World! Updated.';
   const txRequest2 = await contractHelloWorld.update.populateTransaction(newMessage);
-  const estimatedFees2 = await ethereum.estimateFeesForTx({
+  const estimatedFees2 = await toolset.estimateFeesForTxAsync({
     provider,
     txRequest: txRequest2,
   });

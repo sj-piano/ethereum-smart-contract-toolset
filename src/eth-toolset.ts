@@ -285,16 +285,14 @@ class EthToolset {
     const estimatedGasBigInt = await this.parent.provider.estimateGas(txRequest);
     const estimatedGas = estimatedGasBigInt.toString();
     deb(`estimatedGas: ${estimatedGas}`);
-    return this.estimateFeesFromGasAsync(estimatedGas);
+    return this.estimateFeesFromGasAsync({ estimatedGas });
   }
 
 
   async estimateFeesFromGasAsync({
-    provider,
     estimatedGas,
   }: {
-    provider: Provider;
-    estimatedGas: string | bigint;
+    estimatedGas: string;
   }) {
     estimatedGas = estimatedGas.toString();
     let feeLimitChecks = this.getFeeLimitChecksObj();

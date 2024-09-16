@@ -26,7 +26,7 @@ const lj2 = function (foo) { log2(jd2(foo)); }
 const { logger, log, deb } = createLogger();
 
 
-// Parse arguments
+// Arguments
 program
   .option('-n, --network <network>', `network to connect to: [${config.networkLabelList}]`, 'local')
   .option('-l, --log-level <logLevel>', `logging level: [${logger.logLevelsString}]`, 'error')

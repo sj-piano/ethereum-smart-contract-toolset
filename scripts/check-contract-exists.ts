@@ -56,7 +56,7 @@ let {
 // Validate arguments
 
 validate.logLevel({ logLevel });
-validate.networkLabel({ networkLabel, networkLabelList });
+validate.itemInList({ item: networkLabel, name: 'networkLabel', list: networkLabelList });
 if (! addressName) {
   let optionNames = 'address, addressFile'.split(', ');
   validate.exactlyOneOfTwoOptions({optionNames, address, addressFile});
