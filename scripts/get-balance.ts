@@ -32,7 +32,7 @@ program
   .option('--address <address>', 'Ethereum address.')
   .option('--address-file <addressFile>', 'Path to file containing Ethereum address.')
   .option('-n, --network <network>', `Ethereum network [${config.networkLabelList}]`, 'local')
-  .option('-l, --logLevel <logLevel>', `logging level: [${logger.logLevelsString}]`, 'error')
+  .option('-l, --log-level <logLevel>', `logging level: [${logger.logLevelsString}]`, 'error')
   .option('-d, --debug', 'set logging level to debug')
 program.parse();
 const options = program.opts();

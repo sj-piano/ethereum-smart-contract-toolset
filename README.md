@@ -336,12 +336,12 @@ Now, export the corresponding private key from Metamask, using the following gui
 
 Metamask: [How to export an account's private key](https://support.metamask.io/hc/en-us/articles/360015289632-How-to-export-an-account-s-private-key)
 
-Store it in the `user-config.env` file as `ETHEREUM_MAINNET_PRIVATE_KEY`.
+Store it in the `user-config.env` file as `ETHEREUM_MAINNET_PRIVATE_KEY`. In the comment line above it, store the name of the keypair that you use in your wallet.
 
 Store it in the `user-data` directory in a new file called `ethereum-mainnet-private-key.txt`.
 
 See the balance of the address:  
-`pnpm ts-node scripts/get-balance.ts --network=mainnet --log-level info --address-file user-data/ethereum-mainnet-address.txt`
+`pnpm ts-node scripts/get-balance.ts --address-file user-data/ethereum-mainnet-address.txt --network=mainnet --log-level info`
 
 The result should match the balance shown in Metamask for your "Test" account.
 
