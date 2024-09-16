@@ -29,7 +29,6 @@ const { logger, log, deb } = createLogger();
 // Parse arguments
 program
   .option('-d, --debug', 'log debug information')
-  .option('--log-level <logLevel>', 'specify log level', 'error')
   .option('-n, --network <network>', `Ethereum network [${config.networkLabelList}]`, 'local')
   .option('-l, --logLevel <logLevel>', `logging level: [${logger.logLevelsString}]`, 'error')
   .option('-d, --debug', 'set logging level to debug')

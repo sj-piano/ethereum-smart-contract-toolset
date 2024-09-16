@@ -42,7 +42,10 @@ class Toolset {
   async setupAsync ({ networkLabel, logLevel }: { networkLabel: string, logLevel: string }) {
     logger.setLevel({ logLevel });
     config.logger.setLevel({ logLevel });
-    const provider = this.getProvider({ networkLabel });
+    config.networkLabel = networkLabel;
+    const network = config.networkLabelToNetwork(networkLabel);
+    config.network = network;
+    const provider = await this.getProviderAsync({ networkLabel, network });
     this.provider = provider;
     ethToolset.parent = this;
     maticToolset.parent = this;
@@ -55,25 +58,28 @@ class Toolset {
   }
 
 
-  getProvider({ networkLabel }: { networkLabel: string }) {
-    config.networkLabel = networkLabel;
-    config.network = config.networkLabelToNetwork(networkLabel);
-    const network = config.network;
+  async getProviderAsync({ networkLabel, network }: { networkLabel: string, network: string }) {
     var msg: string;
     let provider: ethers.Provider;
     if (networkLabel == 'local') {
       msg = `Connecting to local network at ${network}...`;
       deb(msg);
       provider = new ethers.JsonRpcProvider(network);
-    } else if (networkLabel == 'testnet') {
+    } else if (networkLabel === 'testnet') {
       msg = `Connecting to Sepolia testnet...`;
       deb(msg);
       provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
-    } else if (networkLabel == 'mainnet') {
+    } else if (networkLabel === 'mainnet') {
       msg = `Connecting to Ethereum mainnet...`;
       deb(msg);
       provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
-    } else if (networkLabel == 'mainnetPolygon') {
+    } else if (networkLabel === 'testnetPolygon') {
+      msg = `Connecting to Polygon testnet...`;
+      deb(msg);
+      provider = new ethers.JsonRpcProvider(
+      `${config.alchemyAPIPolygonTestnetUrlBase}/${config.env.ALCHEMY_API_KEY_POLYGON_POS}`
+      );
+    } else if (networkLabel === 'mainnetPolygon') {
       msg = `Connecting to Polygon mainnet...`;
       deb(msg);
       //this.provider = new ethers.AlchemyProvider(network, config.env.ALCHEMY_API_KEY_POLYGON_POS);
@@ -83,7 +89,22 @@ class Toolset {
     } else {
       throw new Error(`Unsupported networkLabel: '${networkLabel}'`);
     }
+    await this.checkConnectionAsync({ provider });
     return provider;
+  }
+
+
+  async checkConnectionAsync({ provider }: { provider: ethers.Provider }) {
+    try {
+      let blockNumber = await provider.getBlockNumber();
+      let msg = `Connected to network. Block number: ${blockNumber}`;
+      deb(msg);
+    } catch (error) {
+      provider.destroy();
+      let msg = `Error connecting to network: ${error}`;
+      logger.error(msg);
+      throw error;
+    }
   }
 
 

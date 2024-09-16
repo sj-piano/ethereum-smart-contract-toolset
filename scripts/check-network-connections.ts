@@ -8,10 +8,11 @@ import { ethers } from 'ethers';
 import config from '#root/config';
 import lib from '#root/lib';
 import { createLogger } from '#root/lib/logging';
+import toolset from '#root/src/toolset';
 
 
 // Components
-const { utils, validate } = lib;
+const { misc, utils, validate } = lib;
 
 
 // Console.log
@@ -26,8 +27,8 @@ const { logger, log, deb } = createLogger();
 
 // Arguments
 program
-  .option('-d, --debug', 'log debug information')
-  .option('--log-level <logLevel>', 'specify log level', 'error');
+  .option('-l, --logLevel <logLevel>', `logging level: [${logger.logLevelsString}]`, 'error')
+  .option('-d, --debug', 'set logging level to debug')
 program.parse();
 const options = program.opts();
 if (options.debug) console.log(options);
@@ -57,8 +58,7 @@ logger.setLevel({ logLevel });
 
 
 main().catch((error) => {
-  console.error(error);
-  process.exit(1);
+  misc.stop({ error });
 });
 
 
@@ -66,6 +66,7 @@ main().catch((error) => {
 
 
 async function main() {
+
   let connections = {
     local: {
       description: 'local Hardhat network',
@@ -89,53 +90,17 @@ async function main() {
     },
   };
 
-  let networkLabel: string;
-  let network: string;
-  let provider: ethers.Provider;
-
-  // Check local Hardhat network connection
-  networkLabel = 'local';
-  network = config.networkLabelToNetwork[networkLabel];
-  provider = new ethers.JsonRpcProvider(network);
-
-  if (networkConnectionsToCheck.includes(networkLabel)) {
-    await checkConnection({provider, connections, networkLabel, network});
-  }
-
-  // Check Sepolia testnet network connection (via Infura)
-  networkLabel = 'testnet';
-  network = config.networkLabelToNetwork[networkLabel];
-  provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
-  if (networkConnectionsToCheck.includes(networkLabel)) {
-    await checkConnection({provider, connections, networkLabel, network});
-  }
-
-  // Check Ethereum Mainnet network connection (via Infura)
-  networkLabel = 'mainnet';
-  network = config.networkLabelToNetwork[networkLabel];
-  provider = new ethers.InfuraProvider(network, config.env.INFURA_API_KEY);
-  if (networkConnectionsToCheck.includes(networkLabel)) {
-    await checkConnection({provider, connections, networkLabel, network});
-  }
-
-  // Check Polygon testnet network connection
-  networkLabel = 'testnetPolygon';
-  network = config.networkLabelToNetwork[networkLabel];
-  provider = new ethers.JsonRpcProvider(
-    `${config.alchemyAPIPolygonTestnetUrlBase}/${config.env.ALCHEMY_API_KEY_POLYGON_POS}`
-  );
-  if (networkConnectionsToCheck.includes(networkLabel)) {
-    await checkConnection({provider, connections, networkLabel, network});
-  }
-
-  // Check Polygon network connection
-  networkLabel = 'mainnetPolygon';
-  network = config.networkLabelToNetwork[networkLabel];
-  provider = new ethers.JsonRpcProvider(
-    `${config.alchemyAPIPolygonMainnetUrlBase}/${config.env.ALCHEMY_API_KEY_POLYGON_POS}`
-  );
-  if (networkConnectionsToCheck.includes(networkLabel)) {
-    await checkConnection({provider, connections, networkLabel, network});
+  for (let networkLabel of networkConnectionsToCheck) {
+    if (networkConnectionsToCheck.includes(networkLabel)) {
+      let success = false
+      try {
+        let provider = await toolset.getProviderAsync({ networkLabel });
+        success = true;
+      } catch (error) {
+        deb(`Error connecting to ${networkLabel}: ${error}`);
+      }
+      connections[networkLabel].connected = success;
+    }
   }
 
   // Display results
@@ -152,23 +117,4 @@ async function main() {
 
 }
 
-
-async function checkConnection({provider, connections, networkLabel, network}) {
-  let msg = `Connecting to ${networkLabel} network: ${network} ...`;
-  log(msg);
-  try {
-    // _detectNetwork() will throw an error if the connection fails. It won't retry.
-    let detected = await provider._detectNetwork();
-    let blockNumber = await provider.getBlockNumber();
-    log(`- ${networkLabel} network: current block number = ${blockNumber}`);
-    if (! _.keys(connections).includes(networkLabel)) {
-      throw new Error(`Unexpected networkLabel: ${networkLabel}`);
-    }
-    connections[networkLabel].connected = true;
-  } catch (error) {
-    provider.destroy();
-    logger.error(`Could not connect to ${networkLabel} network: ${network}.`);
-    logger.error(error);
-  }
-}
 
