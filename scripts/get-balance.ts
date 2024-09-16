@@ -14,7 +14,13 @@ import { createLogger } from '#root/lib/logging';
 
 // Components
 const networkLabelList = config.networkLabelList;
-const { filesystem, validate } = lib;
+const { filesystem, misc, validate } = lib;
+
+
+// Console.log
+const log2 = console.log;
+const jd2 = function (foo) { return JSON.stringify(foo, null, 2) }
+const lj2 = function (foo) { log2(jd2(foo)); }
 
 
 // Logging
@@ -23,53 +29,39 @@ const { logger, log, deb } = createLogger();
 
 // Parse arguments
 program
-  .option('-d, --debug', 'log debug information')
-  .option('--log-level <logLevel>', 'Specify log level.', 'error')
-  .option(
-    '--network <network>',
-    'specify the Ethereum network to connect to',
-    'local',
-  )
   .option('--address <address>', 'Ethereum address.')
-  .option(
-    '--address-file <addressFile>',
-    'Path to file containing Ethereum address.',
-  );
+  .option('--address-file <addressFile>', 'Path to file containing Ethereum address.')
+  .option('-n, --network <network>', `Ethereum network [${config.networkLabelList}]`, 'local')
+  .option('-l, --logLevel <logLevel>', `logging level: [${logger.logLevelsString}]`, 'error')
+  .option('-d, --debug', 'set logging level to debug')
 program.parse();
 const options = program.opts();
 if (options.debug) console.log(options);
-let { debug, logLevel, network: networkLabel, address, addressFile } = options;
+let { address, addressFile, network: networkLabel, logLevel, debug } = options;
 
 
-// Process and validate arguments
-
+// Validate arguments
 validate.logLevel({ logLevel });
-if (debug) {
-  logLevel = 'debug';
-}
-logger.setLevel({ logLevel });
-
-validate.networkLabel({ networkLabel, networkLabelList });
-
+validate.itemInList({ item: networkLabel, name: 'networkLabel', list: networkLabelList });
 let optionNames = 'address, addressFile'.split(', ');
 validate.exactlyOneOfTwoOptions({optionNames, address, addressFile});
 
 
 // Load data
-
-let contractAddress;
-if (address) {
-  contractAddress = address;
-} else {
-  contractAddress = filesystem.readFile(addressFile);
+if (addressFile) {
+  address = filesystem.readFile(addressFile);
 }
 
 
-// Run main function
+// Setup
+if (debug) logLevel = 'debug';
+logger.setLevel({ logLevel });
+
+
+// Run
 
 main().catch((error) => {
-  console.error(error);
-  process.exit(1);
+  misc.stop({ error });
 });
 
 
@@ -79,12 +71,11 @@ main().catch((error) => {
 async function main() {
 
   if (! ethers.isAddress(address)) {
-    var msg = `Invalid Ethereum address: ${address}`;
-    console.error(msg);
-    process.exit(1);
+    let msg = `Invalid Ethereum address: ${address}`;
+    misc.stop(({ error: msg }));
   }
 
-  await toolset.setupAsync({ networkLabel });
+  await toolset.setupAsync({ networkLabel, logLevel });
   let blockNumber = await toolset.provider.getBlockNumber();
   deb(`Current block number: ${blockNumber}`);
 
@@ -102,6 +93,6 @@ async function main() {
     symbol = 'MATIC';
   }
 
-  msg = `${balance} ${symbol} (${balanceUsd} USD)`;
-  console.log(msg);
+  let msg = `${balance} ${symbol} (${balanceUsd} USD)`;
+  log2(msg);
 }

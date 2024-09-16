@@ -28,14 +28,13 @@ const { logger, log, deb } = createLogger();
 
 // Parse arguments
 program
-  .option('-d, --debug', 'log debug information')
   .option('-n, --network <network>', `Ethereum network [${config.networkLabelList}]`, 'local')
   .option('-l, --logLevel <logLevel>', `logging level: [${logger.logLevelsString}]`, 'error')
   .option('-d, --debug', 'set logging level to debug')
 program.parse();
 const options = program.opts();
 if (options.debug) console.log(options);
-let { debug, logLevel, network: networkLabel } = options;
+let { network: networkLabel, logLevel, debug } = options;
 
 
 // Validate arguments

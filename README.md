@@ -316,7 +316,7 @@ Store it in the `user-config.env` file as `SEPOLIA_TESTNET_ADDRESS`.
 In Metamask, transfer a reasonable amount of SepoliaETH to this new address.
 
 See the balance of the address:  
-`pnpm ts-node scripts/get-balance.ts --network=testnet --address-file user-data/sepolia-testnet-address.txt`
+`pnpm ts-node scripts/get-balance.ts --address-file user-data/sepolia-testnet-address.txt --network=testnet`
 
 If you wish to retrieve your SepoliaETH from the address created in a Sepolia testnet walkthrough (e.g. you want to transfer it back to your Metamask test account), you'll need to use a tool that can make the transfer (create, sign, broadcast, and track the transaction). Such a tool is not provided in this project.
 
