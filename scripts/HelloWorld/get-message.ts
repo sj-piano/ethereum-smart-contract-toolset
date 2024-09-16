@@ -2,7 +2,6 @@
 import _ from 'lodash';
 import { program } from 'commander';
 import { ethers } from 'ethers';
-import fs from 'fs';
 
 
 // Local imports
@@ -42,14 +41,14 @@ const { logger, log, deb } = createLogger();
 
 // Arguments
 program
-  .option('-d, --debug', 'log debug information')
-  .option('--log-level <logLevel>', 'Specify log level.', 'error')
-  .option('--network <network>', 'specify the Ethereum network to connect to', 'local')
-  .option('--address-file <addressFile>', 'Path to file containing contract address.');
+  .option('--address-file <addressFile>', 'Path to file containing contract address.')
+  .option('-n, --network <network>', `network to connect to: [${config.networkLabelList}]`, 'local')
+  .option('-l, --log-level <logLevel>', `logging level: [${logger.logLevelsString}]`, 'error')
+  .option('-d, --debug', 'set logging level to debug')
 program.parse();
 const options = program.opts();
 if (options.debug) console.log(options);
-let { network: networkLabel, addressFile, logLevel, debug } = options;
+let { addressFile, network: networkLabel, logLevel, debug } = options;
 
 
 // Validate arguments

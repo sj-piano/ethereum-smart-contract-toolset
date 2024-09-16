@@ -39,20 +39,6 @@ function itemInList({ item, name, list }: { item: any, name: string, list: any[]
 }
 
 
-// Delete
-function networkLabel({ networkLabel, networkLabelList }: { networkLabel: string, networkLabelList: string[] }) {
-  const networkLabelSchema = Joi.string().valid(...networkLabelList);
-  let result = networkLabelSchema.validate(networkLabel);
-  if (result.error) {
-    let msg = `Invalid network "${networkLabel}". Valid options are: [${networkLabelList.join(
-      ', ',
-    )}]`;
-    console.error(msg);
-    process.exit(1);
-  }
-}
-
-
 function numericString(options: { name: string; value: string }): string {
   const { name, value } = options;
   const trimmedValue = value.trim();
@@ -107,7 +93,6 @@ function exactlyOneOfTwoOptions(args) {
 export const validate ={
   logLevel,
   itemInList,
-  networkLabel,
   numericString,
   number,
   string,

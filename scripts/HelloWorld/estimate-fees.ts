@@ -44,15 +44,12 @@ program
 program.parse();
 const options = program.opts();
 if (options.debug) console.log(options);
-let { debug, logLevel, network: networkLabel } = options;
+let { network: networkLabel, logLevel, debug } = options;
 
 
 // Validate arguments
 validate.logLevel({ logLevel });
 validate.itemInList({ item: networkLabel, name: 'networkLabel', list: networkLabelList });
-
-
-const network = config.networkLabelToNetwork[networkLabel];
 
 
 // Setup
