@@ -7,14 +7,13 @@ import { ethers } from 'ethers';
 
 // Local imports
 import config from '#root/config';
-import lib from '#root/lib';
-import toolset from '#root/src/toolset';
-import { createLogger } from '#root/lib/logging';
+import utils from '#root/utils';
+import toolsetFactory from '#root/src/ToolsetFactory';
 
 
 // Components
 const networkLabelList = config.networkLabelList;
-const { filesystem, misc, validate } = lib;
+const { filesystem, misc, validate } = utils;
 
 
 // Console.log
@@ -24,7 +23,8 @@ const lj2 = function (foo) { log2(jd2(foo)); }
 
 
 // Logging
-const { logger, log, deb } = createLogger();
+import { createLogger } from '#root/utils/logging';
+const { logger, log, deb, lj, dj } = createLogger();
 
 
 // Arguments
@@ -44,7 +44,7 @@ let { address, addressFile, network: networkLabel, logLevel, debug } = options;
 validate.logLevel({ logLevel });
 validate.itemInList({ item: networkLabel, name: 'networkLabel', list: networkLabelList });
 let optionNames = 'address, addressFile'.split(', ');
-validate.exactlyOneOfTwoOptions({optionNames, address, addressFile});
+validate.exactlyOneOption({optionNames, address, addressFile});
 
 
 // Load data
@@ -61,7 +61,7 @@ logger.setLevel({ logLevel });
 // Run
 
 
-main().catch((error) => {
+mainAsync().catch((error) => {
   misc.stop(error);
 });
 
@@ -69,31 +69,20 @@ main().catch((error) => {
 // Functions
 
 
-async function main() {
+async function mainAsync() {
 
-  if (! ethers.isAddress(address)) {
-    let msg = `Invalid Ethereum address: ${address}`;
-    misc.stop(({ error: msg }));
-  }
+  let toolset = await toolsetFactory.createToolsetAsync({ networkLabel, logLevel, connectToNetwork: true });
 
-  await toolset.setupAsync({ networkLabel, logLevel });
-  let blockNumber = await toolset.provider.getBlockNumber();
+  toolset.validateAddress({ address });
+
+  let blockNumber = await toolset.getBlockNumberAsync();
   deb(`Current block number: ${blockNumber}`);
 
   log(`Getting balance for address ${address}...`);
 
-  let balanceUsd = await toolset.getBalanceUsdAsync(address);
-
-  let balance;
-  let symbol;
-  if (config.ethereumNetworkLabels.includes(networkLabel)) {
-    balance = await toolset.getBalanceEthAsync(address);
-    symbol = 'ETH';
-  } else {
-    balance = await toolset.getBalanceMaticAsync(address);
-    symbol = 'MATIC';
-  }
+  let { balance, symbol, balanceUsd } = await toolset.getBalanceInfoAsync(address);
 
   let msg = `${balance} ${symbol} (${balanceUsd} USD)`;
   log2(msg);
+
 }

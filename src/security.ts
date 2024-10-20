@@ -19,8 +19,8 @@ import path from 'path';
 
 // Local imports
 import config from '#root/config';
-import lib from '#root/lib';
-import { createLogger } from '#lib/logging';
+import lib from '#root/utils';
+import { createLogger } from '#root/utils/logging';
 
 
 // Components

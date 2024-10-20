@@ -10,14 +10,13 @@ import path from 'path';
 
 
 // Local imports
-import constants from '#lib/constants';
-import envVars from '#lib/envVars';
-import lib from '#root/lib';
-import { createLogger } from '#lib/logging';
+import constants from '#root/src/constants';
+import utils from '#root/utils';
+import { createLogger } from '#root/utils/logging';
 
 
 // Components
-const { misc, utils, text, validate } = lib;
+const { envVars, misc, text, validate } = utils;
 
 
 // Logging
@@ -129,8 +128,8 @@ class Config {
   networkLabelToNetwork: (networkLabel: string) => string;
   network: string;
   polygonNetworkLabels: string[] = polygonNetworkLabels;
-  priceEthInUsdUrl: string = 'https://api.pro.coinbase.com/products/ETH-USD/ticker';
-  priceMaticInUsdUrl: string = 'https://api.pro.coinbase.com/products/MATIC-USD/ticker';
+  priceEthInUsdUrl: string = 'https://api.coinbase.com/v2/prices/ETH-USD/spot';
+  priceMaticInUsdUrl: string = 'https://api.coinbase.com/v2/prices/MATIC-USD/spot';
 
 
   constructor() {

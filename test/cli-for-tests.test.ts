@@ -10,8 +10,8 @@ import { program } from 'commander';
 
 
 // Local imports
-import { createLogger } from '#lib/logging';
-import validate from '#lib/validate';
+import { createLogger } from '#root/utils/logging';
+import validate from '#root/utils/validate';
 
 
 // Logging

@@ -6,14 +6,13 @@ import { ethers } from 'ethers';
 
 // Local imports
 import config from '#root/config';
-import lib from '#root/lib';
-import { createLogger } from '#root/lib/logging';
-import toolset from '#root/src/toolset';
+import utils from '#root/utils';
+import toolsetFactory from '#root/src/ToolsetFactory';
 
 
 // Components
 const networkLabelList = config.networkLabelList;
-const { filesystem, misc, utils, validate } = lib;
+const { filesystem, misc, validate } = utils;
 
 
 // Console.log
@@ -23,6 +22,7 @@ const lj2 = function (foo) { log2(jd2(foo)); }
 
 
 // Logging
+import { createLogger } from '#root/utils/logging';
 const { logger, log, deb } = createLogger();
 
 
@@ -71,7 +71,7 @@ let contractAddress: string;
 
 // Load data
 if (addressName) {
-  contractAddress = utils.getValueOrThrow(config.env, addressName, 'config.env');
+  contractAddress = misc.getValueOrThrow(config.env, addressName, 'config.env');
   deb(`Address ${addressName} found in .env file: ${address}`);
 } else if (address) {
   contractAddress = address;
@@ -92,7 +92,7 @@ mainAsync({ contractAddress }).catch((error) => {
 
 
 async function mainAsync({ contractAddress }: { contractAddress: string }) {
-  await toolset.setupAsync({ networkLabel, logLevel });
+  let toolset = await toolsetFactory.createToolsetAsync({ networkLabel, logLevel });
   let blockNumber = await toolset.getBlockNumberAsync();
   deb(`Current block number: ${blockNumber}`);
 

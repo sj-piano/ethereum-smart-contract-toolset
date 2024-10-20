@@ -17,6 +17,8 @@ pnpm ts-node scripts/get-network-fees.ts --network testnet
 
 pnpm ts-node scripts/get-network-fees.ts --network mainnet
 
+pnpm ts-node scripts/get-network-fees.ts --network testnetPolygon
+
 pnpm ts-node scripts/get-network-fees.ts --network mainnetPolygon
 
 

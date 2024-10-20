@@ -6,7 +6,7 @@ import { ethers, Provider, TransactionRequest } from 'ethers';
 
 // Local imports
 import config from '#root/config';
-import { createLogger } from '#root/lib/logging';
+import { createLogger } from '#root/utils/logging';
 import ethToolset from '#root/src/eth-toolset';
 
 

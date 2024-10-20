@@ -5,13 +5,13 @@ import Big from 'big.js';
 
 // Local imports
 import config from '#root/config';
-import lib from '#root/lib';
-import { createLogger } from '#root/lib/logging';
+import utils from '#root/utils';
+import { createLogger } from '#root/utils/logging';
 
 
 // Components
-const { utils, validate } = lib;
-const jd = utils.jd;
+const { misc, validate } = utils;
+const jd = misc.jd;
 
 
 // Controls

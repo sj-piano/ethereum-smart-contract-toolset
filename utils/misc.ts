@@ -1,5 +1,5 @@
 /* Important:
-- This file cannot import config.ts, because config.ts imports utils.ts.
+- This file cannot import config.ts, because config.ts imports misc.ts.
 */
 
 
@@ -58,7 +58,13 @@ function getValueOrThrow<T, K extends keyof T>(obj: T, key: K, varName?: string)
 }
 
 
-export const utils = {
+function stop(msg) {
+  if (msg) console.error(msg);
+  process.exit(1);
+}
+
+
+export const misc = {
   getMethods,
   isBigInt,
   isString,
@@ -67,8 +73,9 @@ export const utils = {
   sleep,
   jd,
   getValueOrThrow,
+  stop,
 };
 
 
-export default utils;
+export default misc;
 

@@ -6,9 +6,9 @@ import { ethers } from 'ethers';
 
 // Local imports
 import config from '#root/config';
-import lib from '#root/lib';
-import { createLogger } from '#root/lib/logging';
-import toolset from '#root/src/toolset';
+import lib from '#root/utils';
+import { createLogger } from '#root/utils/logging';
+import toolset from '#root/src/ToolsetBase';
 
 
 // Components

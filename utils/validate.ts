@@ -9,12 +9,15 @@ import Joi from 'joi';
 
 
 // Local imports
-import { createLogger } from '#root/lib/logging';
-import utils from '#lib/utils';
+import misc from './misc';
+
+
+// Console.log
+const log2 = console.log;
 
 
 // Logging
-const log2 = console.log;
+import { createLogger } from '#root/utils/logging';
 const { logger, log, deb } = createLogger();
 
 
@@ -45,7 +48,7 @@ function numericString(options: { name: string; value: string }): string {
   if (trimmedValue.length === 0) {
     throw new Error(`Received empty or whitespace-only string for ${name}`);
   }
-  if (! utils.isNumericString(trimmedValue)) {
+  if (! misc.isNumericString(trimmedValue)) {
     let msg = `Received non-numeric string for ${name}: ${trimmedValue}`;
     msg +=
       `, !isNaN(value)=${!isNaN(trimmedValue as any)}, ` +
@@ -67,27 +70,26 @@ function number(options: { name: string; value: number }): number {
 
 function string(options: { name: string; value: string }): string {
   const { name, value } = options;
-  if (! utils.isString(value)) {
+  if (! misc.isString(value)) {
     throw new Error(`Received non-string for ${name}: ${value}`);
   }
   return value;
 }
 
 
-function exactlyOneOfTwoOptions(args) {
-  let {optionNames, ...options} = args;
+function exactlyOneOption(args) {
+  let { optionNames, ...options } = args;
   let msg = `Exactly one of the arguments [${optionNames.join(', ')}] is required.`;
-  let n = optionNames.length;
-  if (n !== 2) {
-      throw Error('This function supports exactly two option names.');
-  }
-  let name1 = options[optionNames[0]];
-  let name2 = options[optionNames[1]];
-  if ( (name1 && name2) ||
-       (! name1 && ! name2) ) {
-      throw Error(msg);
+
+  let truthyOptionsCount = optionNames.reduce((count, option) => {
+    return count + (options[option] ? 1 : 0);
+  }, 0);
+
+  if (truthyOptionsCount !== 1) {
+    throw new Error(msg);
   }
 }
+
 
 
 export const validate ={
@@ -96,7 +98,7 @@ export const validate ={
   numericString,
   number,
   string,
-  exactlyOneOfTwoOptions,
+  exactlyOneOption,
 }
 
 

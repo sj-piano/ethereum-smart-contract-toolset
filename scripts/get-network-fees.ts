@@ -6,14 +6,13 @@ import { ethers } from 'ethers';
 
 // Local imports
 import config from '#root/config';
-import lib from '#root/lib';
-import { createLogger } from '#root/lib/logging';
-import toolset from '#root/src/toolset';
+import utils from '#root/utils';
+import toolsetFactory from '#root/src/ToolsetFactory';
 
 
 // Components
 const networkLabelList = config.networkLabelList;
-const { misc, utils, validate } = lib;
+const { misc, validate } = utils;
 
 
 // Console.log
@@ -22,8 +21,9 @@ const jd2 = function (foo) { return JSON.stringify(foo, null, 2) }
 const lj2 = function (foo) { log2(jd2(foo)); }
 
 
-// Logging
-const { logger, log, deb } = createLogger();
+// Logger
+import { createLogger } from '#root/utils/logging';
+const { logger, log, deb, lj, dj } = createLogger();
 
 
 // Arguments
@@ -59,12 +59,12 @@ main().catch((error) => {
 
 
 async function main() {
-  await toolset.setupAsync({ networkLabel, logLevel });
+  let toolset = await toolsetFactory.createToolsetAsync({ networkLabel, logLevel, connectToNetwork: true });
   deb(`Connected to ${networkLabel} network.`);
   let blockNumber = await toolset.getBlockNumberAsync();
   deb(`Current block number: ${blockNumber}`);
   //const fees = await toolset.getGasPricesAsync();
   const fees = await toolset.getGasPricesWithFiatAsync();
-  console.log(fees);
+  log2(fees);
 }
 

@@ -6,9 +6,9 @@ import { program } from 'commander';
 
 // Local imports
 import config from '#root/config';
-import lib from '#root/lib';
-import toolset from '#root/src/toolset';
-import { createLogger } from '#root/lib/logging';
+import lib from '#root/utils';
+import toolset from '#root/src/ToolsetBase';
+import { createLogger } from '#root/utils/logging';
 
 
 // Components

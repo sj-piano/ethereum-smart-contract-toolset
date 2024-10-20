@@ -8,8 +8,8 @@ import { loadFixture } from '@nomicfoundation/hardhat-toolbox/network-helpers';
 // Local imports
 import amounts from '#src/amounts';
 import config from '#root/config';
-import { createLogger } from '#lib/logging';
-import utils, { jd } from '#lib/utils';
+import { createLogger } from '#root/utils/logging';
+import utils, { jd } from '#root/utils/utils';
 import ethereum from '#root/src/eth-toolset';
 
 

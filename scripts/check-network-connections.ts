@@ -6,13 +6,12 @@ import { ethers } from 'ethers';
 
 // Local imports
 import config from '#root/config';
-import lib from '#root/lib';
-import { createLogger } from '#root/lib/logging';
-import toolset from '#root/src/toolset';
+import utils from '#root/utils';
+import toolsetFactory from '#root/src/ToolsetFactory';
 
 
 // Components
-const { misc, utils, validate } = lib;
+const { misc, validate } = utils;
 
 
 // Console.log
@@ -22,7 +21,8 @@ const lj2 = function (foo) { log2(jd2(foo)); }
 
 
 // Logger
-const { logger, log, deb } = createLogger();
+import { createLogger } from '#root/utils/logging';
+const { logger, log, deb, lj, dj } = createLogger();
 
 
 // Arguments
@@ -94,7 +94,7 @@ async function main() {
     if (networkConnectionsToCheck.includes(networkLabel)) {
       let success = false
       try {
-        let provider = await toolset.getProviderAsync({ networkLabel });
+        let toolset = await toolsetFactory.createToolsetAsync({ networkLabel, logLevel, connectToNetwork: true });
         success = true;
       } catch (error) {
         deb(`Error connecting to ${networkLabel}: ${error}`);

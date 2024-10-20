@@ -8,8 +8,8 @@ import { program } from 'commander';
 import config from '#root/config';
 import amounts from '#root/src/amounts';
 import ethereum from '#root/src/eth-toolset';
-import { createLogger } from '#root/lib/logging';
-import validate from '#root/lib/validate';
+import { createLogger } from '#root/utils/logging';
+import validate from '#root/utils/validate';
 
 // Types from typechain
 import { UpgradeableCounter, UpgradeableCounterV2 } from '#root/typechain-types';

@@ -11,7 +11,7 @@
     "outDir": "./build",
     "paths": {
       "#root/*": ["*"],
-      "#lib/*": ["lib/*"],
+      "#lib/*": ["utils/*"],
       "#src/*": ["src/*"],
       "#test/*": ["test/*"],
       "#typechain-types/*": ["typechain-types/*"],

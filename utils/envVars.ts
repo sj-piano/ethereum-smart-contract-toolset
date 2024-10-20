@@ -1,6 +1,6 @@
 // Utilities for working with shell variables.
 
-import { createLogger } from '#lib/logging';
+import { createLogger } from '#root/utils/logging';
 
 // Logging
 const log2 = console.log;

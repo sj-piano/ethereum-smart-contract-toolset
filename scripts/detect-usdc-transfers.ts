@@ -6,16 +6,16 @@ import { ethers } from 'ethers';
 
 // Local imports
 import config from '#root/config';
-import lib from '#root/lib';
-import toolset from '#root/src/toolset';
-import { createLogger } from '#root/lib/logging';
+import lib from '#root/utils';
+import toolset from '#root/src/ToolsetBase';
+import { createLogger } from '#root/utils/logging';
 
 
 
 // Constants
 import {
   USDC_DECIMAL_PLACES, USDC_CONTRACT_ABI,
-} from '#root/lib/constants';
+} from '#root/src/constants';
 
 
 // Components

@@ -9,8 +9,8 @@ import { ethers, Provider, TransactionRequest, keccak256, toUtf8Bytes } from 'et
 // Local imports
 import amounts from '#src/amounts';
 import config from '#root/config';
-import lib from '#root/lib';
-import { createLogger } from '#root/lib/logging';
+import lib from '#root/utils';
+import { createLogger } from '#root/utils/logging';
 import security from '#src/security';
 
 
